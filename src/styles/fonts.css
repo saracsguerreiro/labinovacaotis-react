@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+/* Bronkoh-Bold font */
+@font-face {
+  font-family: 'Bronkoh-Bold';
+  src: url('https://fonts.cdnfonts.com/s/96624/Bronkoh-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bronkoh-Light font */
+@font-face {
+  font-family: 'Bronkoh-Light';
+  src: url('https://fonts.cdnfonts.com/s/96624/Bronkoh-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
