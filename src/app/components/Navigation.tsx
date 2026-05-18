@@ -91,7 +91,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
           <img
             src={isDark ? logoAiLabWhite : logoAiLabBlack}
             alt="TIS AI Lab"
-            className="h-14"
+            className="h-10"
             style={{ objectFit: 'contain', transition: 'opacity 0.3s ease' }}
           />
         </div>
