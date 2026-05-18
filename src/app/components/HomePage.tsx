@@ -123,46 +123,46 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </StickyWrap>
 
       {/* 2 — Idea Hub Teaser */}
-      <StickyWrap idx={1} bg="linear-gradient(180deg,#dbeafe,#eff6ff)" theme="light">
+      <StickyWrap idx={1} bg="radial-gradient(ellipse at 70% 40%, #0f2258 0%, #090e2a 45%, #050816 100%)" theme="dark">
         <section className="px-10 py-20 max-w-[1160px] mx-auto">
           <div className="reveal">
             <div className="text-[10px] tracking-[3px] uppercase mb-3"
-              style={{ fontFamily: 'var(--font-mono)', color: 'var(--blue)' }}>// ideia hub</div>
-            <div className="text-[36px] font-[800] tracking-[-1px] leading-[1.1] mb-1.5" style={{ color: 'var(--text)' }}>
+              style={{ fontFamily: 'var(--font-mono)', color: '#60a5fa' }}>// ideia hub</div>
+            <div className="text-[36px] font-[800] tracking-[-1px] leading-[1.1] mb-1.5" style={{ color: '#ffffff' }}>
               O que está a acontecer
             </div>
-            <div className="text-[14px] mb-8" style={{ color: 'var(--text-muted)' }}>
+            <div className="text-[14px] mb-8" style={{ color: 'rgba(255,255,255,0.55)' }}>
               As ideias que estão a moldar o futuro da organização
             </div>
           </div>
 
-          <div className="bg-[var(--surface)] border rounded-[20px] overflow-hidden cursor-pointer transition-all shadow-[0_4px_24px_rgba(30,50,140,0.06)] hover:shadow-[0_8px_40px_rgba(30,50,140,0.1)] reveal"
-            style={{ borderColor: 'var(--border-light)' }}
+          <div className="rounded-[20px] overflow-hidden cursor-pointer transition-all reveal"
+            style={{ border: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.05)', boxShadow: '0 4px 40px rgba(0,0,0,0.3)' }}
             onClick={() => onNavigate('hub')}>
             {[
-              { n: '01', title: 'Modelo de trabalho híbrido estruturado',           status: 'Em implementação', statusColor: '#9437FF', votes: 67, cat: 'Pessoas',  catColor: '#9437FF', catBg: '#e6dfff' },
-              { n: '02', title: 'App self-service para clientes com IA conversacional', status: 'Concluída',        statusColor: '#FF0066', votes: 58, cat: 'Produto',  catColor: '#FF0066', catBg: '#fdf2f8' },
-              { n: '03', title: 'Chatbot de suporte interno 24/7',                    status: 'Em implementação', statusColor: '#9437FF', votes: 45, cat: 'CX',       catColor: '#4294F8', catBg: '#ecfeff' },
-              { n: '04', title: 'Automatização do processo de aprovação de despesas', status: 'Em implementação', statusColor: '#9437FF', votes: 42, cat: 'Processo', catColor: '#3126b4', catBg: '#eff4ff' },
+              { n: '01', title: 'Modelo de trabalho híbrido estruturado',              status: 'Em implementação', statusColor: '#a78bfa', votes: 67, cat: 'Pessoas',  catColor: '#a78bfa', catBg: 'rgba(167,139,250,0.15)' },
+              { n: '02', title: 'App self-service para clientes com IA conversacional', status: 'Concluída',        statusColor: '#f472b6', votes: 58, cat: 'Produto',  catColor: '#f472b6', catBg: 'rgba(244,114,182,0.15)' },
+              { n: '03', title: 'Chatbot de suporte interno 24/7',                     status: 'Em implementação', statusColor: '#a78bfa', votes: 45, cat: 'CX',       catColor: '#60a5fa', catBg: 'rgba(96,165,250,0.15)'  },
+              { n: '04', title: 'Automatização do processo de aprovação de despesas',  status: 'Em implementação', statusColor: '#a78bfa', votes: 42, cat: 'Processo', catColor: '#818cf8', catBg: 'rgba(129,140,248,0.15)' },
             ].map((item, i) => (
               <div key={i}
-                className={`flex items-center gap-3.5 px-5 py-3.5 transition-all hover:bg-[var(--surface2)] ${i < 3 ? 'border-b' : ''}`}
-                style={{ borderColor: 'var(--border-light)' }}>
+                className={`flex items-center gap-3.5 px-5 py-3.5 transition-all hover:bg-white/5 ${i < 3 ? 'border-b' : ''}`}
+                style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                 <div className="text-[22px] font-[900] leading-[1] min-w-[32px]"
-                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>{item.n}</div>
-                <div className="flex-1 text-[14px] font-semibold leading-[1.3]" style={{ color: 'var(--text)' }}>{item.title}</div>
+                  style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.20)' }}>{item.n}</div>
+                <div className="flex-1 text-[14px] font-semibold leading-[1.3]" style={{ color: 'rgba(255,255,255,0.90)' }}>{item.title}</div>
                 <div className="flex items-center gap-2.5 flex-shrink-0">
-                  <div className="flex items-center gap-1 text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                  <div className="flex items-center gap-1 text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.50)' }}>
                     <div className="w-1.5 h-1.5 rounded-full" style={{ background: item.statusColor }} />{item.status}
                   </div>
-                  <div className="text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>▲ {item.votes}</div>
+                  <div className="text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'rgba(255,255,255,0.40)' }}>▲ {item.votes}</div>
                   <div className="text-[10px] px-2 py-0.5 rounded font-semibold"
                     style={{ fontFamily: 'var(--font-mono)', color: item.catColor, background: item.catBg }}>{item.cat}</div>
                 </div>
               </div>
             ))}
-            <div className="p-4 text-center text-[11px] cursor-pointer border-t transition-all hover:bg-[var(--blue-light)]"
-              style={{ fontFamily: 'var(--font-mono)', color: 'var(--blue)', borderColor: 'var(--border-light)' }}>
+            <div className="p-4 text-center text-[11px] cursor-pointer border-t transition-all hover:bg-white/5"
+              style={{ fontFamily: 'var(--font-mono)', color: '#60a5fa', borderColor: 'rgba(255,255,255,0.08)' }}>
               Ver todas as ideias no Ideia HUB →
             </div>
           </div>
