@@ -13,24 +13,31 @@
   background: #080c2a;
 }
 
-/* ── Background image ── */
-.banner-bg {
+/* ── Background image wrapper (handles float) ── */
+.banner-bg-wrap {
   position: absolute;
-  inset: -3%;
-  width: 106%;
-  height: 106%;
-  object-fit: cover;
-  object-position: center;
+  top: -8%;
+  left: -4%;
+  width: 108%;
+  height: 116%;
   pointer-events: none;
-  user-select: none;
   animation: bgFloat 7s ease-in-out infinite;
-  transform-origin: center center;
 }
 
 @keyframes bgFloat {
-  0%,100% { transform: translateY(0px)   scale(1.0); }
-  35%     { transform: translateY(-14px) scale(1.02); }
-  70%     { transform: translateY(8px)  scale(1.01); }
+  0%,100% { transform: translateY(0px);  }
+  35%     { transform: translateY(-18px); }
+  70%     { transform: translateY(10px);  }
+}
+
+/* ── Background image ── */
+.banner-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% 55%;
+  display: block;
+  user-select: none;
 }
 
 /* ── Left gradient overlay ── */

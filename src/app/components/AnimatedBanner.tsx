@@ -150,8 +150,10 @@ export default function AnimatedBanner({ onNavigate }: AnimatedBannerProps) {
   return (
     <div className="banner-wrap" ref={wrapRef}>
 
-      {/* ── Background image ── */}
-      <img className="banner-bg" src={bannerImg} alt="IdeaLab banner" />
+      {/* ── Background image with float wrapper ── */}
+      <div className="banner-bg-wrap">
+        <img className="banner-bg" src={bannerImg} alt="IdeaLab banner" />
+      </div>
 
       {/* ── Left gradient overlay ── */}
       <div className="banner-overlay" />
