@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import logoTisLab from '../../logo_TISLAB.png';
+import logoTisAiLab from './logo-tis-ai-lab.png';
 
 type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
 
@@ -48,7 +49,12 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
         className="cursor-pointer select-none flex-shrink-0"
         onClick={() => onNavigate('home')}
       >
-        <img src={logoTisLab} alt="TIS LAB" className="h-9" style={{ objectFit: 'contain' }} />
+        <img
+          src={currentView === 'home' ? logoTisAiLab : logoTisLab}
+          alt="TIS LAB"
+          className="h-9"
+          style={{ objectFit: 'contain' }}
+        />
       </div>
 
       {/* Center nav */}
@@ -58,22 +64,22 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
           return (
             <button
               key={view}
-              className="relative px-4 py-1.5 rounded-full text-[13px] font-medium transition-all duration-200 border-none cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[13px] font-medium transition-all duration-200 border-none cursor-pointer"
               style={{
                 color: isActive ? '#ffffff' : 'rgba(180,200,255,0.7)',
-                background: isActive ? 'rgba(37,99,235,0.25)' : 'transparent',
+                background: 'transparent',
                 fontFamily: 'var(--font-outfit)',
                 fontWeight: isActive ? 600 : 400,
               }}
               onClick={() => onNavigate(view)}
             >
-              {label}
               {isActive && (
                 <span
-                  className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
-                  style={{ background: 'var(--blue)' }}
+                  className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                  style={{ background: '#2563eb', boxShadow: '0 0 6px rgba(37,99,235,0.8)' }}
                 />
               )}
+              {label}
             </button>
           );
         })}
