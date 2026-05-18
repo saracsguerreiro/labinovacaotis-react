@@ -5,42 +5,42 @@ import {
 } from 'recharts';
 
 const monthlyData = [
-  { month: 'Jan', ideias: 12, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Fev', ideias: 18, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Mar', ideias: 22, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Abr', ideias: 28, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Mai', ideias: 31, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Jun', ideias: 24, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Jul', ideias: 38, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Ago', ideias: 45, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Set', ideias: 52, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Out', ideias: 47, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Nov', ideias: 55, fill: 'rgba(37,99,235,0.35)' },
-  { month: 'Dez', ideias: 62, fill: '#2563eb' },
+  { month: 'Jan', ideias: 12, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Fev', ideias: 18, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Mar', ideias: 22, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Abr', ideias: 28, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Mai', ideias: 31, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Jun', ideias: 24, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Jul', ideias: 38, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Ago', ideias: 45, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Set', ideias: 52, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Out', ideias: 47, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Nov', ideias: 55, fill: 'rgba(3,110,242,0.35)' },
+  { month: 'Dez', ideias: 62, fill: '#036ef2' },
 ];
 
 const categoryData = [
-  { name: 'Melhoria Processo', value: 118, color: '#3b82f6' },
-  { name: 'Tecnologia', value: 85, color: '#2563eb' },
-  { name: 'Cultura & Pessoas', value: 66, color: '#7c3aed' },
+  { name: 'Melhoria Processo', value: 118, color: '#3126b4' },
+  { name: 'Tecnologia', value: 85, color: '#036ef2' },
+  { name: 'Cultura & Pessoas', value: 66, color: '#9437FF' },
   { name: 'Novo Produto', value: 49, color: '#FF0066' },
-  { name: 'Exp. Cliente', value: 29, color: '#06b6d4' },
+  { name: 'Exp. Cliente', value: 29, color: '#4294F8' },
 ];
 
 const deptData = [
-  { dept: 'TI & Digital', value: 62, fill: '#2563eb' },
-  { dept: 'Operações', value: 50, fill: '#3b82f6' },
-  { dept: 'RH', value: 39, fill: '#7c3aed' },
-  { dept: 'Comercial', value: 31, fill: '#f97316' },
-  { dept: 'Financeiro', value: 21, fill: '#06b6d4' },
+  { dept: 'TI & Digital', value: 62, fill: '#036ef2' },
+  { dept: 'Operações', value: 50, fill: '#3126b4' },
+  { dept: 'RH', value: 39, fill: '#9437FF' },
+  { dept: 'Comercial', value: 31, fill: '#FF0066' },
+  { dept: 'Financeiro', value: 21, fill: '#4294F8' },
 ];
 
 const statusPie = [
-  { name: 'Submetidas', value: 142, fill: '#2563eb' },
-  { name: 'Em análise', value: 89, fill: '#06b6d4' },
-  { name: 'Seleccionadas', value: 76, fill: '#3b82f6' },
-  { name: 'Implementação', value: 28, fill: '#7c3aed' },
-  { name: 'Concluídas', value: 12, fill: '#22c55e' },
+  { name: 'Submetidas', value: 142, fill: '#036ef2' },
+  { name: 'Em análise', value: 89, fill: '#4294F8' },
+  { name: 'Seleccionadas', value: 76, fill: '#3126b4' },
+  { name: 'Implementação', value: 28, fill: '#9437FF' },
+  { name: 'Concluídas', value: 12, fill: '#FF0066' },
 ];
 
 const trendData = [
@@ -99,10 +99,10 @@ export default function ImpactDashboard() {
   const collab = useCountUp(94);
 
   const kpis = [
-    { label: '// total de ideias', num: total, sub: '+23% vs. mês anterior', color: '#2563eb' },
-    { label: '// em implementação', num: impl, sub: 'projectos activos', color: '#7c3aed' },
-    { label: '// taxa de aprovação', num: 34, suffix: '%', sub: 'ideias que avançam', color: '#06b6d4' },
-    { label: '// colaboradores', num: collab, sub: 'em 8 departamentos', color: '#22c55e' },
+    { label: '// total de ideias', num: total, sub: '+23% vs. mês anterior', color: '#036ef2' },
+    { label: '// em implementação', num: impl, sub: 'projectos activos', color: '#9437FF' },
+    { label: '// taxa de aprovação', num: 34, suffix: '%', sub: 'ideias que avançam', color: '#4294F8' },
+    { label: '// colaboradores', num: collab, sub: 'em 8 departamentos', color: '#FF0066' },
   ];
 
   return (
@@ -147,7 +147,7 @@ export default function ImpactDashboard() {
               <div className="text-[10px] font-medium uppercase tracking-[1.5px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
                 {card.label}
               </div>
-              <div className="text-[42px] font-[900] tracking-[-2px] leading-[1] mb-1.5" style={{ color: card.color, fontFamily: "'Syne', sans-serif" }}>
+              <div className="text-[42px] font-[900] tracking-[-2px] leading-[1] mb-1.5" style={{ color: card.color }}>
                 {card.num}
                 {card.suffix && <span className="text-[22px] font-medium">{card.suffix}</span>}
               </div>
@@ -264,8 +264,8 @@ export default function ImpactDashboard() {
                 <YAxis tick={{ fontSize: 9, fill: 'var(--text-sub)', fontFamily: 'var(--font-mono)' }} axisLine={false} tickLine={false} />
                 <Tooltip contentStyle={tooltipStyle} />
                 <Legend iconSize={8} wrapperStyle={{ fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }} />
-                <Line type="monotone" dataKey="aprovadas" stroke="#2563eb" strokeWidth={2} dot={{ r: 3, fill: '#2563eb' }} />
-                <Line type="monotone" dataKey="concluidas" stroke="#22c55e" strokeWidth={2} dot={{ r: 3, fill: '#22c55e' }} strokeDasharray="4 2" />
+                <Line type="monotone" dataKey="aprovadas" stroke="#036ef2" strokeWidth={2} dot={{ r: 3, fill: '#036ef2' }} />
+                <Line type="monotone" dataKey="concluidas" stroke="#FF0066" strokeWidth={2} dot={{ r: 3, fill: '#FF0066' }} strokeDasharray="4 2" />
               </LineChart>
             </ResponsiveContainer>
           </div>

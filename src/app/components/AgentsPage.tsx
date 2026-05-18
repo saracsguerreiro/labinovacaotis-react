@@ -11,11 +11,11 @@ const agents = [
     specialty: 'Melhoria de Processo',
     avatar: '⬡',
     avatarBg: 'linear-gradient(135deg, #3126b4, #4294F8)',
-    color: '#3b82f6',
+    color: '#3126b4',
     bio: 'Especialista em gestão de projectos e optimização de processos. Analisa problemas operacionais com rigor metodológico e ajuda a estruturar propostas com métricas claras.',
     skills: ['Lean Six Sigma', 'BPMN', 'KPIs', 'RPA'],
-    skillBg: 'rgba(37,99,235,0.1)',
-    skillColor: '#3b82f6',
+    skillBg: '#eff4ff',
+    skillColor: '#3126b4',
   },
   {
     name: 'Ana Costa',
@@ -26,7 +26,7 @@ const agents = [
     color: '#FF0066',
     bio: 'Product manager com mindset de startup. Faz as perguntas certas para transformar uma ideia bruta num conceito de produto com proposta de valor clara.',
     skills: ['Design Thinking', 'MVP', 'User Research'],
-    skillBg: 'rgba(255,0,102,0.1)',
+    skillBg: '#fdf2f8',
     skillColor: '#FF0066',
   },
   {
@@ -35,11 +35,11 @@ const agents = [
     specialty: 'Experiência do Cliente',
     avatar: '◉',
     avatarBg: 'linear-gradient(135deg, #4294F8, var(--green))',
-    color: '#06b6d4',
+    color: '#4294F8',
     bio: 'Especialista em CX e service design. Analisa a jornada do cliente com empatia e dados, transformando fricções em oportunidades de diferenciação.',
     skills: ['Journey Mapping', 'NPS', 'Personas'],
-    skillBg: 'rgba(6,182,212,0.1)',
-    skillColor: '#06b6d4',
+    skillBg: '#ecfeff',
+    skillColor: '#4294F8',
   },
   {
     name: 'Carlos Mendes',
@@ -47,23 +47,23 @@ const agents = [
     specialty: 'Cultura & Pessoas',
     avatar: '◎',
     avatarBg: 'linear-gradient(135deg, #9437FF, #b45309)',
-    color: '#7c3aed',
+    color: '#9437FF',
     bio: 'People & culture specialist. Ajuda a pensar em iniciativas que criam ambientes de trabalho mais motivadores, inclusivos e produtivos.',
     skills: ['OKRs', 'Engagement', 'L&D'],
-    skillBg: 'rgba(124,58,237,0.1)',
-    skillColor: '#7c3aed',
+    skillBg: '#e6dfff',
+    skillColor: '#9437FF',
   },
   {
     name: 'Sofia Neves',
     title: 'agente_tech · tecnologia_digital',
     specialty: 'Tecnologia & Digital',
     avatar: '◈',
-    avatarBg: 'linear-gradient(135deg, #2563eb, #3126b4)',
-    color: '#2563eb',
+    avatarBg: 'linear-gradient(135deg, #036ef2, #3126b4)',
+    color: '#036ef2',
     bio: 'Tech lead e arquitecta de soluções digitais. Define o âmbito técnico com clareza — viabilidade, integrações, escalabilidade, segurança.',
     skills: ['APIs', 'Cloud', 'AI/ML', 'Security'],
-    skillBg: 'rgba(37,99,235,0.1)',
-    skillColor: '#3b82f6',
+    skillBg: '#f5f3ff',
+    skillColor: '#036ef2',
   },
   {
     name: 'Rui Ferreira',
@@ -71,11 +71,11 @@ const agents = [
     specialty: 'Generalista',
     avatar: '✦',
     avatarBg: 'linear-gradient(135deg, #87007f, var(--green))',
-    color: '#f97316',
+    color: '#87007f',
     bio: 'Facilitador criativo ideal para ideias transversais. Aborda o problema com curiosidade e sem preconceitos disciplinares.',
     skills: ['Facilitação', 'Criatividade', 'Estratégia'],
-    skillBg: 'rgba(124,58,237,0.1)',
-    skillColor: '#7c3aed',
+    skillBg: '#f4ecff',
+    skillColor: '#87007f',
   },
 ];
 
@@ -95,11 +95,9 @@ export default function AgentsPage({ onNavigate }: AgentsPageProps) {
         {agents.map((agent) => (
           <div
             key={agent.name}
-            className="rounded-2xl p-6 cursor-pointer transition-all relative overflow-hidden hover:-translate-y-0.5"
+            className="bg-[var(--surface)] border-[1.5px] rounded-2xl p-6 cursor-pointer transition-all relative overflow-hidden shadow-[0_2px_8px_rgba(30,50,140,0.05)] hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(30,50,140,0.12)]"
             style={{
-              background: '#111827',
-              border: '1.5px solid rgba(37,99,235,0.15)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+              borderColor: 'var(--border-light)',
               color: agent.color,
             }}
           >
@@ -119,8 +117,8 @@ export default function AgentsPage({ onNavigate }: AgentsPageProps) {
                 <div className="text-[10px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                   {agent.title}
                 </div>
-                <div className="flex items-center gap-1 text-[10px] mt-1 px-2 py-0.5 rounded-full" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', fontFamily: 'var(--font-mono)', width: 'fit-content' }}>
-                  <div className="w-1.5 h-1.5 rounded-full animate-[blink_2s_infinite]" style={{ background: '#22c55e' }} />
+                <div className="flex items-center gap-1 text-[10px] mt-1" style={{ color: 'var(--cyan)', fontFamily: 'var(--font-mono)' }}>
+                  <div className="w-1.5 h-1.5 rounded-full animate-[blink_2s_infinite]" style={{ background: 'var(--cyan)' }} />
                   online agora
                 </div>
               </div>
@@ -137,18 +135,17 @@ export default function AgentsPage({ onNavigate }: AgentsPageProps) {
 
             <div className="flex flex-wrap gap-1.5 mb-4">
               {agent.skills.map((skill) => (
-                <span key={skill} className="px-2 py-0.5 rounded text-[10px] font-semibold" style={{ background: agent.skillBg, color: agent.skillColor, border: '1px solid rgba(37,99,235,0.2)', fontFamily: 'var(--font-mono)' }}>
+                <span key={skill} className="px-2 py-0.5 rounded text-[10px] font-semibold" style={{ background: agent.skillBg, color: agent.skillColor, fontFamily: 'var(--font-mono)' }}>
                   {skill}
                 </span>
               ))}
             </div>
 
             <button
-              className="w-full px-2.5 py-2.5 rounded-full text-[12px] font-semibold cursor-pointer transition-all hover:bg-[#3b82f6]"
+              className="w-full px-2.5 py-2.5 bg-transparent border-[1.5px] rounded-full text-[12px] font-semibold cursor-pointer transition-all hover:bg-[var(--blue-light)]"
               style={{
-                background: '#2563eb',
-                color: '#fff',
-                border: 'none',
+                borderColor: 'var(--border2)',
+                color: 'var(--text-muted)',
                 fontFamily: 'var(--font-outfit)',
               }}
               onClick={() => onNavigate('create')}

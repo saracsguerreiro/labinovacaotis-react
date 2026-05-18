@@ -63,7 +63,7 @@ export default function ReferencesPage({ onBack, onNextPage, isAnonymous, setIsA
 
           <div
             className="border-2 border-dashed rounded-xl px-4 py-7 text-center cursor-pointer transition-all mb-4 hover:border-[var(--blue)] hover:bg-[var(--blue-light)]"
-            style={{ background: '#111827', borderColor: 'rgba(37,99,235,0.3)' }}
+            style={{ borderColor: 'var(--border2)' }}
           >
             <div className="text-2xl mb-1.5">📎</div>
             <h3 className="text-[13px] font-semibold mb-0.5" style={{ color: 'var(--text)' }}>

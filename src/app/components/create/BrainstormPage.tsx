@@ -223,13 +223,13 @@ export default function BrainstormPage({ onBack, onNextPage, isAnonymous, setIsA
           <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
             Progresso
           </div>
-          <div className="flex items-center gap-2 text-[12px] px-2 py-1.5 rounded-[7px] transition-all mb-1.5" style={{ color: '#22c55e', background: 'rgba(34,197,94,0.08)' }}>
+          <div className="flex items-center gap-2 text-[12px] px-2 py-1.5 rounded-[7px] transition-all mb-1.5" style={{ color: '#036ef2', background: 'rgba(8,145,178,0.07)' }}>
             <div className="w-4 h-4 rounded-full border-[1.5px] flex items-center justify-center text-[9px] flex-shrink-0" style={{ borderColor: 'currentColor', fontFamily: 'var(--font-mono)' }}>
               ✓
             </div>
             Qual é o problema?
           </div>
-          <div className="flex items-center gap-2 text-[12px] px-2 py-1.5 rounded-[7px] transition-all mb-1.5" style={{ color: '#22c55e', background: 'rgba(34,197,94,0.08)' }}>
+          <div className="flex items-center gap-2 text-[12px] px-2 py-1.5 rounded-[7px] transition-all mb-1.5" style={{ color: '#036ef2', background: 'rgba(8,145,178,0.07)' }}>
             <div className="w-4 h-4 rounded-full border-[1.5px] flex items-center justify-center text-[9px] flex-shrink-0" style={{ borderColor: 'currentColor', fontFamily: 'var(--font-mono)' }}>
               ✓
             </div>
@@ -256,7 +256,7 @@ export default function BrainstormPage({ onBack, onNextPage, isAnonymous, setIsA
             { name: 'Ana Costa', role: 'agente_produto', avatar: '⚡', bg: 'linear-gradient(135deg, #FF0066, #9437FF)' },
             { name: 'Mariana Ramos', role: 'agente_cx', avatar: '◉', bg: 'linear-gradient(135deg, #4294F8, var(--green))' },
             { name: 'Carlos Mendes', role: 'agente_rh', avatar: '◎', bg: 'linear-gradient(135deg, #9437FF, #b45309)' },
-            { name: 'Sofia Neves', role: 'agente_tech', avatar: '◈', bg: 'linear-gradient(135deg, #2563eb, #3126b4)' },
+            { name: 'Sofia Neves', role: 'agente_tech', avatar: '◈', bg: 'linear-gradient(135deg, #036ef2, #3126b4)' },
             { name: 'Rui Ferreira', role: 'agente_geral', avatar: '✦', bg: 'linear-gradient(135deg, #87007f, var(--green))' },
           ].map((agent, i) => (
             <div key={i} className="flex items-center gap-2 text-[12px] px-2 py-2 rounded-[7px] mb-1.5 cursor-pointer transition-all hover:bg-[var(--surface2)]">

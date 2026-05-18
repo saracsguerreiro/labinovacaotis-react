@@ -28,13 +28,12 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 h-[62px] flex items-center justify-between px-8 z-[200] transition-all duration-300`}
-      style={{
-        background: scrolled ? 'rgba(10,13,26,0.95)' : 'rgba(10,13,26,0.85)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(37,99,235,0.15)',
-        boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.3)' : 'none',
-      }}
+      className={`fixed top-0 left-0 right-0 h-[62px] flex items-center justify-between px-8 z-[200] transition-all duration-300 ${
+        scrolled
+          ? 'shadow-[0_2px_20px_rgba(30,50,140,0.08)] bg-white/96 backdrop-blur-[24px]'
+          : 'bg-white/92 backdrop-blur-[20px]'
+      } border-b`}
+      style={{ borderColor: 'var(--border-light)' }}
     >
       {/* Logo */}
       <div
@@ -53,11 +52,10 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
               key={view}
               className="relative px-4 py-1.5 rounded-full text-[13px] font-medium transition-all duration-200 border-none cursor-pointer"
               style={{
-                color: isActive ? '#f1f5f9' : '#94a3b8',
-                background: isActive ? 'rgba(37,99,235,0.15)' : 'transparent',
-                fontFamily: "'DM Sans', sans-serif",
+                color: isActive ? 'var(--blue)' : 'var(--text-muted)',
+                background: isActive ? 'var(--blue-light)' : 'transparent',
+                fontFamily: 'var(--font-outfit)',
                 fontWeight: isActive ? 600 : 500,
-                transition: 'color 0.2s, background 0.2s',
               }}
               onClick={() => onNavigate(view)}
             >
@@ -65,7 +63,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
               {isActive && (
                 <span
                   className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
-                  style={{ background: '#2563eb' }}
+                  style={{ background: 'var(--blue)' }}
                 />
               )}
             </button>
@@ -76,15 +74,15 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
       {/* Right side */}
       <div className="flex items-center gap-3 flex-shrink-0">
         {/* Language switcher */}
-        <div className="flex items-center gap-0 rounded-lg border p-1" style={{ background: '#111827', borderColor: 'rgba(37,99,235,0.2)' }}>
+        <div className="flex items-center gap-0 bg-[var(--surface2)] rounded-lg border p-1" style={{ borderColor: 'var(--border-light)' }}>
           {['PT', 'EN', 'FR'].map((lang) => (
             <button
               key={lang}
               className="px-2 py-0.5 rounded text-[11px] font-bold transition-all border-none cursor-pointer"
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                background: activeLang === lang ? '#2563eb' : 'transparent',
-                color: activeLang === lang ? 'white' : '#64748b',
+                fontFamily: 'var(--font-mono)',
+                background: activeLang === lang ? 'var(--blue)' : 'transparent',
+                color: activeLang === lang ? 'white' : 'var(--text-sub)',
               }}
               onClick={() => setActiveLang(lang)}
             >
@@ -95,13 +93,11 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
 
         {/* New idea CTA */}
         <button
-          className="px-5 py-2 rounded-lg border-none text-white text-[13px] font-semibold cursor-pointer transition-all hover:bg-[#3b82f6] hover:-translate-y-px active:translate-y-0"
+          className="px-5 py-2 rounded-full border-none text-white text-[13px] font-semibold cursor-pointer transition-all hover:bg-[#1d4ed8] hover:-translate-y-px active:translate-y-0"
           style={{
-            background: '#2563eb',
-            boxShadow: '0 4px 14px rgba(37,99,235,0.3)',
-            fontFamily: "'DM Sans', sans-serif",
-            borderRadius: '8px',
-            padding: '8px 18px',
+            background: 'var(--blue)',
+            boxShadow: '0 4px 14px var(--blue-glow)',
+            fontFamily: 'var(--font-outfit)',
           }}
           onClick={() => onNavigate('create')}
         >
@@ -112,8 +108,8 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold text-white cursor-pointer transition-all hover:scale-105 flex-shrink-0"
           style={{
-            background: 'linear-gradient(135deg, #2563eb, #06b6d4)',
-            border: '2px solid rgba(37,99,235,0.3)',
+            background: 'linear-gradient(135deg, #FF0066, #9437FF)',
+            border: '2px solid var(--border2)',
           }}
           title="Miguel Alves"
         >

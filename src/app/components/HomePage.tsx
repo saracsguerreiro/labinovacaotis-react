@@ -36,7 +36,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-col items-center justify-center text-center px-10 pb-[70px] pt-[100px] relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a0d1a 0%, #0f1628 50%, #0a0d1a 100%)' }}>
+      <section className="min-h-screen flex flex-col items-center justify-center text-center px-10 pb-[70px] pt-[100px] relative overflow-hidden bg-[var(--bg)]">
         {/* Dot grid background */}
         <div
           className="absolute inset-0 z-0"

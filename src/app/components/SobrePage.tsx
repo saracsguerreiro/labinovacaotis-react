@@ -35,7 +35,7 @@ const team = [
     initials: 'SN',
     name: 'Sofia Neves',
     role: 'Tech & Digital',
-    bg: 'linear-gradient(135deg, #2563eb, #3126b4)',
+    bg: 'linear-gradient(135deg, #036ef2, #3126b4)',
     ideas: 15,
   },
   {
@@ -48,12 +48,12 @@ const team = [
 ];
 
 const milestones = [
-  { date: 'Jan 2024', label: 'Lançamento do IdeaLab', desc: 'Plataforma aberta a todos os colaboradores', color: '#2563eb' },
-  { date: 'Mar 2024', label: '100 ideias submetidas', desc: 'Marco histórico atingido em apenas 3 meses', color: '#7c3aed' },
+  { date: 'Jan 2024', label: 'Lançamento do IdeaLab', desc: 'Plataforma aberta a todos os colaboradores', color: '#036ef2' },
+  { date: 'Mar 2024', label: '100 ideias submetidas', desc: 'Marco histórico atingido em apenas 3 meses', color: '#9437FF' },
   { date: 'Jun 2024', label: 'Primeiras implementações', desc: '5 ideias em produção com impacto mensurável', color: '#FF0066' },
-  { date: 'Set 2024', label: 'Integração com IA', desc: 'Agentes especializados activados para brainstorming', color: '#06b6d4' },
-  { date: 'Dez 2024', label: '300+ ideias e 8 departamentos', desc: 'Toda a organização envolvida no ecossistema', color: '#22c55e' },
-  { date: '2025', label: 'Expansão internacional', desc: 'Alargamento a escritórios em Lisboa, Porto e Madrid', color: '#2563eb' },
+  { date: 'Set 2024', label: 'Integração com IA', desc: 'Agentes especializados activados para brainstorming', color: '#4294F8' },
+  { date: 'Dez 2024', label: '300+ ideias e 8 departamentos', desc: 'Toda a organização envolvida no ecossistema', color: '#15803d' },
+  { date: '2025', label: 'Expansão internacional', desc: 'Alargamento a escritórios em Lisboa, Porto e Madrid', color: '#036ef2' },
 ];
 
 const values = [
@@ -160,8 +160,8 @@ export default function SobrePage({ onNavigate }: SobrePageProps) {
             {values.map((v, i) => (
               <div
                 key={i}
-                className="rounded-2xl p-6 transition-all hover:-translate-y-1"
-                style={{ background: '#111827', border: '1px solid rgba(37,99,235,0.15)', color: 'var(--blue)', boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
+                className="bg-[var(--surface)] border-[1.5px] rounded-2xl p-6 transition-all shadow-[0_2px_8px_rgba(30,50,140,0.04)] hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(30,50,140,0.1)]"
+                style={{ borderColor: 'var(--border-light)', color: 'var(--blue)' }}
               >
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style={{ background: 'var(--blue-light)' }}>
                   {v.icon}
@@ -197,7 +197,7 @@ export default function SobrePage({ onNavigate }: SobrePageProps) {
                   </div>
                 </div>
                 <div className="relative z-[1] flex-shrink-0 mt-1">
-                  <div className="w-3 h-3 rounded-full border-2" style={{ background: m.color, borderColor: '#0a0d1a', boxShadow: `0 0 0 3px ${m.color}44` }} />
+                  <div className="w-3 h-3 rounded-full border-2 border-white" style={{ background: m.color, boxShadow: `0 0 0 3px ${m.color}22` }} />
                 </div>
                 <div className="flex-1 pb-2">
                   <div className="text-[15px] font-bold mb-1 tracking-[-0.2px]" style={{ color: 'var(--text)' }}>
@@ -229,8 +229,8 @@ export default function SobrePage({ onNavigate }: SobrePageProps) {
             {team.map((person, i) => (
               <div
                 key={i}
-                className="rounded-2xl p-6 flex items-center gap-4 transition-all hover:-translate-y-0.5"
-                style={{ background: '#111827', border: '1px solid rgba(37,99,235,0.15)', boxShadow: '0 2px 8px rgba(0,0,0,0.3)' }}
+                className="bg-[var(--surface)] border-[1.5px] rounded-2xl p-6 flex items-center gap-4 transition-all shadow-[0_2px_8px_rgba(30,50,140,0.04)] hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(30,50,140,0.1)]"
+                style={{ borderColor: 'var(--border-light)' }}
               >
                 <div
                   className="w-12 h-12 rounded-[14px] flex items-center justify-center text-[15px] font-bold text-white flex-shrink-0"

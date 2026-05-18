@@ -7,18 +7,18 @@ interface IdeaHubProps {
 }
 
 const ideas = [
-  { id: 1, title: 'Modelo de trabalho híbrido estruturado', cat: 'Pessoas', catColor: '#7c3aed', catBg: 'rgba(124,58,237,0.12)', votes: 67, comments: 31, author: 'Carla Moreira', status: 'Em implementação', statusColor: '#7c3aed' },
-  { id: 2, title: 'App self-service para clientes com IA conversacional', cat: 'Produto', catColor: '#FF0066', catBg: 'rgba(255,0,102,0.12)', votes: 58, comments: 22, author: 'Tiago Costa', status: 'Concluída', statusColor: '#FF0066' },
-  { id: 3, title: 'Chatbot de suporte interno 24/7', cat: 'CX', catColor: '#06b6d4', catBg: 'rgba(6,182,212,0.12)', votes: 45, comments: 20, author: 'Anónimo', status: 'Em implementação', statusColor: '#7c3aed' },
-  { id: 4, title: 'Automatização do processo de aprovação de despesas', cat: 'Processo', catColor: '#3b82f6', catBg: 'rgba(37,99,235,0.12)', votes: 42, comments: 18, author: 'Miguel Alves', status: 'Em implementação', statusColor: '#7c3aed' },
-  { id: 5, title: 'Plataforma de onboarding digital com IA', cat: 'Pessoas', catColor: '#7c3aed', catBg: 'rgba(124,58,237,0.12)', votes: 36, comments: 14, author: 'João Martins', status: 'Em análise', statusColor: '#06b6d4' },
-  { id: 6, title: 'Dashboard unificado de métricas operacionais', cat: 'Tech', catColor: '#2563eb', catBg: 'rgba(37,99,235,0.12)', votes: 31, comments: 9, author: 'Anónimo', status: 'Em análise', statusColor: '#06b6d4' },
-  { id: 7, title: 'API de integração com parceiros externos', cat: 'Tech', catColor: '#2563eb', catBg: 'rgba(37,99,235,0.12)', votes: 27, comments: 7, author: 'Luísa Fonseca', status: 'Submetida', statusColor: '#2563eb' },
-  { id: 8, title: 'App self-service para clientes', cat: 'Produto', catColor: '#FF0066', catBg: 'rgba(255,0,102,0.12)', votes: 24, comments: 5, author: 'Sofia Ramos', status: 'Submetida', statusColor: '#2563eb' },
-  { id: 9, title: 'Neutralidade carbónica em eventos internos', cat: 'Outros', catColor: '#f97316', catBg: 'rgba(249,115,22,0.12)', votes: 24, comments: 5, author: 'Anónimo', status: 'Concluída', statusColor: '#FF0066' },
-  { id: 10, title: 'Programa de mentoria cruzada entre departamentos', cat: 'Pessoas', catColor: '#7c3aed', catBg: 'rgba(124,58,237,0.12)', votes: 19, comments: 11, author: 'Anónimo', status: 'Em análise', statusColor: '#06b6d4' },
-  { id: 11, title: 'Data lake para análise de comportamento do cliente', cat: 'Tech', catColor: '#2563eb', catBg: 'rgba(37,99,235,0.12)', votes: 33, comments: 12, author: 'Rui Neves', status: 'Submetida', statusColor: '#2563eb' },
-  { id: 12, title: 'Programa de reconhecimento por pares', cat: 'Pessoas', catColor: '#7c3aed', catBg: 'rgba(124,58,237,0.12)', votes: 22, comments: 8, author: 'Anónimo', status: 'Em análise', statusColor: '#06b6d4' },
+  { id: 1, title: 'Modelo de trabalho híbrido estruturado', cat: 'Pessoas', catColor: '#9437FF', catBg: '#e6dfff', votes: 67, comments: 31, author: 'Carla Moreira', status: 'Em implementação', statusColor: '#9437FF' },
+  { id: 2, title: 'App self-service para clientes com IA conversacional', cat: 'Produto', catColor: '#FF0066', catBg: '#fdf2f8', votes: 58, comments: 22, author: 'Tiago Costa', status: 'Concluída', statusColor: '#FF0066' },
+  { id: 3, title: 'Chatbot de suporte interno 24/7', cat: 'CX', catColor: '#4294F8', catBg: '#ecfeff', votes: 45, comments: 20, author: 'Anónimo', status: 'Em implementação', statusColor: '#9437FF' },
+  { id: 4, title: 'Automatização do processo de aprovação de despesas', cat: 'Processo', catColor: '#3126b4', catBg: '#eff4ff', votes: 42, comments: 18, author: 'Miguel Alves', status: 'Em implementação', statusColor: '#9437FF' },
+  { id: 5, title: 'Plataforma de onboarding digital com IA', cat: 'Pessoas', catColor: '#9437FF', catBg: '#e6dfff', votes: 36, comments: 14, author: 'João Martins', status: 'Em análise', statusColor: '#4294F8' },
+  { id: 6, title: 'Dashboard unificado de métricas operacionais', cat: 'Tech', catColor: '#036ef2', catBg: '#f5f3ff', votes: 31, comments: 9, author: 'Anónimo', status: 'Em análise', statusColor: '#4294F8' },
+  { id: 7, title: 'API de integração com parceiros externos', cat: 'Tech', catColor: '#036ef2', catBg: '#f5f3ff', votes: 27, comments: 7, author: 'Luísa Fonseca', status: 'Submetida', statusColor: '#036ef2' },
+  { id: 8, title: 'App self-service para clientes', cat: 'Produto', catColor: '#FF0066', catBg: '#fdf2f8', votes: 24, comments: 5, author: 'Sofia Ramos', status: 'Submetida', statusColor: '#036ef2' },
+  { id: 9, title: 'Neutralidade carbónica em eventos internos', cat: 'Outros', catColor: '#87007f', catBg: '#f4ecff', votes: 24, comments: 5, author: 'Anónimo', status: 'Concluída', statusColor: '#FF0066' },
+  { id: 10, title: 'Programa de mentoria cruzada entre departamentos', cat: 'Pessoas', catColor: '#9437FF', catBg: '#e6dfff', votes: 19, comments: 11, author: 'Anónimo', status: 'Em análise', statusColor: '#4294F8' },
+  { id: 11, title: 'Data lake para análise de comportamento do cliente', cat: 'Tech', catColor: '#036ef2', catBg: '#f5f3ff', votes: 33, comments: 12, author: 'Rui Neves', status: 'Submetida', statusColor: '#036ef2' },
+  { id: 12, title: 'Programa de reconhecimento por pares', cat: 'Pessoas', catColor: '#9437FF', catBg: '#e6dfff', votes: 22, comments: 8, author: 'Anónimo', status: 'Em análise', statusColor: '#4294F8' },
 ];
 
 const CATEGORIES = ['Todas', 'Processo', 'Produto', 'Tech', 'CX', 'Pessoas', 'Outros'];
@@ -208,7 +208,7 @@ export default function IdeaHub({ onNavigate }: IdeaHubProps) {
                   </button>
                   <button
                     className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full cursor-pointer transition-all hover:bg-[var(--blue-light)]"
-                    style={{ borderColor: '#2563eb', color: '#2563eb', fontFamily: 'var(--font-mono)', background: 'transparent' }}
+                    style={{ borderColor: '#036ef2', color: '#036ef2', fontFamily: 'var(--font-mono)', background: 'transparent' }}
                     onClick={() => setSelectedIdea(idea)}
                   >
                     Ver →
@@ -226,11 +226,11 @@ export default function IdeaHub({ onNavigate }: IdeaHubProps) {
               Por categoria
             </div>
             {[
-              { name: 'Processo', pct: 34, color: '#3b82f6' },
-              { name: 'Tecnologia', pct: 28, color: '#2563eb' },
-              { name: 'Pessoas', pct: 22, color: '#7c3aed' },
-              { name: 'CX', pct: 10, color: '#06b6d4' },
-              { name: 'Outros', pct: 6, color: '#f97316' },
+              { name: 'Processo', pct: 34, color: '#3126b4' },
+              { name: 'Tecnologia', pct: 28, color: '#036ef2' },
+              { name: 'Pessoas', pct: 22, color: '#9437FF' },
+              { name: 'CX', pct: 10, color: '#4294F8' },
+              { name: 'Outros', pct: 6, color: '#87007f' },
             ].map((cat) => (
               <div key={cat.name} className="mb-2.5">
                 <div className="flex justify-between text-[11px] mb-1" style={{ color: 'var(--text-muted)' }}>
@@ -249,10 +249,10 @@ export default function IdeaHub({ onNavigate }: IdeaHubProps) {
               Por estado
             </div>
             {[
-              { label: 'Submetidas', n: '142', color: '#2563eb' },
-              { label: 'Em análise', n: '89', color: '#06b6d4' },
-              { label: 'Em implementação', n: '28', color: '#7c3aed' },
-              { label: 'Concluídas', n: '12', color: '#22c55e' },
+              { label: 'Submetidas', n: '142', color: '#036ef2' },
+              { label: 'Em análise', n: '89', color: '#4294F8' },
+              { label: 'Em implementação', n: '28', color: '#9437FF' },
+              { label: 'Concluídas', n: '12', color: '#FF0066' },
             ].map((stat) => (
               <div
                 key={stat.label}
@@ -279,7 +279,7 @@ export default function IdeaHub({ onNavigate }: IdeaHubProps) {
               { name: 'CM', fullName: 'Carla Moreira', count: '8 ideias', bg: 'linear-gradient(135deg, #3126b4, #9437FF)' },
               { name: 'TC', fullName: 'Tiago Costa', count: '6 ideias', bg: 'linear-gradient(135deg, #4294F8, #87007F)' },
               { name: 'MA', fullName: 'Miguel Alves', count: '5 ideias', bg: 'linear-gradient(135deg, #FF0066, #9437FF)' },
-              { name: 'SN', fullName: 'Sofia Neves', count: '4 ideias', bg: 'linear-gradient(135deg, #2563eb, #3126b4)' },
+              { name: 'SN', fullName: 'Sofia Neves', count: '4 ideias', bg: 'linear-gradient(135deg, #036ef2, #3126b4)' },
             ].map((user) => (
               <div key={user.name} className="flex items-center gap-2.5 text-[11px] mb-2" style={{ color: 'var(--text-muted)' }}>
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0" style={{ background: user.bg }}>
