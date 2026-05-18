@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import logoTisLab from '../../logo_TISLAB.png';
+import AnimatedBanner from './AnimatedBanner';
 
 type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
 
@@ -35,160 +36,10 @@ export default function HomePage({ onNavigate }: HomePageProps) {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="min-h-screen flex flex-col items-center justify-center text-center px-10 pb-[70px] pt-[100px] relative overflow-hidden bg-[var(--bg)]">
-        {/* Dot grid background */}
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: 'radial-gradient(circle, rgba(37,99,235,0.12) 1px, transparent 1px)',
-            backgroundSize: '36px 36px',
-            maskImage: 'radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%)',
-          }}
-        />
+      {/* Hero Section — AnimatedBanner */}
+      <section className="pt-[90px] px-6 pb-6 bg-[#04061c]">
+        <AnimatedBanner onNavigate={onNavigate} />
 
-        {/* Orbs */}
-        <div
-          className="absolute w-[600px] h-[600px] -top-[15%] left-1/2 -translate-x-1/2 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse, rgba(37,99,235,0.06) 0%, transparent 65%)' }}
-        />
-        <div
-          className="absolute w-[380px] h-[380px] bottom-[5%] left-[5%] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse, rgba(8,145,178,0.05) 0%, transparent 65%)' }}
-        />
-        <div
-          className="absolute w-[320px] h-[320px] top-[15%] right-[5%] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse, rgba(124,58,237,0.05) 0%, transparent 65%)' }}
-        />
-
-        {/* Cube */}
-        <div className="relative w-[140px] h-[140px] mb-12 z-[1] animate-[cubeFloat_7s_ease-in-out_infinite]">
-          <div
-            className="absolute -inset-[30px] animate-[glowP_3s_ease-in-out_infinite]"
-            style={{ background: 'radial-gradient(ellipse, rgba(37,99,235,0.15) 0%, transparent 65%)' }}
-          />
-          <div
-            className="absolute -inset-5 rounded-full border animate-[ringR_14s_linear_infinite]"
-            style={{ borderColor: 'rgba(37,99,235,0.12)' }}
-          />
-          <div
-            className="absolute -inset-[38px] rounded-full border-dashed animate-[ringR_22s_linear_infinite_reverse]"
-            style={{ borderColor: 'rgba(8,145,178,0.1)' }}
-          />
-          <svg
-            className="w-[140px] h-[140px] relative z-[1]"
-            viewBox="0 0 160 160"
-            style={{
-              filter: 'drop-shadow(0 4px 18px rgba(37,99,235,0.25)) drop-shadow(0 0 40px rgba(37,99,235,0.1))',
-            }}
-          >
-            <defs>
-              <linearGradient id="fT" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#3126b4" stopOpacity="1" />
-                <stop offset="100%" stopColor="#4294F8" stopOpacity="0.9" />
-              </linearGradient>
-              <linearGradient id="fL" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#036ef2" stopOpacity="0.85" />
-                <stop offset="100%" stopColor="#3126b4" stopOpacity="0.7" />
-              </linearGradient>
-              <linearGradient id="fR" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#3126b4" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#036ef2" stopOpacity="0.5" />
-              </linearGradient>
-            </defs>
-            <polygon points="80,22 128,50 80,78 32,50" fill="url(#fT)" opacity="0.9" />
-            <polygon points="32,50 80,78 80,132 32,104" fill="url(#fL)" opacity="0.85" />
-            <polygon points="80,78 128,50 128,104 80,132" fill="url(#fR)" opacity="0.8" />
-            <polygon points="80,22 128,50 80,78 32,50" fill="none" stroke="rgba(49,38,180,0.5)" strokeWidth="1" />
-            <polygon points="32,50 80,78 80,132 32,104" fill="none" stroke="rgba(49,38,180,0.35)" strokeWidth="1" />
-            <polygon points="80,78 128,50 128,104 80,132" fill="none" stroke="rgba(3,110,242,0.35)" strokeWidth="1" />
-          </svg>
-          <div
-            className="absolute left-0 right-0 h-0.5 top-0 z-[2] animate-[scan_3.5s_ease-in-out_infinite]"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(66,148,248,0.7), transparent)' }}
-          />
-        </div>
-
-        <div
-          className="inline-flex items-center gap-2 text-[11px] tracking-[2px] uppercase mb-6 z-[1] px-3.5 py-1.5 rounded border animate-[fadeUp_0.8s_ease_both]"
-          style={{
-            fontFamily: 'var(--font-mono)',
-            color: '#036ef2',
-            background: '#eff4ff',
-            borderColor: 'rgba(8,145,178,0.2)',
-          }}
-        >
-          <div className="w-1.5 h-1.5 rounded-full animate-[blink_1.5s_infinite]" style={{ background: '#036ef2' }} />
-          Laboratório de Inovação
-        </div>
-
-        <h1
-          className="text-[clamp(44px,7vw,84px)] font-[900] leading-[0.95] tracking-[-3px] mb-2 z-[1] animate-[fadeUp_0.8s_ease_0.1s_both]"
-          style={{ color: 'var(--text)' }}
-        >
-          Tens uma ideia?
-        </h1>
-
-        <h2
-          className="text-[clamp(24px,3.5vw,44px)] font-bold leading-[1] tracking-[-1.5px] mb-7 z-[1] animate-[fadeUp_0.8s_ease_0.18s_both]"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          Faz a diferença{' '}
-          <span
-            style={{
-              background: 'linear-gradient(90deg, var(--blue), var(--cyan))',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            agora.
-          </span>
-        </h2>
-
-        <p
-          className="text-[17px] font-normal leading-[1.7] max-w-[500px] mx-auto mb-3 z-[1] animate-[fadeUp_0.8s_ease_0.26s_both] font-[Bronkoh-ExtraLight]"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          Todas as grandes transformações começam com um pensamento simples. Aqui, as tuas ideias ganham estrutura, visibilidade e impacto real com a ajuda dos agentes de Inovação.
-        </p>
-
-        <p
-          className="text-[12px] mb-10 z-[1] animate-[fadeUp_0.8s_ease_0.34s_both]"
-          style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}
-        >
-          <b style={{ color: 'var(--blue)', fontWeight: 400 }}>//</b> "A inovação não nasce em salas de reunião. Nasce em mentes que questionam o óbvio."
-        </p>
-
-        <div className="flex items-center gap-3.5 justify-center z-[1] animate-[fadeUp_0.8s_ease_0.42s_both]">
-          <button
-            className="flex items-center gap-2.5 px-[30px] py-3.5 rounded-full border-none text-white text-[15px] font-bold cursor-pointer transition-all hover:bg-[#1d4ed8] hover:-translate-y-0.5"
-            style={{
-              background: 'var(--blue)',
-              boxShadow: '0 6px 24px var(--blue-glow)',
-              fontFamily: 'var(--font-outfit)',
-            }}
-            onClick={() => onNavigate('create')}
-          >
-            Partilhar a minha ideia <span className="text-[17px]">→</span>
-          </button>
-          <button
-            className="px-6 py-3.5 rounded-full bg-transparent border-[1.5px] text-[14px] font-medium cursor-pointer transition-all"
-            style={{
-              borderColor: 'var(--border2)',
-              color: 'var(--text-muted)',
-              fontFamily: 'var(--font-outfit)',
-            }}
-            onClick={() => onNavigate('hub')}
-          >
-            Explorar Idea Hub
-          </button>
-        </div>
-
-        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-[10px] tracking-[1.5px] uppercase z-[1] animate-[fadeUp_1s_ease_1s_both]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
-          <div className="w-px h-6 animate-[sA_2s_ease-in-out_infinite]" style={{ background: 'linear-gradient(to bottom, var(--border2), transparent)' }} />
-          scroll
-        </div>
       </section>
 
       {/* Stats Section */}

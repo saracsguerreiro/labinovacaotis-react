@@ -1,0 +1,139 @@
+/* =========================================================
+   AnimatedBanner.css
+   Coloca este ficheiro na mesma pasta que AnimatedBanner.jsx
+   A imagem Firefly_Gemini_Flash_v2.jpg também deve estar
+   na mesma pasta.
+   ========================================================= */
+
+/* ---------- wrapper ---------- */
+.banner-wrap {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 90px);
+  min-height: 520px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #080c2a;
+}
+
+/* ---------- imagem de fundo ---------- */
+.banner-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---------- brilho azul no chão ---------- */
+.el-glow {
+  position: absolute;
+  right: 8%;
+  bottom: 10%;
+  pointer-events: none;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* ---------- ícones flutuantes ---------- */
+.el-icon {
+  position: absolute;
+  pointer-events: none;
+}
+
+.el-ai {
+  right: 38%;
+  top: 12%;
+  animation: iconDrift1 6s ease-in-out infinite;
+}
+
+.el-mol {
+  right: 38%;
+  top: 56%;
+  animation: iconDrift2 7s ease-in-out infinite;
+}
+
+.el-gear {
+  right: 5%;
+  top: 50%;
+  animation: iconDrift1 9s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* ---------- pontos roxos pulsantes ---------- */
+.dot-purple {
+  position: absolute;
+  border-radius: 50%;
+  background: #cc44ff;
+  pointer-events: none;
+  animation: pulseDot 2.5s ease-in-out infinite;
+}
+
+/* ---------- texto e CTA ---------- */
+.banner-text {
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 42%;
+}
+
+.banner-text h1 {
+  font-size: clamp(22px, 3.5vw, 38px);
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 12px;
+  line-height: 1.2;
+}
+
+.banner-text p {
+  font-size: clamp(13px, 1.6vw, 16px);
+  color: #7aaee0;
+  margin: 0 0 20px;
+  line-height: 1.6;
+}
+
+.banner-btn {
+  display: inline-block;
+  padding: 11px 26px;
+  background: #2255cc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.banner-btn:hover {
+  background: #3366ee;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   KEYFRAMES
+   ========================================================= */
+
+@keyframes glowPulse {
+  0%,  100% { opacity: 0.25; }
+  50%        { opacity: 0.7;  }
+}
+
+@keyframes iconDrift1 {
+  0%,  100% { transform: translateY(0px)   translateX(0px);  }
+  40%        { transform: translateY(-12px) translateX(5px);  }
+  70%        { transform: translateY(-6px)  translateX(-4px); }
+}
+
+@keyframes iconDrift2 {
+  0%,  100% { transform: translateY(0px);  }
+  50%        { transform: translateY(12px); }
+}
+
+@keyframes pulseDot {
+  0%,  100% { opacity: 0.3; transform: scale(1);   }
+  50%        { opacity: 1;   transform: scale(1.8); }
+}
