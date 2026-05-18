@@ -32,7 +32,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
       className="fixed top-0 left-0 right-0 z-[200] flex justify-center pt-4 px-6 transition-all duration-300"
     >
       <div
-        className="w-full max-w-6xl h-[58px] flex items-center justify-between px-6 transition-all duration-300"
+        className="w-full max-w-7xl h-[68px] flex items-center justify-between px-10 transition-all duration-300"
         style={{
           background: scrolled ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)',
           backdropFilter: 'blur(24px)',
@@ -52,7 +52,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
         <img
           src={currentView === 'home' ? logoTisAiLab : logoTisLab}
           alt="TIS LAB"
-          className="h-9"
+          className="h-12"
           style={{ objectFit: 'contain' }}
         />
       </div>
@@ -66,7 +66,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
               key={view}
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[13px] font-medium transition-all duration-200 border-none cursor-pointer"
               style={{
-                color: isActive ? '#ffffff' : 'rgba(180,200,255,0.7)',
+                color: isActive ? '#ffffff' : 'rgba(255,255,255,0.92)',
                 background: 'transparent',
                 fontFamily: 'var(--font-outfit)',
                 fontWeight: isActive ? 600 : 400,
@@ -89,7 +89,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
       <div className="flex items-center gap-3 flex-shrink-0">
         {/* Language switcher */}
         <div className="flex items-center gap-0 rounded-lg p-1" style={{ background: 'rgba(255,255,255,0.06)' }}>
-          {['PT', 'EN', 'FR'].map((lang) => (
+          {['PT', 'EN'].map((lang) => (
             <button
               key={lang}
               className="px-2 py-0.5 rounded text-[11px] font-bold transition-all border-none cursor-pointer"
@@ -104,24 +104,6 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
             </button>
           ))}
         </div>
-
-        {/* New idea CTA */}
-        <button
-          className="px-5 py-2 text-white text-[13px] font-semibold cursor-pointer transition-all hover:-translate-y-px active:translate-y-0"
-          style={{
-            background: 'transparent',
-            border: '1.5px solid rgba(100,160,255,0.5)',
-            borderRadius: '50px',
-            color: '#ffffff',
-            fontFamily: 'var(--font-outfit)',
-            letterSpacing: '0.02em',
-          }}
-          onClick={() => onNavigate('create')}
-          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(37,99,235,0.2)')}
-          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-        >
-          GET STARTED ↗
-        </button>
 
         {/* Avatar */}
         <div
