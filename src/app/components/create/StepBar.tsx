@@ -27,13 +27,13 @@ export default function StepBar({ currentStep, onBack, backLabel, isAnonymous, s
             <div key={index} className="flex items-center">
               <div
                 className={`flex items-center gap-2 text-[12px] font-semibold transition-all ${
-                  isDone ? 'text-[#717378]' : isActive ? 'text-[var(--blue)]' : 'text-[var(--text-sub)]'
+                  isDone ? 'text-[#2563eb]' : isActive ? 'text-[var(--blue)]' : 'text-[var(--text-sub)]'
                 }`}
               >
                 <div
                   className={`w-[22px] h-[22px] rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
                     isDone
-                      ? 'bg-[#717378] border-[#717378] text-white'
+                      ? 'bg-[#2563eb] border-[#2563eb] text-white'
                       : isActive
                       ? 'bg-[var(--blue)] border-[var(--blue)] text-white'
                       : 'bg-[var(--surface2)] border-[var(--border2)] text-[var(--text-sub)]'
@@ -50,7 +50,7 @@ export default function StepBar({ currentStep, onBack, backLabel, isAnonymous, s
               </div>
               {index < steps.length - 1 && (
                 <div
-                  className={`w-9 h-[1.5px] mx-1 ${isDone ? 'bg-[#717378]' : 'bg-[var(--border2)]'}`}
+                  className={`w-9 h-[1.5px] mx-1 ${isDone ? 'bg-[#2563eb]' : 'bg-[var(--border2)]'}`}
                 />
               )}
             </div>

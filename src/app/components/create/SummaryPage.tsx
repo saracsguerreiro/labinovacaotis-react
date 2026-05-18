@@ -323,7 +323,7 @@ export default function SummaryPage({ onBack, onNavigate, isAnonymous, setIsAnon
       {showModal && (
         <div
           className="fixed inset-0 flex flex-col items-center justify-center z-[999] animate-[vIn_0.3s_ease]"
-          style={{ background: 'rgba(255,255,255,0.97)' }}
+          style={{ background: 'rgba(10,13,26,0.97)' }}
         >
           <div className="text-center max-w-[460px] px-10 py-10">
             <div className="text-[56px] mb-5">🚀</div>

@@ -23,9 +23,9 @@ const categories = [
     ),
     desc: 'Optimização de fluxos, automação, eficiência operacional',
     agent: 'Agente PMO · Leonardo Silva',
-    color: '#3126b4',
-    bg: '#eff4ff',
-    borderColor: 'rgba(49,38,180,0.2)',
+    color: '#3b82f6',
+    bg: 'rgba(37,99,235,0.08)',
+    borderColor: 'rgba(37,99,235,0.2)',
   },
   {
     name: 'Novo Produto',
@@ -37,26 +37,26 @@ const categories = [
     desc: 'Novos produtos, funcionalidades ou serviços inovadores',
     agent: 'Agente Produto · Ana Costa',
     color: '#FF0066',
-    bg: '#fdf2f8',
+    bg: 'rgba(255,0,102,0.08)',
     borderColor: 'rgba(255,0,102,0.2)',
   },
   {
     name: 'Experiência do Cliente',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4294F8" strokeWidth="1.8">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="1.8">
         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
       </svg>
     ),
     desc: 'Melhorias no atendimento, jornada e satisfação',
     agent: 'Agente CX · Mariana Ramos',
-    color: '#4294F8',
-    bg: '#ecfeff',
-    borderColor: 'rgba(66,148,248,0.2)',
+    color: '#06b6d4',
+    bg: 'rgba(6,182,212,0.08)',
+    borderColor: 'rgba(6,182,212,0.2)',
   },
   {
     name: 'Cultura & Pessoas',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9437FF" strokeWidth="1.8">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="1.8">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
         <circle cx="9" cy="7" r="4" />
         <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -65,14 +65,14 @@ const categories = [
     ),
     desc: 'Bem-estar, reconhecimento, ambiente organizacional',
     agent: 'Agente RH · Carlos Mendes',
-    color: '#9437FF',
-    bg: '#e6dfff',
-    borderColor: 'rgba(148,55,255,0.2)',
+    color: '#7c3aed',
+    bg: 'rgba(124,58,237,0.08)',
+    borderColor: 'rgba(124,58,237,0.2)',
   },
   {
     name: 'Tecnologia & Digital',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#036ef2" strokeWidth="1.8">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="1.8">
         <rect x="2" y="3" width="20" height="14" rx="2" />
         <line x1="8" y1="21" x2="16" y2="21" />
         <line x1="12" y1="17" x2="12" y2="21" />
@@ -80,14 +80,14 @@ const categories = [
     ),
     desc: 'Ferramentas digitais, dados, transformação digital',
     agent: 'Agente Tech · Sofia Neves',
-    color: '#036ef2',
-    bg: '#f5f3ff',
-    borderColor: 'rgba(3,110,242,0.2)',
+    color: '#2563eb',
+    bg: 'rgba(37,99,235,0.08)',
+    borderColor: 'rgba(37,99,235,0.2)',
   },
   {
     name: 'Outros',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#87007f" strokeWidth="1.8">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="1.8">
         <circle cx="12" cy="12" r="10" />
         <line x1="12" y1="8" x2="12" y2="12" />
         <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -95,9 +95,9 @@ const categories = [
     ),
     desc: 'Qualquer ideia que não se enquadre nas categorias anteriores',
     agent: 'Agente Generalista · Rui Ferreira',
-    color: '#87007f',
-    bg: '#f4ecff',
-    borderColor: 'rgba(135,0,127,0.2)',
+    color: '#f97316',
+    bg: 'rgba(249,115,22,0.08)',
+    borderColor: 'rgba(249,115,22,0.2)',
   },
 ];
 
@@ -143,9 +143,10 @@ export default function CategoryPage({ onNavigate, onSelectCategory, onNextPage,
                 selected === cat.name ? 'border-current' : ''
               }`}
               style={{
-                borderColor: selected === cat.name ? cat.color : 'var(--border-light)',
-                background: selected === cat.name ? cat.bg : 'var(--surface)',
+                borderColor: selected === cat.name ? cat.color : 'rgba(37,99,235,0.15)',
+                background: selected === cat.name ? cat.bg : '#111827',
                 color: cat.color,
+                boxShadow: selected === cat.name ? `0 0 20px rgba(37,99,235,0.12)` : 'none',
               }}
               onClick={() => handleSelect(cat.name)}
             >
@@ -159,10 +160,10 @@ export default function CategoryPage({ onNavigate, onSelectCategory, onNextPage,
               >
                 {cat.icon}
               </div>
-              <div className="text-[14px] font-bold mb-1.5 tracking-[-0.2px]" style={{ color: 'var(--text)' }}>
+              <div className="text-[14px] font-bold mb-1.5 tracking-[-0.2px]" style={{ color: '#f1f5f9', fontFamily: "'Syne', sans-serif" }}>
                 {cat.name}
               </div>
-              <div className="text-[11px] leading-[1.5]" style={{ color: 'var(--text-muted)' }}>
+              <div className="text-[11px] leading-[1.5]" style={{ color: '#94a3b8' }}>
                 {cat.desc}
               </div>
               <div className="mt-2.5 flex items-center gap-1.5 text-[10px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
@@ -178,7 +179,7 @@ export default function CategoryPage({ onNavigate, onSelectCategory, onNextPage,
         className="px-9 py-3.5 border-t flex items-center justify-between"
         style={{
           borderColor: 'var(--border-light)',
-          background: 'rgba(255,255,255,0.95)',
+          background: 'rgba(15,22,40,0.95)',
           backdropFilter: 'blur(10px)',
         }}
       >
