@@ -45,8 +45,8 @@ export default function HomePage({ onNavigate }: HomePageProps) {
 
   /* sticky wrapper factory */
   const StickyWrap = ({
-    idx, children, bg,
-  }: { idx: number; children: React.ReactNode; bg: string }) => (
+    idx, children, bg, theme,
+  }: { idx: number; children: React.ReactNode; bg: string; theme: 'dark' | 'light' }) => (
     <div
       ref={el => { sectionRefs.current[idx] = el; }}
       style={{
@@ -58,12 +58,14 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         transition: 'box-shadow 0.3s ease',
       }}
     >
-      <div style={{
-        background: bg,
-        borderRadius: idx === 0 ? '24px 24px 0 0' : '0',
-        boxShadow: '0 -4px 40px rgba(0,0,0,0.10)',
-        overflow: 'hidden',
-      }}>
+      <div
+        data-theme={theme}
+        style={{
+          background: bg,
+          borderRadius: idx === 0 ? '24px 24px 0 0' : '0',
+          boxShadow: '0 -4px 40px rgba(0,0,0,0.10)',
+          overflow: 'hidden',
+        }}>
         {children}
       </div>
     </div>
@@ -73,14 +75,14 @@ export default function HomePage({ onNavigate }: HomePageProps) {
     <div style={{ background: '#f0f2fa' }}>
 
       {/* ── Hero ── */}
-      <section className="bg-[#04061c]">
+      <section className="bg-[#04061c]" data-theme="dark">
         <AnimatedBanner onNavigate={onNavigate} />
       </section>
 
       {/* ══ OVERLAPPING SECTIONS ══ */}
 
       {/* 1 — Stats */}
-      <StickyWrap idx={0} bg="linear-gradient(180deg,#f7f8fc,#eef0f8)">
+      <StickyWrap idx={0} bg="linear-gradient(180deg,#f7f8fc,#eef0f8)" theme="light">
         <section className="px-10 py-[72px]">
           <div className="text-center text-[10px] tracking-[3px] uppercase mb-12 reveal"
             style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
@@ -121,7 +123,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </StickyWrap>
 
       {/* 2 — Idea Hub Teaser */}
-      <StickyWrap idx={1} bg="#ffffff">
+      <StickyWrap idx={1} bg="#ffffff" theme="light">
         <section className="px-10 py-20 max-w-[1160px] mx-auto">
           <div className="reveal">
             <div className="text-[10px] tracking-[3px] uppercase mb-3"
@@ -168,7 +170,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </StickyWrap>
 
       {/* 3 — Como Funciona */}
-      <StickyWrap idx={2} bg="linear-gradient(180deg,#eef0f8,#f7f8fc)">
+      <StickyWrap idx={2} bg="linear-gradient(180deg,#eef0f8,#f7f8fc)" theme="light">
         <section className="py-20">
           <div className="max-w-[1100px] mx-auto px-10">
             <div className="text-center mb-14 reveal">
@@ -218,7 +220,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </StickyWrap>
 
       {/* 4 — CTA */}
-      <StickyWrap idx={3} bg="linear-gradient(180deg,#0d1333,#1a2a6c)">
+      <StickyWrap idx={3} bg="linear-gradient(180deg,#0d1333,#1a2a6c)" theme="dark">
         <section className="px-10 py-24 text-center">
           <div className="reveal">
             <h2 className="text-[40px] font-[900] tracking-[-1.5px] leading-[1.1] mb-3.5 text-white">
