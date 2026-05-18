@@ -52,7 +52,7 @@ const BADGES = [
   { id: 1, label: '347 ideias submetidas', top: '14%', right: '3%',  delay: '0s',   cycle: '4s'  },
   { id: 2, label: '12 concluídas',         top: '28%', right: '44%', delay: '1.2s', cycle: '5s'  },
   { id: 3, label: '28 em progresso',       top: '68%', right: '44%', delay: '0.6s', cycle: '4.5s'},
-  { id: 4, label: 'IA activa · TIS',       top: '8%',  right: '44%', delay: '0.9s', cycle: '5.5s'},
+  { id: 4, label: 'IA activa · TIS',       top: '22%', right: '44%', delay: '0.9s', cycle: '5.5s'},
 ];
 
 /* ── Icons ── */

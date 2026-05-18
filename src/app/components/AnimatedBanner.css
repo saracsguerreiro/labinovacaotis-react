@@ -9,7 +9,7 @@
   height: 100vh;
   min-height: 600px;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 0;
   background: #080c2a;
 }
 
@@ -125,7 +125,7 @@
   50%     { filter: drop-shadow(0 0 18px rgba(37,99,235,1.0)) drop-shadow(0 0 40px rgba(37,99,235,0.7)) drop-shadow(0 0 60px rgba(37,99,235,0.3)); }
 }
 
-.el-ai    { right: 38%; top: 10%; animation: iconDrift1 6s ease-in-out infinite; }
+.el-ai    { right: 38%; top: 22%; animation: iconDrift1 6s ease-in-out infinite; }
 .el-mol   { right: 38%; top: 56%; animation: iconDrift2 7s ease-in-out infinite; }
 .el-gear  { right: 5%;  top: 48%; animation: iconDrift1 9s ease-in-out infinite; animation-delay: 1s; }
 .el-chart { right: 5%;  top: 14%; animation: iconDrift2 8s ease-in-out infinite; animation-delay: 0.5s; }
