@@ -32,7 +32,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
       className="fixed top-0 left-0 right-0 z-[200] flex justify-center pt-4 px-6 transition-all duration-300"
     >
       <div
-        className="w-full max-w-7xl h-[68px] flex items-center justify-between px-10 transition-all duration-300"
+        className="w-full max-w-7xl h-[72px] flex items-center justify-between px-10 transition-all duration-300"
         style={{
           background: scrolled ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)',
           backdropFilter: 'blur(24px)',
@@ -52,31 +52,37 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
         <img
           src={currentView === 'home' ? logoTisAiLab : logoTisLab}
           alt="TIS LAB"
-          className="h-12"
+          className="h-14"
           style={{ objectFit: 'contain' }}
         />
       </div>
 
       {/* Center nav */}
-      <div className="flex items-center gap-0.5">
+      <div className="flex items-center gap-1">
         {navLinks.map(({ view, label }) => {
           const isActive = currentView === view;
+          const isHome = currentView === 'home';
+          const activeColor   = isHome ? '#ffffff'           : '#0d1333';
+          const inactiveColor = isHome ? 'rgba(255,255,255,0.75)' : 'rgba(13,19,51,0.55)';
           return (
             <button
               key={view}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[13px] font-medium transition-all duration-200 border-none cursor-pointer"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[15px] transition-all duration-200 border-none cursor-pointer"
               style={{
-                color: isActive ? '#ffffff' : 'rgba(255,255,255,0.92)',
-                background: 'transparent',
+                color: isActive ? activeColor : inactiveColor,
+                background: isActive
+                  ? isHome ? 'rgba(255,255,255,0.15)' : 'rgba(13,19,51,0.08)'
+                  : 'transparent',
                 fontFamily: 'var(--font-outfit)',
-                fontWeight: isActive ? 600 : 400,
+                fontWeight: isActive ? 700 : 400,
+                letterSpacing: isActive ? '-0.01em' : 'normal',
               }}
               onClick={() => onNavigate(view)}
             >
               {isActive && (
                 <span
                   className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                  style={{ background: '#2563eb', boxShadow: '0 0 6px rgba(37,99,235,0.8)' }}
+                  style={{ background: '#2563eb', boxShadow: '0 0 6px rgba(37,99,235,0.9)' }}
                 />
               )}
               {label}
@@ -88,7 +94,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
       {/* Right side */}
       <div className="flex items-center gap-3 flex-shrink-0">
         {/* Language switcher */}
-        <div className="flex items-center gap-0 rounded-lg p-1" style={{ background: 'rgba(255,255,255,0.06)' }}>
+        <div className="flex items-center gap-0 rounded-lg p-1" style={{ background: currentView === 'home' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' }}>
           {['PT', 'EN'].map((lang) => (
             <button
               key={lang}
@@ -96,7 +102,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
               style={{
                 fontFamily: 'var(--font-mono)',
                 background: activeLang === lang ? '#2563eb' : 'transparent',
-                color: activeLang === lang ? 'white' : 'rgba(180,200,255,0.5)',
+                color: activeLang === lang ? 'white' : currentView === 'home' ? 'rgba(255,255,255,0.5)' : 'rgba(13,19,51,0.4)',
               }}
               onClick={() => setActiveLang(lang)}
             >
