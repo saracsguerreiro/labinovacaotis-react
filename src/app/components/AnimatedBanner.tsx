@@ -178,8 +178,6 @@ export default function AnimatedBanner({ onNavigate }: AnimatedBannerProps) {
         </div>
       ))}
 
-      {/* ── Scan line ── */}
-      <div className="scan-line" />
 
       {/* ── Glow on ground ── */}
       <div className="el-glow" style={{ zIndex: 2 }}>

@@ -37,7 +37,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="min-h-screen">
       {/* Hero Section — AnimatedBanner */}
-      <section className="pt-[90px] px-6 pb-6 bg-[#04061c]">
+      <section className="px-6 pb-6 bg-[#04061c]">
         <AnimatedBanner onNavigate={onNavigate} />
 
       </section>

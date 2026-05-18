@@ -33,11 +33,14 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
       <div
         className="w-full max-w-6xl h-[58px] flex items-center justify-between px-6 transition-all duration-300"
         style={{
-          background: scrolled ? 'rgba(8,10,30,0.97)' : 'rgba(8,10,30,0.85)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(80,120,255,0.18)',
+          background: scrolled ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          border: '1px solid rgba(255,255,255,0.28)',
           borderRadius: '50px',
-          boxShadow: scrolled ? '0 8px 32px rgba(0,0,0,0.4)' : '0 4px 24px rgba(0,0,0,0.3)',
+          boxShadow: scrolled
+            ? '0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.3)'
+            : '0 4px 20px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2)',
         }}
       >
       {/* Logo */}
