@@ -123,7 +123,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
       </StickyWrap>
 
       {/* 2 — Idea Hub Teaser */}
-      <StickyWrap idx={1} bg="#ffffff" theme="light">
+      <StickyWrap idx={1} bg="linear-gradient(180deg,#dbeafe,#eff6ff)" theme="light">
         <section className="px-10 py-20 max-w-[1160px] mx-auto">
           <div className="reveal">
             <div className="text-[10px] tracking-[3px] uppercase mb-3"
