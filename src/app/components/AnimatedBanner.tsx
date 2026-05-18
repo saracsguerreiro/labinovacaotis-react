@@ -16,6 +16,15 @@ const PARTICLES = Array.from({ length: 30 }, (_, i) => ({
   opacity: Math.random() * 0.6 + 0.2,
 }));
 
+/* ── Matrix columns (0 e 1 apenas) ── */
+const MATRIX_COLS = Array.from({ length: 10 }, (_, i) => ({
+  id: i,
+  left: `${52 + i * 4.8}%`,
+  chars: Array.from({ length: 18 }, () => Math.random() > 0.5 ? '1' : '0').join('\n'),
+  delay: `${Math.random() * 4}s`,
+  duration: `${4 + Math.random() * 4}s`,
+}));
+
 /* ── Mini bar chart data ── */
 const BARS = [
   { h: '55%', color: '#2563eb', delay: '0s',    dur: '2.1s' },
@@ -156,6 +165,17 @@ export default function AnimatedBanner({ onNavigate }: AnimatedBannerProps) {
           animationDelay: p.delay,
           animationDuration: p.duration,
         }} />
+      ))}
+
+      {/* ── Matrix columns ── */}
+      {MATRIX_COLS.map(col => (
+        <div key={col.id} className="matrix-col" style={{
+          left: col.left,
+          animationDelay: col.delay,
+          animationDuration: col.duration,
+        }}>
+          {col.chars}
+        </div>
       ))}
 
       {/* ── Scan line ── */}
