@@ -16,15 +16,16 @@ const PARTICLES = Array.from({ length: 30 }, (_, i) => ({
   opacity: Math.random() * 0.6 + 0.2,
 }));
 
-/* ── Matrix columns ── */
-const MATRIX_CHARS = '01アイウエオカキクケコサシスセソABCDEF#@$%&';
-const MATRIX_COLS = Array.from({ length: 10 }, (_, i) => ({
-  id: i,
-  left: `${52 + i * 4.8}%`,
-  chars: Array.from({ length: 16 }, () => MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)]).join('\n'),
-  delay: `${Math.random() * 4}s`,
-  duration: `${4 + Math.random() * 4}s`,
-}));
+/* ── Mini bar chart data ── */
+const BARS = [
+  { h: '55%', color: '#2563eb', delay: '0s',    dur: '2.1s' },
+  { h: '80%', color: '#06b6d4', delay: '0.2s',  dur: '2.6s' },
+  { h: '40%', color: '#7c3aed', delay: '0.4s',  dur: '1.9s' },
+  { h: '90%', color: '#2563eb', delay: '0.6s',  dur: '2.3s' },
+  { h: '65%', color: '#06b6d4', delay: '0.8s',  dur: '2.8s' },
+  { h: '75%', color: '#7c3aed', delay: '1.0s',  dur: '2.0s' },
+  { h: '50%', color: '#2563eb', delay: '1.2s',  dur: '2.5s' },
+];
 
 /* ── Purple dots ── */
 const DOTS = [
@@ -37,13 +38,12 @@ const DOTS = [
   { id: 7, right: '10%', bottom: '42%', size: 6,  delay: '0.2s', dur: '3.6s' },
 ];
 
-/* ── Floating badges ── */
+/* ── Floating badges (text only) ── */
 const BADGES = [
   { id: 1, label: '347 ideias submetidas', top: '14%', right: '3%',  delay: '0s',   cycle: '4s'  },
-  { id: 2, label: '✓ 12 concluídas',       top: '28%', right: '44%', delay: '1.2s', cycle: '5s'  },
-  { id: 3, label: '⚡ 28 em progresso',    top: '68%', right: '3%',  delay: '0.6s', cycle: '4.5s'},
-  { id: 4, label: '🤖 IA activa',          top: '80%', right: '44%', delay: '2s',   cycle: '6s'  },
-  { id: 5, label: '🔬 TIS Lab · 2024',     top: '8%',  right: '44%', delay: '0.9s', cycle: '5.5s'},
+  { id: 2, label: '12 concluídas',         top: '28%', right: '44%', delay: '1.2s', cycle: '5s'  },
+  { id: 3, label: '28 em progresso',       top: '68%', right: '44%', delay: '0.6s', cycle: '4.5s'},
+  { id: 4, label: 'IA activa · TIS',       top: '8%',  right: '44%', delay: '0.9s', cycle: '5.5s'},
 ];
 
 /* ── Icons ── */
@@ -158,16 +158,8 @@ export default function AnimatedBanner({ onNavigate }: AnimatedBannerProps) {
         }} />
       ))}
 
-      {/* ── Matrix columns ── */}
-      {MATRIX_COLS.map(col => (
-        <div key={col.id} className="matrix-col" style={{
-          left: col.left,
-          animationDelay: col.delay,
-          animationDuration: col.duration,
-        }}>
-          {col.chars}
-        </div>
-      ))}
+      {/* ── Scan line ── */}
+      <div className="scan-line" />
 
       {/* ── Glow on ground ── */}
       <div className="el-glow" style={{ zIndex: 2 }}>
@@ -215,6 +207,24 @@ export default function AnimatedBanner({ onNavigate }: AnimatedBannerProps) {
           {b.label}
         </div>
       ))}
+
+      {/* ── Mini bar chart ── */}
+      <div className="mini-chart" style={{ zIndex: 4 }}>
+        <div className="mini-chart-title">Ideias · 2024</div>
+        <div className="mini-chart-bars">
+          {BARS.map((b, i) => (
+            <div key={i} className="mini-bar" style={{
+              height: b.h,
+              background: b.color,
+              animationDelay: b.delay,
+              animationDuration: b.dur,
+              transformOrigin: 'bottom',
+              boxShadow: `0 0 6px ${b.color}88`,
+            }} />
+          ))}
+        </div>
+        <div className="mini-chart-label">Jan → Dez</div>
+      </div>
 
       {/* ── Live tag ── */}
       <div className="live-tag" style={{ zIndex: 4 }}>
