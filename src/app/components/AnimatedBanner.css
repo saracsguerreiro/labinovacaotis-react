@@ -16,10 +16,10 @@
 /* ── Background image wrapper (handles float) ── */
 .banner-bg-wrap {
   position: absolute;
-  top: -8%;
-  left: -4%;
-  width: 108%;
-  height: 116%;
+  top: -10%;
+  left: -8%;
+  width: 113%;
+  height: 118%;
   pointer-events: none;
   animation: bgFloat 7s ease-in-out infinite;
 }
@@ -38,6 +38,8 @@
   object-position: 62% 55%;
   display: block;
   user-select: none;
+  transform: scale(0.9);
+  transform-origin: 62% 55%;
 }
 
 /* ── Left gradient overlay ── */
