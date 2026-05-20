@@ -1,69 +1,30 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useScrolled } from '../hooks/useScrolled';
-import logoAiLabWhite from './logo-tis-ai-lab-light.png';  // white text — for dark backgrounds
-import logoAiLabBlack from './logo-tis-ai-lab-dark.png';   // dark text  — for light backgrounds
+import { useNavTheme } from '../hooks/useNavTheme';
+import logoAiLabWhite from './logo-tis-ai-lab-light.png';
+import logoAiLabBlack from './logo-tis-ai-lab-dark.png';
+
+const navLinks: { path: string; label: string }[] = [
+  { path: '/', label: 'Início' },
+  { path: '/hub', label: 'Ideia HUB' },
+  { path: '/impacto', label: 'Impacto' },
+  { path: '/agentes', label: 'Agentes IA' },
+  { path: '/sobre', label: 'Sobre' },
+];
 
 export default function Navigation() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const scrolled = useScrolled();
+  const isDark = useNavTheme(pathname);
   const [activeLang, setActiveLang] = useState('PT');
-  const [isDark, setIsDark] = useState(true); // start dark (banner is dark)
-  const navRef = useRef<HTMLDivElement>(null);
-
-  /* ── detect dark/light section behind navbar ── */
-  useEffect(() => {
-    const NAV_SAMPLE_Y = 90; // px — bottom of nav pill
-
-    const detect = () => {
-      const elements = document.elementsFromPoint(window.innerWidth / 2, NAV_SAMPLE_Y);
-      for (const el of elements) {
-        // skip nav itself
-        if (navRef.current && (el === navRef.current || navRef.current.contains(el))) continue;
-        // walk up from this element to find data-theme
-        let node: Element | null = el;
-        while (node) {
-          const theme = node.getAttribute('data-theme');
-          if (theme) {
-            setIsDark(theme === 'dark');
-            return;
-          }
-          node = node.parentElement;
-        }
-        break; // only inspect the first non-nav element's ancestors
-      }
-      // fallback: interior pages are light
-      setIsDark(false);
-    };
-
-    const handleScroll = () => detect();
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // re-detect when route changes (after paint)
-    const raf = requestAnimationFrame(detect);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(raf);
-    };
-  }, [pathname]);
-
-  const navLinks: { path: string; label: string }[] = [
-    { path: '/', label: 'Início' },
-    { path: '/hub', label: 'Ideia HUB' },
-    { path: '/impacto', label: 'Impacto' },
-    { path: '/agentes', label: 'Agentes IA' },
-    { path: '/sobre', label: 'Sobre' },
-  ];
 
   const activeColor   = isDark ? '#ffffff'                : '#0d1333';
   const inactiveColor = isDark ? 'rgba(255,255,255,0.70)' : 'rgba(13,19,51,0.50)';
 
   return (
-    <nav
-      ref={navRef}
-      className="fixed top-0 left-0 right-0 z-[200] flex justify-center pt-4 px-6 transition-all duration-300"
-    >
+    <nav className="fixed top-0 left-0 right-0 z-[200] flex justify-center pt-4 px-6 transition-all duration-300">
       <div
         className="w-full max-w-7xl h-[72px] flex items-center justify-between px-10 transition-all duration-300"
         style={{
@@ -77,11 +38,8 @@ export default function Navigation() {
             : '0 4px 20px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2)',
         }}
       >
-        {/* Logo — switches between white-text and dark-text version */}
-        <div
-          className="cursor-pointer select-none flex-shrink-0"
-          onClick={() => navigate('/')}
-        >
+        {/* Logo */}
+        <div className="cursor-pointer select-none flex-shrink-0" onClick={() => navigate('/')}>
           <img
             src={isDark ? logoAiLabWhite : logoAiLabBlack}
             alt="TIS AI Lab"
@@ -124,8 +82,10 @@ export default function Navigation() {
         {/* Right side */}
         <div className="flex items-center gap-3 flex-shrink-0">
           {/* Language switcher */}
-          <div className="flex items-center gap-0 rounded-lg p-1"
-            style={{ background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' }}>
+          <div
+            className="flex items-center gap-0 rounded-lg p-1"
+            style={{ background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' }}
+          >
             {['PT', 'EN'].map((lang) => (
               <button
                 key={lang}
