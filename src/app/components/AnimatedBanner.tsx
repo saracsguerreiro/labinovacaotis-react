@@ -36,21 +36,21 @@ const BARS = [
 
 /* ── Purple dots ── */
 const DOTS = [
-  { id: 1, right: '35%', bottom: '33%', size: 8,  delay: '0s',   dur: '2.5s' },
-  { id: 2, right: '22%', bottom: '37%', size: 6,  delay: '0.5s', dur: '3.1s' },
-  { id: 3, right: '48%', bottom: '25%', size: 5,  delay: '1s',   dur: '2.8s' },
-  { id: 4, right: '15%', bottom: '29%', size: 7,  delay: '0.3s', dur: '3.4s' },
-  { id: 5, right: '30%', top:    '18%', size: 5,  delay: '0.8s', dur: '2.2s' },
-  { id: 6, right: '42%', top:    '30%', size: 4,  delay: '1.3s', dur: '2.9s' },
-  { id: 7, right: '10%', bottom: '42%', size: 6,  delay: '0.2s', dur: '3.6s' },
+  { id: 1, right: '47%', bottom: '33%', size: 8,  delay: '0s',   dur: '2.5s' },
+  { id: 2, right: '34%', bottom: '37%', size: 6,  delay: '0.5s', dur: '3.1s' },
+  { id: 3, right: '55%', bottom: '25%', size: 5,  delay: '1s',   dur: '2.8s' },
+  { id: 4, right: '27%', bottom: '29%', size: 7,  delay: '0.3s', dur: '3.4s' },
+  { id: 5, right: '42%', top:    '18%', size: 5,  delay: '0.8s', dur: '2.2s' },
+  { id: 6, right: '54%', top:    '30%', size: 4,  delay: '1.3s', dur: '2.9s' },
+  { id: 7, right: '22%', bottom: '42%', size: 6,  delay: '0.2s', dur: '3.6s' },
 ];
 
 /* ── Floating badges (text only) ── */
 const BADGES = [
-  { id: 1, label: '347 ideias submetidas', top: '14%', right: '3%',  delay: '0s',   cycle: '4s'  },
-  { id: 2, label: '12 concluídas',         top: '28%', right: '44%', delay: '1.2s', cycle: '5s'  },
-  { id: 3, label: '28 em progresso',       top: '68%', right: '44%', delay: '0.6s', cycle: '4.5s'},
-  { id: 4, label: 'IA activa · TIS',       top: '22%', right: '44%', delay: '0.9s', cycle: '5.5s'},
+  { id: 1, label: '347 ideias submetidas', top: '14%', right: '17%', delay: '0s',   cycle: '4s'  },
+  { id: 2, label: '12 concluídas',         top: '28%', right: '55%', delay: '1.2s', cycle: '5s'  },
+  { id: 3, label: '28 em progresso',       top: '68%', right: '55%', delay: '0.6s', cycle: '4.5s'},
+  { id: 4, label: 'IA activa · TIS',       top: '22%', right: '55%', delay: '0.9s', cycle: '5.5s'},
 ];
 
 /* ── Icons ── */
