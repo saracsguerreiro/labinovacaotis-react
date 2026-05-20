@@ -1,6 +1,5 @@
-interface SobrePageProps {
-  onNavigate: (view: 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre') => void;
-}
+import { useNavigate } from 'react-router-dom';
+
 
 const team = [
   {
@@ -100,7 +99,8 @@ const values = [
   },
 ];
 
-export default function SobrePage({ onNavigate }: SobrePageProps) {
+export default function SobrePage() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen pt-[62px] bg-[var(--bg)]">
 
@@ -136,14 +136,14 @@ export default function SobrePage({ onNavigate }: SobrePageProps) {
           <button
             className="flex items-center gap-2 px-6 py-3 rounded-full text-white text-[14px] font-bold cursor-pointer transition-all hover:bg-[#1d4ed8] hover:-translate-y-0.5"
             style={{ background: 'var(--blue)', boxShadow: '0 6px 24px var(--blue-glow)', fontFamily: 'var(--font-outfit)' }}
-            onClick={() => onNavigate('create')}
+            onClick={() => navigate('/criar')}
           >
             Submeter uma ideia →
           </button>
           <button
             className="px-6 py-3 rounded-full text-[14px] font-medium cursor-pointer transition-all hover:border-[var(--border3)] hover:text-[var(--text)] bg-transparent border-[1.5px]"
             style={{ borderColor: 'var(--border2)', color: 'var(--text-muted)', fontFamily: 'var(--font-outfit)' }}
-            onClick={() => onNavigate('hub')}
+            onClick={() => navigate('/hub')}
           >
             Ver todas as ideias
           </button>
@@ -277,7 +277,7 @@ export default function SobrePage({ onNavigate }: SobrePageProps) {
           <button
             className="flex items-center gap-2.5 px-8 py-3.5 rounded-full text-white text-[15px] font-bold cursor-pointer transition-all hover:bg-[#1d4ed8] hover:-translate-y-0.5 mx-auto"
             style={{ background: 'var(--blue)', boxShadow: '0 6px 24px var(--blue-glow)', fontFamily: 'var(--font-outfit)' }}
-            onClick={() => onNavigate('create')}
+            onClick={() => navigate('/criar')}
           >
             Submeter a minha ideia →
           </button>

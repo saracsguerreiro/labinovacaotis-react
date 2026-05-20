@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logoTisLab from '../../logo_TISLAB.png';
 import AnimatedBanner from './AnimatedBanner';
-
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
-interface HomePageProps { onNavigate: (view: ViewType) => void; }
 
 /* ── Scroll Overlapping hook ── */
 function useOverlapEffect(refs: React.MutableRefObject<(HTMLDivElement | null)[]>) {
@@ -27,7 +25,8 @@ function useOverlapEffect(refs: React.MutableRefObject<(HTMLDivElement | null)[]
   }, [refs]);
 }
 
-export default function HomePage({ onNavigate }: HomePageProps) {
+export default function HomePage() {
+  const navigate = useNavigate();
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
   useOverlapEffect(sectionRefs);
 
@@ -76,7 +75,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
 
       {/* ── Hero ── */}
       <section className="bg-[#04061c]" data-theme="dark">
-        <AnimatedBanner onNavigate={onNavigate} />
+        <AnimatedBanner />
       </section>
 
       {/* ══ OVERLAPPING SECTIONS ══ */}
@@ -138,7 +137,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
 
           <div className="rounded-[20px] overflow-hidden cursor-pointer transition-all reveal"
             style={{ border: '1px solid rgba(255,255,255,0.10)', background: 'rgba(255,255,255,0.05)', boxShadow: '0 4px 40px rgba(0,0,0,0.3)' }}
-            onClick={() => onNavigate('hub')}>
+            onClick={() => navigate('/hub')}>
             {[
               { n: '01', title: 'Modelo de trabalho híbrido estruturado',              status: 'Em implementação', statusColor: '#a78bfa', votes: 67, cat: 'Pessoas',  catColor: '#a78bfa', catBg: 'rgba(167,139,250,0.15)' },
               { n: '02', title: 'App self-service para clientes com IA conversacional', status: 'Concluída',        statusColor: '#f472b6', votes: 58, cat: 'Produto',  catColor: '#f472b6', catBg: 'rgba(244,114,182,0.15)' },
@@ -211,7 +210,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
               <button
                 className="flex items-center gap-2 px-6 py-3 rounded-full text-white text-[14px] font-bold cursor-pointer transition-all hover:bg-[#1d4ed8] hover:-translate-y-0.5 mx-auto"
                 style={{ background: 'var(--blue)', boxShadow: '0 6px 24px var(--blue-glow)', fontFamily: 'var(--font-outfit)' }}
-                onClick={() => onNavigate('create')}>
+                onClick={() => navigate('/criar')}>
                 Experimentar agora →
               </button>
             </div>
@@ -236,7 +235,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
             <button
               className="flex items-center gap-2.5 px-[30px] py-3.5 rounded-full border-none text-white text-[15px] font-bold cursor-pointer transition-all hover:bg-[#1d4ed8] hover:-translate-y-0.5 mx-auto"
               style={{ background: '#2563eb', boxShadow: '0 6px 24px rgba(37,99,235,0.5)', fontFamily: 'var(--font-outfit)' }}
-              onClick={() => onNavigate('create')}>
+              onClick={() => navigate('/criar')}>
               Começar agora →
             </button>
           </div>

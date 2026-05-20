@@ -1,10 +1,8 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import StepBar from './StepBar';
 
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
-
 interface CategoryPageProps {
-  onNavigate: (view: ViewType) => void;
   onSelectCategory: (category: string) => void;
   onNextPage: () => void;
   isAnonymous: boolean;
@@ -101,7 +99,8 @@ const categories = [
   },
 ];
 
-export default function CategoryPage({ onNavigate, onSelectCategory, onNextPage, isAnonymous, setIsAnonymous }: CategoryPageProps) {
+export default function CategoryPage({ onSelectCategory, onNextPage, isAnonymous, setIsAnonymous }: CategoryPageProps) {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<string | null>(null);
 
   const handleSelect = (category: string) => {
@@ -111,7 +110,7 @@ export default function CategoryPage({ onNavigate, onSelectCategory, onNextPage,
 
   return (
     <div className="min-h-screen flex flex-col animate-[vIn_0.4s_cubic-bezier(0.16,1,0.3,1)_both]">
-      <StepBar currentStep={0} onBack={() => onNavigate('home')} backLabel="Início" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
+      <StepBar currentStep={0} onBack={() => navigate('/')} backLabel="Início" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
 
       <div className="flex-1 flex flex-col items-center justify-center px-10 gap-9 max-w-[900px] mx-auto w-full py-10">
         <div className="text-center">

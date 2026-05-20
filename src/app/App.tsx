@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import Navigation from './components/Navigation';
 import HomePage from './components/HomePage';
 import CreateView from './components/CreateView';
@@ -7,25 +8,25 @@ import ImpactDashboard from './components/ImpactDashboard';
 import AgentsPage from './components/AgentsPage';
 import SobrePage from './components/SobrePage';
 
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<ViewType>('home');
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [currentView]);
-
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      <Navigation currentView={currentView} onNavigate={setCurrentView} />
-
-      {currentView === 'home' && <HomePage onNavigate={setCurrentView} />}
-      {currentView === 'create' && <CreateView onNavigate={setCurrentView} />}
-      {currentView === 'hub' && <IdeaHub onNavigate={setCurrentView} />}
-      {currentView === 'impact' && <ImpactDashboard />}
-      {currentView === 'agents' && <AgentsPage onNavigate={setCurrentView} />}
-      {currentView === 'sobre' && <SobrePage onNavigate={setCurrentView} />}
+      <ScrollToTop />
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/hub" element={<IdeaHub />} />
+        <Route path="/impacto" element={<ImpactDashboard />} />
+        <Route path="/agentes" element={<AgentsPage />} />
+        <Route path="/sobre" element={<SobrePage />} />
+        <Route path="/criar" element={<CreateView />} />
+      </Routes>
     </div>
   );
 }

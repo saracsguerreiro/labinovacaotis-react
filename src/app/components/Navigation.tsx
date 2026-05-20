@@ -1,15 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import logoAiLabWhite from './logo-tis-ai-lab-light.png';  // white text — for dark backgrounds
 import logoAiLabBlack from './logo-tis-ai-lab-dark.png';   // dark text  — for light backgrounds
 
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
-
-interface NavigationProps {
-  currentView: string;
-  onNavigate: (view: ViewType) => void;
-}
-
-export default function Navigation({ currentView, onNavigate }: NavigationProps) {
+export default function Navigation() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [activeLang, setActiveLang] = useState('PT');
   const [isDark, setIsDark] = useState(true); // start dark (banner is dark)
@@ -46,20 +42,20 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    // re-detect when view changes (after paint)
+    // re-detect when route changes (after paint)
     const raf = requestAnimationFrame(detect);
     return () => {
       window.removeEventListener('scroll', handleScroll);
       cancelAnimationFrame(raf);
     };
-  }, [currentView]);
+  }, [pathname]);
 
-  const navLinks: { view: ViewType; label: string }[] = [
-    { view: 'home', label: 'Início' },
-    { view: 'hub', label: 'Ideia HUB' },
-    { view: 'impact', label: 'Impacto' },
-    { view: 'agents', label: 'Agentes IA' },
-    { view: 'sobre', label: 'Sobre' },
+  const navLinks: { path: string; label: string }[] = [
+    { path: '/', label: 'Início' },
+    { path: '/hub', label: 'Ideia HUB' },
+    { path: '/impacto', label: 'Impacto' },
+    { path: '/agentes', label: 'Agentes IA' },
+    { path: '/sobre', label: 'Sobre' },
   ];
 
   const activeColor   = isDark ? '#ffffff'                : '#0d1333';
@@ -86,7 +82,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
         {/* Logo — switches between white-text and dark-text version */}
         <div
           className="cursor-pointer select-none flex-shrink-0"
-          onClick={() => onNavigate('home')}
+          onClick={() => navigate('/')}
         >
           <img
             src={isDark ? logoAiLabWhite : logoAiLabBlack}
@@ -98,11 +94,11 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
 
         {/* Center nav */}
         <div className="flex items-center gap-1">
-          {navLinks.map(({ view, label }) => {
-            const isActive = currentView === view;
+          {navLinks.map(({ path, label }) => {
+            const isActive = pathname === path;
             return (
               <button
-                key={view}
+                key={path}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[15px] transition-all duration-200 border-none cursor-pointer"
                 style={{
                   color: isActive ? activeColor : inactiveColor,
@@ -113,7 +109,7 @@ export default function Navigation({ currentView, onNavigate }: NavigationProps)
                   fontWeight: isActive ? 700 : 400,
                   letterSpacing: isActive ? '-0.01em' : 'normal',
                 }}
-                onClick={() => onNavigate(view)}
+                onClick={() => navigate(path)}
               >
                 {isActive && (
                   <span

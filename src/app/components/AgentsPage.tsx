@@ -1,8 +1,5 @@
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
+import { useNavigate } from 'react-router-dom';
 
-interface AgentsPageProps {
-  onNavigate: (view: ViewType) => void;
-}
 
 const agents = [
   {
@@ -79,7 +76,8 @@ const agents = [
   },
 ];
 
-export default function AgentsPage({ onNavigate }: AgentsPageProps) {
+export default function AgentsPage() {
+  const navigate = useNavigate();
   return (
     <div className="pt-[62px] px-9 py-10 overflow-y-auto bg-[var(--bg)]" style={{ minHeight: '100vh' }}>
       <div className="mb-10 text-center">
@@ -148,7 +146,7 @@ export default function AgentsPage({ onNavigate }: AgentsPageProps) {
                 color: 'var(--text-muted)',
                 fontFamily: 'var(--font-outfit)',
               }}
-              onClick={() => onNavigate('create')}
+              onClick={() => navigate('/criar')}
             >
               Iniciar brainstorming →
             </button>

@@ -4,15 +4,9 @@ import BrainstormPage from './create/BrainstormPage';
 import ReferencesPage from './create/ReferencesPage';
 import SummaryPage from './create/SummaryPage';
 
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
-
-interface CreateViewProps {
-  onNavigate: (view: ViewType) => void;
-}
-
 type FlowPage = 'category' | 'brainstorm' | 'references' | 'summary';
 
-export default function CreateView({ onNavigate }: CreateViewProps) {
+export default function CreateView() {
   const [currentPage, setCurrentPage] = useState<FlowPage>('category');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -26,7 +20,6 @@ export default function CreateView({ onNavigate }: CreateViewProps) {
     <div className="min-h-screen pt-[62px]">
       {currentPage === 'category' && (
         <CategoryPage
-          onNavigate={onNavigate}
           onSelectCategory={handleSelectCategory}
           onNextPage={() => setCurrentPage('brainstorm')}
           isAnonymous={isAnonymous}
@@ -53,7 +46,6 @@ export default function CreateView({ onNavigate }: CreateViewProps) {
       {currentPage === 'summary' && (
         <SummaryPage
           onBack={() => setCurrentPage('references')}
-          onNavigate={onNavigate}
           isAnonymous={isAnonymous}
           setIsAnonymous={setIsAnonymous}
         />

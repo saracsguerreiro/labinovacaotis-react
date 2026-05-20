@@ -1,10 +1,5 @@
 import { useState, useMemo } from 'react';
-
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
-
-interface IdeaHubProps {
-  onNavigate: (view: ViewType) => void;
-}
+import { useNavigate } from 'react-router-dom';
 
 const ideas = [
   { id: 1, title: 'Modelo de trabalho híbrido estruturado', cat: 'Pessoas', catColor: '#9437FF', catBg: '#e6dfff', votes: 67, comments: 31, author: 'Carla Moreira', status: 'Em implementação', statusColor: '#9437FF' },
@@ -28,7 +23,8 @@ const SORTS = [
   { label: 'Mais comentadas', value: 'comments' },
 ];
 
-export default function IdeaHub({ onNavigate }: IdeaHubProps) {
+export default function IdeaHub() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('Todas');
   const [activeStatus, setActiveStatus] = useState('Todos');
@@ -73,7 +69,7 @@ export default function IdeaHub({ onNavigate }: IdeaHubProps) {
           <button
             className="px-[18px] py-2 rounded-full border-none text-white text-[12px] font-bold cursor-pointer whitespace-nowrap transition-all hover:bg-[#1d4ed8] flex-shrink-0"
             style={{ background: 'var(--blue)', boxShadow: '0 3px 10px var(--blue-glow)', fontFamily: 'var(--font-outfit)' }}
-            onClick={() => onNavigate('create')}
+            onClick={() => navigate('/criar')}
           >
             + Nova Ideia
           </button>

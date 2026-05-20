@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import bannerImg from './banner-bg.jpg';
 import './AnimatedBanner.css';
-
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
-interface AnimatedBannerProps { onNavigate: (view: ViewType) => void; }
 
 /* ── Particles ── */
 const PARTICLES = Array.from({ length: 30 }, (_, i) => ({
@@ -132,7 +130,8 @@ function useTypewriter(text: string, speed = 55) {
 /* ══════════════════════════════════════════════════════════
    COMPONENT
    ══════════════════════════════════════════════════════════ */
-export default function AnimatedBanner({ onNavigate }: AnimatedBannerProps) {
+export default function AnimatedBanner() {
+  const navigate = useNavigate();
   const [started, setStarted] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -296,13 +295,13 @@ export default function AnimatedBanner({ onNavigate }: AnimatedBannerProps) {
         <div className="banner-btns banner-fade" style={{ animationDelay: '0.8s' }}>
           <button
             className="banner-btn btn-primary btn-pulse"
-            onClick={() => onNavigate('create')}
+            onClick={() => navigate('/criar')}
           >
             + Partilhar a minha ideia
           </button>
           <button
             className="banner-btn btn-outline"
-            onClick={() => onNavigate('hub')}
+            onClick={() => navigate('/hub')}
           >
             Explorar Idea Hub →
           </button>

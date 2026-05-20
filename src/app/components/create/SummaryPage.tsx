@@ -1,16 +1,15 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import StepBar from './StepBar';
-
-type ViewType = 'home' | 'create' | 'hub' | 'impact' | 'agents' | 'sobre';
 
 interface SummaryPageProps {
   onBack: () => void;
-  onNavigate: (view: ViewType) => void;
   isAnonymous: boolean;
   setIsAnonymous: (value: boolean) => void;
 }
 
-export default function SummaryPage({ onBack, onNavigate, isAnonymous, setIsAnonymous }: SummaryPageProps) {
+export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: SummaryPageProps) {
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = () => {
@@ -343,7 +342,7 @@ export default function SummaryPage({ onBack, onNavigate, isAnonymous, setIsAnon
                 }}
                 onClick={() => {
                   setShowModal(false);
-                  onNavigate('create');
+                  navigate('/criar');
                 }}
               >
                 Nova ideia
@@ -357,7 +356,7 @@ export default function SummaryPage({ onBack, onNavigate, isAnonymous, setIsAnon
                 }}
                 onClick={() => {
                   setShowModal(false);
-                  onNavigate('hub');
+                  navigate('/hub');
                 }}
               >
                 Ideia HUB
