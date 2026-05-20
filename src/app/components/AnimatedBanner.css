@@ -13,7 +13,7 @@
   background: #080c2a;
 }
 
-/* ── Background image wrapper (handles float) ── */
+/* ── Background image wrapper (handles float + edge fade) ── */
 .banner-bg-wrap {
   position: absolute;
   top: -10%;
@@ -22,6 +22,18 @@
   height: 118%;
   pointer-events: none;
   animation: bgFloat 7s ease-in-out infinite;
+  mask-image: radial-gradient(
+    ellipse 52% 62% at 62% 50%,
+    black 20%,
+    rgba(0,0,0,0.6) 42%,
+    transparent 65%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 52% 62% at 62% 50%,
+    black 20%,
+    rgba(0,0,0,0.6) 42%,
+    transparent 65%
+  );
 }
 
 @keyframes bgFloat {
