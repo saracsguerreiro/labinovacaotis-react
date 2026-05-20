@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import StepBar from './StepBar';
 
 interface SummaryPageProps {
@@ -8,11 +9,27 @@ interface SummaryPageProps {
   setIsAnonymous: (value: boolean) => void;
 }
 
+type SummaryFormData = {
+  title: string;
+  coauthor: string;
+};
+
 export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: SummaryPageProps) {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
-  const handleSubmit = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isDirty },
+  } = useForm<SummaryFormData>({
+    defaultValues: {
+      title: 'Automatização do processo de aprovação de despesas',
+      coauthor: '',
+    },
+  });
+
+  const onSubmit = (_data: SummaryFormData) => {
     setShowModal(true);
   };
 
@@ -20,7 +37,7 @@ export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: Sum
     <div className="min-h-screen flex flex-col animate-[vIn_0.35s_ease_both]">
       <StepBar currentStep={3} onBack={onBack} backLabel="Referências" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
 
-      <div className="flex-1 grid grid-cols-[1fr_340px] overflow-hidden" style={{ height: 'calc(100vh - 118px)' }}>
+      <div className="flex-1 grid grid-cols-[1fr_340px] overflow-hidden" style={{ height: 'calc(100vh - 118px)' }} onSubmit={handleSubmit(onSubmit)}>
         {/* Main Content */}
         <div className="px-8 py-7 overflow-y-auto bg-[var(--bg)]">
           <div
@@ -36,15 +53,23 @@ export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: Sum
           </div>
 
           <input
-            className="text-[26px] font-[800] bg-transparent border-none border-b-2 w-full px-0 py-1.5 outline-none tracking-[-0.5px] mb-4 transition-colors focus:border-[var(--blue)]"
+            className="text-[26px] font-[800] bg-transparent border-none border-b-2 w-full px-0 py-1.5 outline-none tracking-[-0.5px] mb-1 transition-colors focus:border-[var(--blue)]"
             style={{
-              borderColor: 'var(--border2)',
+              borderColor: errors.title ? '#ef4444' : 'var(--border2)',
               color: 'var(--text)',
               fontFamily: 'var(--font-outfit)',
             }}
             type="text"
-            defaultValue="Automatização do processo de aprovação de despesas"
+            {...register('title', {
+              required: 'O título é obrigatório',
+              minLength: { value: 10, message: 'Mínimo 10 caracteres' },
+            })}
           />
+          {errors.title && (
+            <p className="text-[11px] mb-3" style={{ color: '#ef4444', fontFamily: 'var(--font-mono)' }}>
+              // {errors.title.message}
+            </p>
+          )}
 
           <div className="text-[10px] mb-6" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
             // gerado pela IA · podes editar qualquer secção
@@ -249,13 +274,28 @@ export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: Sum
             <h4 className="text-[10px] font-medium uppercase tracking-[1.5px] mb-2" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
               Co-autores
             </h4>
-            <div className="flex gap-1.5 mb-2">
+            <div className="flex gap-1.5 mb-2 relative">
               <input
                 className="flex-1 bg-[var(--surface)] border-[1.5px] rounded-[7px] px-3 py-1.5 text-[11px] outline-none transition-colors focus:border-[var(--blue)]"
-                style={{ borderColor: 'var(--border-light)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
+                style={{
+                  borderColor: errors.coauthor ? '#ef4444' : 'var(--border-light)',
+                  color: 'var(--text)',
+                  fontFamily: 'var(--font-outfit)',
+                }}
                 type="text"
                 placeholder="Nome ou email..."
+                {...register('coauthor', {
+                  pattern: {
+                    value: /^$|^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'Email inválido',
+                  },
+                })}
               />
+              {errors.coauthor && (
+                <p className="text-[10px] absolute -bottom-4 left-0" style={{ color: '#ef4444', fontFamily: 'var(--font-mono)' }}>
+                  {errors.coauthor.message}
+                </p>
+              )}
               <button
                 className="px-3 py-1.5 bg-[var(--surface)] border-[1.5px] rounded-full text-[11px] cursor-pointer transition-all hover:border-[var(--blue)] hover:text-[var(--blue)]"
                 style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)' }}
@@ -304,9 +344,9 @@ export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: Sum
               boxShadow: '0 4px 16px var(--blue-glow)',
               fontFamily: 'var(--font-outfit)',
             }}
-            onClick={handleSubmit}
+            onClick={handleSubmit(onSubmit)}
           >
-            🚀 Submeter Ideia
+            {isDirty ? '🚀 Submeter Ideia*' : '🚀 Submeter Ideia'}
           </button>
 
           <div

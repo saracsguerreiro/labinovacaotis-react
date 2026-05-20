@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import StepBar from './StepBar';
+
+type LinkForm = { url: string };
 
 interface ReferencesPageProps {
   onBack: () => void;
@@ -32,6 +35,15 @@ const aiCases = [
 export default function ReferencesPage({ onBack, onNextPage, isAnonymous, setIsAnonymous }: ReferencesPageProps) {
   const [savedCases, setSavedCases] = useState([1]);
   const [files, setFiles] = useState(['benchmark_aprovacoes_2024.pdf', 'notion.so/exemplos-processo-aprovacao']);
+
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<LinkForm>({
+    defaultValues: { url: '' },
+  });
+
+  const onAddLink = ({ url }: LinkForm) => {
+    setFiles((prev) => [...prev, url]);
+    reset();
+  };
 
   const toggleCase = (index: number) => {
     setSavedCases((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
@@ -74,20 +86,39 @@ export default function ReferencesPage({ onBack, onNextPage, isAnonymous, setIsA
             </p>
           </div>
 
-          <div className="flex gap-1.5 mb-4">
-            <input
-              type="text"
-              className="flex-1 bg-[var(--surface)] border-[1.5px] rounded-full px-3 py-2 text-[12px] outline-none transition-colors focus:border-[var(--blue)]"
-              style={{ borderColor: 'var(--border-light)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
-              placeholder="Cola um link ou URL..."
-            />
-            <button
-              className="px-3.5 py-2 rounded-full border-none text-white text-[12px] font-semibold cursor-pointer transition-all hover:bg-[#1d4ed8]"
-              style={{ background: 'var(--blue)', fontFamily: 'var(--font-outfit)' }}
-            >
-              Adicionar
-            </button>
-          </div>
+          <form className="flex flex-col gap-1 mb-4" onSubmit={handleSubmit(onAddLink)}>
+            <div className="flex gap-1.5">
+              <input
+                type="text"
+                className="flex-1 bg-[var(--surface)] border-[1.5px] rounded-full px-3 py-2 text-[12px] outline-none transition-colors focus:border-[var(--blue)]"
+                style={{
+                  borderColor: errors.url ? '#ef4444' : 'var(--border-light)',
+                  color: 'var(--text)',
+                  fontFamily: 'var(--font-outfit)',
+                }}
+                placeholder="Cola um link ou URL..."
+                {...register('url', {
+                  required: 'Introduz um link',
+                  pattern: {
+                    value: /^(https?:\/\/|www\.)\S+\.\S+/,
+                    message: 'Link inválido (ex: https://exemplo.com)',
+                  },
+                })}
+              />
+              <button
+                type="submit"
+                className="px-3.5 py-2 rounded-full border-none text-white text-[12px] font-semibold cursor-pointer transition-all hover:bg-[#1d4ed8]"
+                style={{ background: 'var(--blue)', fontFamily: 'var(--font-outfit)' }}
+              >
+                Adicionar
+              </button>
+            </div>
+            {errors.url && (
+              <p className="text-[11px] pl-3" style={{ color: '#ef4444', fontFamily: 'var(--font-mono)' }}>
+                // {errors.url.message}
+              </p>
+            )}
+          </form>
 
           {files.map((file, i) => (
             <div
