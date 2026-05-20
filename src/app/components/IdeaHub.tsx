@@ -1,5 +1,7 @@
-import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useIdeaFilters } from '../hooks/useIdeaFilters';
+import { useVoting } from '../hooks/useVoting';
+import { useIdeaModal } from '../hooks/useIdeaModal';
 
 const ideas = [
   { id: 1, title: 'Modelo de trabalho híbrido estruturado', cat: 'Pessoas', catColor: '#9437FF', catBg: '#e6dfff', votes: 67, comments: 31, author: 'Carla Moreira', status: 'Em implementação', statusColor: '#9437FF' },
@@ -25,33 +27,9 @@ const SORTS = [
 
 export default function IdeaHub() {
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState('Todas');
-  const [activeStatus, setActiveStatus] = useState('Todos');
-  const [sortBy, setSortBy] = useState<'votes' | 'comments'>('votes');
-  const [selectedIdea, setSelectedIdea] = useState<typeof ideas[0] | null>(null);
-  const [votedIds, setVotedIds] = useState<Set<number>>(new Set());
-
-  const filtered = useMemo(() => {
-    let list = [...ideas];
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter((i) => i.title.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q) || i.author.toLowerCase().includes(q));
-    }
-    if (activeCategory !== 'Todas') list = list.filter((i) => i.cat === activeCategory);
-    if (activeStatus !== 'Todos') list = list.filter((i) => i.status === activeStatus);
-    list.sort((a, b) => b[sortBy] - a[sortBy]);
-    return list;
-  }, [search, activeCategory, activeStatus, sortBy]);
-
-  const handleVote = (id: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setVotedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
-  };
+  const { search, setSearch, activeCategory, setActiveCategory, activeStatus, setActiveStatus, sortBy, setSortBy, filtered, clearFilters } = useIdeaFilters(ideas);
+  const { hasVoted, toggle: handleVote } = useVoting();
+  const { selectedIdea, open: openIdea, close: closeIdea } = useIdeaModal();
 
   return (
     <div className="min-h-screen pt-[62px] bg-[var(--bg)]">
@@ -148,7 +126,7 @@ export default function IdeaHub() {
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
               <div className="text-[14px]">Nenhuma ideia encontrada</div>
-              <button className="text-[12px] underline" style={{ color: 'var(--blue)' }} onClick={() => { setSearch(''); setActiveCategory('Todas'); setActiveStatus('Todos'); }}>
+              <button className="text-[12px] underline" style={{ color: 'var(--blue)' }} onClick={clearFilters}>
                 Limpar filtros
               </button>
             </div>
@@ -158,7 +136,7 @@ export default function IdeaHub() {
                 key={idea.id}
                 className="flex items-start gap-4 px-7 py-5 border-b cursor-pointer transition-all hover:bg-[var(--surface2)]"
                 style={{ borderColor: 'var(--border-light)' }}
-                onClick={() => setSelectedIdea(idea)}
+                onClick={() => openIdea(idea)}
               >
                 <div
                   className="text-[32px] font-[900] leading-[1] min-w-[36px] transition-colors"
@@ -187,14 +165,14 @@ export default function IdeaHub() {
                   <button
                     className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full bg-transparent cursor-pointer transition-all flex items-center gap-1"
                     style={{
-                      borderColor: votedIds.has(idea.id) ? 'var(--blue)' : 'var(--border-light)',
-                      color: votedIds.has(idea.id) ? 'var(--blue)' : 'var(--text-muted)',
-                      background: votedIds.has(idea.id) ? 'var(--blue-light)' : 'transparent',
+                      borderColor: hasVoted(idea.id) ? 'var(--blue)' : 'var(--border-light)',
+                      color: hasVoted(idea.id) ? 'var(--blue)' : 'var(--text-muted)',
+                      background: hasVoted(idea.id) ? 'var(--blue-light)' : 'transparent',
                       fontFamily: 'var(--font-mono)',
                     }}
                     onClick={(e) => handleVote(idea.id, e)}
                   >
-                    ▲ {idea.votes + (votedIds.has(idea.id) ? 1 : 0)}
+                    ▲ {idea.votes + (hasVoted(idea.id) ? 1 : 0)}
                   </button>
                   <button
                     className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full bg-transparent cursor-pointer transition-all flex items-center gap-1"
@@ -205,7 +183,7 @@ export default function IdeaHub() {
                   <button
                     className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full cursor-pointer transition-all hover:bg-[var(--blue-light)]"
                     style={{ borderColor: '#036ef2', color: '#036ef2', fontFamily: 'var(--font-mono)', background: 'transparent' }}
-                    onClick={() => setSelectedIdea(idea)}
+                    onClick={() => openIdea(idea)}
                   >
                     Ver →
                   </button>
@@ -295,7 +273,7 @@ export default function IdeaHub() {
       {selectedIdea && (
         <div
           className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-6"
-          onClick={() => setSelectedIdea(null)}
+          onClick={closeIdea}
         >
           <div
             className="bg-[var(--surface)] rounded-2xl max-w-[680px] w-full max-h-[85vh] overflow-y-auto shadow-[0_24px_64px_rgba(0,0,0,0.25)]"
@@ -314,7 +292,7 @@ export default function IdeaHub() {
               <button
                 className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all hover:bg-[var(--surface2)] text-[18px]"
                 style={{ color: 'var(--text-muted)' }}
-                onClick={() => setSelectedIdea(null)}
+                onClick={closeIdea}
               >
                 ✕
               </button>
@@ -333,7 +311,7 @@ export default function IdeaHub() {
                   {selectedIdea.author}
                 </div>
                 <div className="flex items-center gap-1.5 text-[12px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                  ▲ {selectedIdea.votes + (votedIds.has(selectedIdea.id) ? 1 : 0)} votos
+                  ▲ {selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)} votos
                 </div>
                 <div className="flex items-center gap-1.5 text-[12px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                   💬 {selectedIdea.comments} comentários
@@ -368,14 +346,14 @@ export default function IdeaHub() {
                 <button
                   className="flex-1 px-4 py-2.5 rounded-full border-[1.5px] text-[13px] font-semibold cursor-pointer transition-all hover:bg-[var(--surface2)] flex items-center justify-center gap-2"
                   style={{
-                    borderColor: votedIds.has(selectedIdea.id) ? 'var(--blue)' : 'var(--border2)',
-                    color: votedIds.has(selectedIdea.id) ? 'var(--blue)' : 'var(--text)',
-                    background: votedIds.has(selectedIdea.id) ? 'var(--blue-light)' : 'transparent',
+                    borderColor: hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--border2)',
+                    color: hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--text)',
+                    background: hasVoted(selectedIdea.id) ? 'var(--blue-light)' : 'transparent',
                     fontFamily: 'var(--font-outfit)',
                   }}
                   onClick={(e) => handleVote(selectedIdea.id, e)}
                 >
-                  ▲ {votedIds.has(selectedIdea.id) ? 'Votado' : 'Votar'} ({selectedIdea.votes + (votedIds.has(selectedIdea.id) ? 1 : 0)})
+                  ▲ {hasVoted(selectedIdea.id) ? 'Votado' : 'Votar'} ({selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)})
                 </button>
                 <button
                   className="flex-1 px-4 py-2.5 rounded-full text-white text-[13px] font-semibold cursor-pointer transition-all hover:bg-[#1d4ed8] flex items-center justify-center gap-2"

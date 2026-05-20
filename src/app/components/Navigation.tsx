@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useScrolled } from '../hooks/useScrolled';
 import logoAiLabWhite from './logo-tis-ai-lab-light.png';  // white text — for dark backgrounds
 import logoAiLabBlack from './logo-tis-ai-lab-dark.png';   // dark text  — for light backgrounds
 
 export default function Navigation() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [scrolled, setScrolled] = useState(false);
+  const scrolled = useScrolled();
   const [activeLang, setActiveLang] = useState('PT');
   const [isDark, setIsDark] = useState(true); // start dark (banner is dark)
   const navRef = useRef<HTMLDivElement>(null);
@@ -36,10 +37,7 @@ export default function Navigation() {
       setIsDark(false);
     };
 
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-      detect();
-    };
+    const handleScroll = () => detect();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     // re-detect when route changes (after paint)
