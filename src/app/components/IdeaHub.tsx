@@ -62,7 +62,7 @@ function ViewToggle({ view, onChange, dark }: { view: HubView; onChange: (v: Hub
       border: dark ? '1px solid rgba(255,255,255,0.20)' : '1px solid rgba(13,19,51,0.14)',
       borderRadius: 14, padding: 4,
     }}>
-      {([['nebula', '🫧 Bolhas'], ['lista', '☰ Lista']] as const).map(([v, label]) => (
+      {([['nebula', '✦ Espaço'], ['lista', '☰ Lista']] as const).map(([v, label]) => (
         <button
           key={v}
           onClick={() => onChange(v)}
