@@ -6,11 +6,10 @@ import logoAiLabWhite from './logo-tis-ai-lab-light.png';
 import logoAiLabBlack from './logo-tis-ai-lab-dark.png';
 
 const navLinks: { path: string; label: string }[] = [
-  { path: '/', label: 'Início' },
-  { path: '/hub',  label: 'Ideia HUB' },
-  { path: '/impacto', label: 'Impacto' },
+  { path: '/sobre',   label: 'Sobre' },
+  { path: '/hub',     label: 'Ideia HUB' },
   { path: '/agentes', label: 'Agentes IA' },
-  { path: '/sobre', label: 'Sobre' },
+  { path: '/impacto', label: 'Impacto' },
 ];
 
 export default function Navigation() {
