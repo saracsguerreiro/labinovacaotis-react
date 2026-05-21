@@ -43,6 +43,54 @@ const IDEA_CONTENT: Record<number, { problem: string; solution: string; impact: 
   12: { problem: 'A falta de reconhecimento formal entre pares reduz a motivação e o sentimento de pertença, afectando a cultura organizacional positivamente.', solution: 'Implementar um sistema digital de reconhecimento entre pares, com badges, pontos e visibilidade na plataforma interna.', impact: ['Aumento de 45% no engagement', 'Melhoria do clima organizacional', 'Reconhecimento de 500+ contribuições/mês', 'Retenção de talentos melhorada'] },
 };
 
+// ─── Seed comments (visible in every session) ────────────────────────────────
+const SEED_COMMENTS: Record<number, { author: string; text: string; ts: number }[]> = {
+  1:  [
+    { author: 'Carla Moreira',  text: 'Excelente proposta! Já tínhamos identificado este problema na nossa equipa.', ts: 1716800000000 },
+    { author: 'Tiago Costa',    text: 'Concordo, mas precisamos de definir bem os dias obrigatórios de presença.', ts: 1716820000000 },
+  ],
+  2:  [
+    { author: 'Sofia Neves',    text: 'O tempo de espera actual é insustentável. Esta solução resolve o problema na raiz.', ts: 1716810000000 },
+    { author: 'Miguel Alves',   text: 'Já testei soluções similares noutros projectos e os resultados foram muito positivos.', ts: 1716830000000 },
+  ],
+  3:  [
+    { author: 'Carla Moreira',  text: 'Quantas horas por semana perde a equipa com questões repetitivas? Seria bom medir antes.', ts: 1716800000000 },
+  ],
+  4:  [
+    { author: 'Tiago Costa',    text: 'O processo actual leva 3 semanas em média. Com automação podíamos cortar para 2 dias.', ts: 1716815000000 },
+    { author: 'Sofia Neves',    text: 'Importante integrar com o sistema de contabilidade existente para evitar duplicação.', ts: 1716835000000 },
+  ],
+  5:  [
+    { author: 'Miguel Alves',   text: 'Os novos colaboradores perdem muito tempo a perceber os processos básicos. Apoio esta ideia.', ts: 1716805000000 },
+    { author: 'Carla Moreira',  text: 'Podíamos incluir um módulo de cultura organizacional no onboarding digital.', ts: 1716825000000 },
+  ],
+  6:  [
+    { author: 'Tiago Costa',    text: 'Actualmente tenho de aceder a 5 sistemas diferentes para ter uma visão completa. Urge resolver.', ts: 1716812000000 },
+  ],
+  7:  [
+    { author: 'Sofia Neves',    text: 'A documentação das nossas APIs é um caos. Proposta muito necessária.', ts: 1716808000000 },
+    { author: 'Miguel Alves',   text: 'Sugiro adoptar OpenAPI 3.0 como standard para garantir compatibilidade.', ts: 1716828000000 },
+  ],
+  8:  [
+    { author: 'Carla Moreira',  text: 'Os clientes pedem isto constantemente. Seria um diferenciador importante face à concorrência.', ts: 1716817000000 },
+  ],
+  9:  [
+    { author: 'Tiago Costa',    text: 'Ótima iniciativa ESG. Podíamos começar pelos eventos de maior dimensão e escalar depois.', ts: 1716803000000 },
+    { author: 'Sofia Neves',    text: 'Há certificações específicas para eventos sustentáveis que poderíamos almejar.', ts: 1716823000000 },
+  ],
+  10: [
+    { author: 'Miguel Alves',   text: 'A mentoria cruzada que tive com a equipa de produto mudou a minha perspectiva completamente.', ts: 1716809000000 },
+  ],
+  11: [
+    { author: 'Carla Moreira',  text: 'Sem dados centralizados não conseguimos personalizar nada. Esta é a base de tudo.', ts: 1716814000000 },
+    { author: 'Tiago Costa',    text: 'Qual a estratégia de governance de dados prevista? É crítico definir isso desde o início.', ts: 1716834000000 },
+  ],
+  12: [
+    { author: 'Sofia Neves',    text: 'O reconhecimento entre pares tem um impacto enorme na motivação. Apoio totalmente.', ts: 1716806000000 },
+    { author: 'Miguel Alves',   text: 'Podíamos ligar os pontos acumulados a benefícios reais para aumentar a adesão.', ts: 1716826000000 },
+  ],
+};
+
 interface BubbleState {
   id: number;
   x: number;
@@ -190,33 +238,36 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
             {/* Comment list */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 12px' }}>
               <p style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, fontSize: 14, margin: '0 0 14px' }}>
-                💬 Comentários ({idea.comments + localComments.length})
+                💬 Comentários ({(SEED_COMMENTS[idea.id]?.length ?? 0) + localComments.length})
               </p>
 
-              {idea.comments > 0 && localComments.length === 0 && (
-                <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 12, fontStyle: 'italic', margin: '0 0 12px' }}>
-                  {idea.comments} comentário{idea.comments !== 1 ? 's' : ''} de sessões anteriores
-                </p>
-              )}
-              {idea.comments > 0 && localComments.length > 0 && (
-                <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 12, fontStyle: 'italic', margin: '0 0 12px' }}>
-                  + {idea.comments} comentário{idea.comments !== 1 ? 's' : ''} anteriores
-                </p>
-              )}
+              {/* Seed comments (always visible) */}
+              {(SEED_COMMENTS[idea.id] ?? []).map((c, i) => (
+                <div key={`seed-${i}`} style={{ marginBottom: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
+                    <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
+                      {new Date(c.ts).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' })}
+                    </span>
+                  </div>
+                  <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
+                </div>
+              ))}
 
+              {/* New comments from this session */}
               {localComments.map(c => (
-                <div key={c.id} style={{ marginBottom: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12 }}>
+                <div key={c.id} style={{ marginBottom: 10, padding: '10px 14px', background: `${color}14`, border: `1px solid ${color}33`, borderRadius: 12 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                     <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
                     <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
                       {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <p style={{ color: 'rgba(255,255,255,0.62)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
+                  <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
                 </div>
               ))}
 
-              {localComments.length === 0 && idea.comments === 0 && (
+              {(SEED_COMMENTS[idea.id]?.length ?? 0) === 0 && localComments.length === 0 && (
                 <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 13, fontStyle: 'italic', margin: 0 }}>
                   Ainda sem comentários. Sê o primeiro!
                 </p>
@@ -1111,33 +1162,36 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                 {/* Comment list */}
                 <div style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 12px' }}>
                   <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 14, color: 'var(--text)' }}>
-                    💬 Comentários ({selectedIdea.comments + getComments(selectedIdea.id).length})
+                    💬 Comentários ({(SEED_COMMENTS[selectedIdea.id]?.length ?? 0) + getComments(selectedIdea.id).length})
                   </div>
 
-                  {selectedIdea.comments > 0 && getComments(selectedIdea.id).length === 0 && (
-                    <p style={{ fontSize: 12, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>
-                      {selectedIdea.comments} comentário{selectedIdea.comments !== 1 ? 's' : ''} de sessões anteriores
-                    </p>
-                  )}
-                  {selectedIdea.comments > 0 && getComments(selectedIdea.id).length > 0 && (
-                    <p style={{ fontSize: 12, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>
-                      + {selectedIdea.comments} comentários anteriores
-                    </p>
-                  )}
+                  {/* Seed comments (always visible) */}
+                  {(SEED_COMMENTS[selectedIdea.id] ?? []).map((c, i) => (
+                    <div key={`seed-${i}`} style={{ marginBottom: 10, padding: 12, borderRadius: 12, border: '1px solid var(--border-light)', background: 'var(--surface2)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                          {new Date(c.ts).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' })}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text)', margin: 0 }}>{c.text}</p>
+                    </div>
+                  ))}
 
+                  {/* New comments from this session */}
                   {getComments(selectedIdea.id).map(c => (
-                    <div key={c.id} style={{ marginBottom: 10, padding: 12, borderRadius: 12, border: '1px solid var(--border-light)', background: 'var(--surface2)' }}>
+                    <div key={c.id} style={{ marginBottom: 10, padding: 12, borderRadius: 12, border: `1px solid ${selectedIdea.catColor}33`, background: `${selectedIdea.catColor}0a` }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                         <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
                         <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                           {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
-                      <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text-muted)', margin: 0 }}>{c.text}</p>
+                      <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text)', margin: 0 }}>{c.text}</p>
                     </div>
                   ))}
 
-                  {getComments(selectedIdea.id).length === 0 && selectedIdea.comments === 0 && (
+                  {(SEED_COMMENTS[selectedIdea.id]?.length ?? 0) === 0 && getComments(selectedIdea.id).length === 0 && (
                     <p style={{ fontSize: 13, fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>Ainda sem comentários. Sê o primeiro!</p>
                   )}
                 </div>
