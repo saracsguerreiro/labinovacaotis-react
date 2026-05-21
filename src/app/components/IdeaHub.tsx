@@ -180,7 +180,7 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
           <button onClick={onClose} style={{ marginLeft: 'auto', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%', width: 32, height: 32, color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
         </div>
 
-        {/* ── Two-column body ── */}
+        {/* ── Two-column scroll area ── */}
         <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
           {/* Left — idea info */}
@@ -192,7 +192,7 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
                 <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>
                   <span style={{ color, fontWeight: 700 }}>▲</span>{voted ? idea.votes + 1 : idea.votes} votos
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>💬 {idea.comments + localComments.length}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>💬 {(SEED_COMMENTS[idea.id]?.length ?? 0) + localComments.length}</span>
               </div>
             </div>
 
@@ -220,88 +220,87 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
                 </div>
               </>
             )}
+          </div>
 
-            <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', marginTop: 'auto' }} />
+          {/* Right — comments list */}
+          <div style={{ flex: '0 0 45%', borderLeft: '1px solid rgba(255,255,255,0.07)', overflowY: 'auto', padding: '20px 20px 12px' }}>
+            <p style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, fontSize: 14, margin: '0 0 14px' }}>
+              💬 Comentários ({(SEED_COMMENTS[idea.id]?.length ?? 0) + localComments.length})
+            </p>
+
+            {(SEED_COMMENTS[idea.id] ?? []).map((c, i) => (
+              <div key={`seed-${i}`} style={{ marginBottom: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                  <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
+                    {new Date(c.ts).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' })}
+                  </span>
+                </div>
+                <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
+              </div>
+            ))}
+
+            {localComments.map(c => (
+              <div key={c.id} style={{ marginBottom: 10, padding: '10px 14px', background: `${color}14`, border: `1px solid ${color}33`, borderRadius: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                  <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
+                  <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
+                    {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+                <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
+              </div>
+            ))}
+
+            {(SEED_COMMENTS[idea.id]?.length ?? 0) === 0 && localComments.length === 0 && (
+              <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 13, fontStyle: 'italic', margin: 0 }}>
+                Ainda sem comentários. Sê o primeiro!
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* ── Shared footer — vote + comment input at the same height ── */}
+        <div style={{ flexShrink: 0, borderTop: '1px solid rgba(255,255,255,0.10)', display: 'flex' }}>
+          {/* Vote button — 55% */}
+          <div style={{ flex: '0 0 55%', padding: '14px 28px' }}>
             <button
               onClick={e => toggleVote(idea.id, e)}
               style={{
-                background: voted ? color : 'rgba(255,255,255,0.08)',
-                color: 'white', border: `1px solid ${voted ? color : 'rgba(255,255,255,0.2)'}`,
-                borderRadius: 99, padding: '12px 0', fontSize: 14, fontWeight: 700,
+                width: '100%',
+                background: voted ? `${color}22` : 'rgba(255,255,255,0.06)',
+                color: voted ? color : color,
+                border: `1.5px solid ${voted ? color : `${color}55`}`,
+                borderRadius: 9999, padding: '11px 0', fontSize: 14, fontWeight: 700,
                 cursor: 'pointer', transition: 'all 0.22s',
               }}
             >▲ {voted ? 'Votado' : `Votar (${idea.votes})`}</button>
           </div>
-
-          {/* Right — comments */}
-          <div style={{ flex: '0 0 45%', borderLeft: '1px solid rgba(255,255,255,0.07)', display: 'flex', flexDirection: 'column' }}>
-            {/* Comment list */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 12px' }}>
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, fontSize: 14, margin: '0 0 14px' }}>
-                💬 Comentários ({(SEED_COMMENTS[idea.id]?.length ?? 0) + localComments.length})
-              </p>
-
-              {/* Seed comments (always visible) */}
-              {(SEED_COMMENTS[idea.id] ?? []).map((c, i) => (
-                <div key={`seed-${i}`} style={{ marginBottom: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
-                    <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
-                      {new Date(c.ts).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' })}
-                    </span>
-                  </div>
-                  <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
-                </div>
-              ))}
-
-              {/* New comments from this session */}
-              {localComments.map(c => (
-                <div key={c.id} style={{ marginBottom: 10, padding: '10px 14px', background: `${color}14`, border: `1px solid ${color}33`, borderRadius: 12 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
-                    <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
-                      {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
-                  <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
-                </div>
-              ))}
-
-              {(SEED_COMMENTS[idea.id]?.length ?? 0) === 0 && localComments.length === 0 && (
-                <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 13, fontStyle: 'italic', margin: 0 }}>
-                  Ainda sem comentários. Sê o primeiro!
-                </p>
-              )}
-            </div>
-
-            {/* Comment input — pinned to bottom */}
-            <div style={{ flexShrink: 0, borderTop: '1px solid rgba(255,255,255,0.07)', padding: '14px 20px' }}>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <input
-                  type="text"
-                  placeholder="Escreve um comentário..."
-                  value={commentText}
-                  onChange={e => setCommentText(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleSubmitComment()}
-                  style={{
-                    flex: 1, background: 'rgba(255,255,255,0.07)',
-                    border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10,
-                    padding: '10px 14px', color: 'white', fontSize: 13, outline: 'none',
-                    fontFamily: 'var(--font-outfit)',
-                  }}
-                />
-                <button
-                  onClick={handleSubmitComment}
-                  style={{
-                    background: commentText.trim() ? '#2563eb' : 'rgba(255,255,255,0.08)',
-                    color: 'white', border: 'none', borderRadius: 10,
-                    padding: '10px 18px', fontWeight: 700, fontSize: 14,
-                    cursor: commentText.trim() ? 'pointer' : 'default',
-                    transition: 'background 0.2s',
-                  }}
-                >↩</button>
-              </div>
-            </div>
+          {/* Comment input — 45% */}
+          <div style={{ flex: '0 0 45%', borderLeft: '1px solid rgba(255,255,255,0.10)', padding: '14px 20px', display: 'flex', gap: 8 }}>
+            <input
+              type="text"
+              placeholder="Escreve um comentário..."
+              value={commentText}
+              onChange={e => setCommentText(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSubmitComment()}
+              style={{
+                flex: 1, background: 'rgba(255,255,255,0.07)',
+                border: '1px solid rgba(255,255,255,0.15)', borderRadius: 9999,
+                padding: '10px 16px', color: 'white', fontSize: 13, outline: 'none',
+                fontFamily: 'var(--font-outfit)',
+              }}
+            />
+            <button
+              onClick={handleSubmitComment}
+              style={{
+                background: commentText.trim() ? color : 'rgba(255,255,255,0.08)',
+                color: 'white', border: 'none', borderRadius: 9999,
+                padding: '10px 18px', fontWeight: 700, fontSize: 14,
+                cursor: commentText.trim() ? 'pointer' : 'default',
+                transition: 'background 0.2s', flexShrink: 0,
+              }}
+            >↩</button>
           </div>
         </div>
       </div>
@@ -1096,13 +1095,13 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
               <button style={{ marginLeft: 'auto', width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'transparent', border: 'none', fontSize: 18, color: 'var(--text-muted)' }} onClick={closeIdea}>✕</button>
             </div>
 
-            {/* Two-column body */}
+            {/* Two-column scroll area */}
             <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
               {/* Left — idea info */}
               <div style={{ flex: '0 0 55%', overflowY: 'auto', padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: 20 }}>
                 <div>
-                  <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12, lineHeight: 1.3, letterSpacing: '-0.5px', color: 'var(--text)', margin: '0 0 12px' }}>{selectedIdea.title}</h2>
+                  <h2 style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.3, letterSpacing: '-0.5px', color: 'var(--text)', margin: '0 0 12px' }}>{selectedIdea.title}</h2>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-muted)' }}>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -1114,7 +1113,7 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                       ▲ {selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)} votos
                     </div>
                     <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                      💬 {selectedIdea.comments + getComments(selectedIdea.id).length}
+                      💬 {(SEED_COMMENTS[selectedIdea.id]?.length ?? 0) + getComments(selectedIdea.id).length}
                     </div>
                   </div>
                 </div>
@@ -1142,86 +1141,83 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                     ))}
                   </ul>
                 </div>
+              </div>
 
-                <div style={{ height: 1, background: 'var(--border-light)', marginTop: 'auto' }} />
+              {/* Right — comments list */}
+              <div style={{ flex: '0 0 45%', borderLeft: '1px solid var(--border-light)', overflowY: 'auto', padding: '20px 20px 12px' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 14, color: 'var(--text)' }}>
+                  💬 Comentários ({(SEED_COMMENTS[selectedIdea.id]?.length ?? 0) + getComments(selectedIdea.id).length})
+                </div>
+
+                {(SEED_COMMENTS[selectedIdea.id] ?? []).map((c, i) => (
+                  <div key={`seed-${i}`} style={{ marginBottom: 10, padding: 12, borderRadius: 12, border: '1px solid var(--border-light)', background: 'var(--surface2)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                        {new Date(c.ts).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' })}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text)', margin: 0 }}>{c.text}</p>
+                  </div>
+                ))}
+
+                {getComments(selectedIdea.id).map(c => (
+                  <div key={c.id} style={{ marginBottom: 10, padding: 12, borderRadius: 12, border: `1px solid ${selectedIdea.catColor}33`, background: `${selectedIdea.catColor}0a` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                        {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                    <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text)', margin: 0 }}>{c.text}</p>
+                  </div>
+                ))}
+
+                {(SEED_COMMENTS[selectedIdea.id]?.length ?? 0) === 0 && getComments(selectedIdea.id).length === 0 && (
+                  <p style={{ fontSize: 13, fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>Ainda sem comentários. Sê o primeiro!</p>
+                )}
+              </div>
+            </div>
+
+            {/* Shared footer — vote + comment input at the same height */}
+            <div style={{ flexShrink: 0, borderTop: '1px solid var(--border-light)', display: 'flex' }}>
+              {/* Vote button — 55% */}
+              <div style={{ flex: '0 0 55%', padding: '14px 28px' }}>
                 <button
                   style={{
-                    padding: '10px 0', borderRadius: 20,
-                    border: `1.5px solid ${hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--border2)'}`,
-                    color: hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--text)',
-                    background: hasVoted(selectedIdea.id) ? 'var(--blue-light)' : 'transparent',
-                    fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                    fontFamily: 'var(--font-outfit)',
+                    width: '100%', padding: '11px 0', borderRadius: 9999,
+                    border: `1.5px solid ${hasVoted(selectedIdea.id) ? selectedIdea.catColor : `${selectedIdea.catColor}55`}`,
+                    color: selectedIdea.catColor,
+                    background: hasVoted(selectedIdea.id) ? `${selectedIdea.catColor}18` : 'transparent',
+                    fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                    fontFamily: 'var(--font-outfit)', transition: 'all 0.22s',
                   }}
                   onClick={e => handleVote(selectedIdea.id, e)}
                 >▲ {hasVoted(selectedIdea.id) ? 'Votado' : 'Votar'} ({selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)})</button>
               </div>
-
-              {/* Right — comments */}
-              <div style={{ flex: '0 0 45%', borderLeft: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column' }}>
-                {/* Comment list */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 12px' }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 14, color: 'var(--text)' }}>
-                    💬 Comentários ({(SEED_COMMENTS[selectedIdea.id]?.length ?? 0) + getComments(selectedIdea.id).length})
-                  </div>
-
-                  {/* Seed comments (always visible) */}
-                  {(SEED_COMMENTS[selectedIdea.id] ?? []).map((c, i) => (
-                    <div key={`seed-${i}`} style={{ marginBottom: 10, padding: 12, borderRadius: 12, border: '1px solid var(--border-light)', background: 'var(--surface2)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
-                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                          {new Date(c.ts).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' })}
-                        </span>
-                      </div>
-                      <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text)', margin: 0 }}>{c.text}</p>
-                    </div>
-                  ))}
-
-                  {/* New comments from this session */}
-                  {getComments(selectedIdea.id).map(c => (
-                    <div key={c.id} style={{ marginBottom: 10, padding: 12, borderRadius: 12, border: `1px solid ${selectedIdea.catColor}33`, background: `${selectedIdea.catColor}0a` }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
-                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                          {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                      <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text)', margin: 0 }}>{c.text}</p>
-                    </div>
-                  ))}
-
-                  {(SEED_COMMENTS[selectedIdea.id]?.length ?? 0) === 0 && getComments(selectedIdea.id).length === 0 && (
-                    <p style={{ fontSize: 13, fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>Ainda sem comentários. Sê o primeiro!</p>
-                  )}
-                </div>
-
-                {/* Comment input — pinned to bottom */}
-                <div style={{ flexShrink: 0, borderTop: '1px solid var(--border-light)', padding: '14px 20px' }}>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <input
-                      type="text"
-                      placeholder="Escreve um comentário..."
-                      value={listCommentText}
-                      onChange={e => setListCommentText(e.target.value)}
-                      onKeyDown={e => {
-                        if (e.key === 'Enter' && listCommentText.trim()) {
-                          addComment(selectedIdea.id, listCommentText);
-                          setListCommentText('');
-                        }
-                      }}
-                      style={{ flex: 1, padding: '9px 12px', borderRadius: 10, border: '1px solid var(--border-light)', fontSize: 13, outline: 'none', background: 'var(--surface2)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
-                    />
-                    <button
-                      onClick={() => {
-                        if (!listCommentText.trim()) return;
-                        addComment(selectedIdea.id, listCommentText);
-                        setListCommentText('');
-                      }}
-                      style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 700, color: 'white', border: 'none', background: listCommentText.trim() ? 'var(--blue)' : 'var(--surface3)', cursor: listCommentText.trim() ? 'pointer' : 'default', transition: 'background 0.2s' }}
-                    >↩</button>
-                  </div>
-                </div>
+              {/* Comment input — 45% */}
+              <div style={{ flex: '0 0 45%', borderLeft: '1px solid var(--border-light)', padding: '14px 20px', display: 'flex', gap: 8 }}>
+                <input
+                  type="text"
+                  placeholder="Escreve um comentário..."
+                  value={listCommentText}
+                  onChange={e => setListCommentText(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && listCommentText.trim()) {
+                      addComment(selectedIdea.id, listCommentText);
+                      setListCommentText('');
+                    }
+                  }}
+                  style={{ flex: 1, padding: '9px 16px', borderRadius: 9999, border: '1px solid var(--border-light)', fontSize: 13, outline: 'none', background: 'var(--surface2)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
+                />
+                <button
+                  onClick={() => {
+                    if (!listCommentText.trim()) return;
+                    addComment(selectedIdea.id, listCommentText);
+                    setListCommentText('');
+                  }}
+                  style={{ padding: '9px 16px', borderRadius: 9999, fontSize: 13, fontWeight: 700, color: 'white', border: 'none', background: listCommentText.trim() ? selectedIdea.catColor : 'var(--surface3)', cursor: listCommentText.trim() ? 'pointer' : 'default', transition: 'background 0.2s', flexShrink: 0 }}
+                >↩</button>
               </div>
             </div>
           </div>
