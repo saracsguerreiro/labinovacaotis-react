@@ -498,12 +498,7 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
           zIndex: 10,
           overflowY: 'auto',
         }}>
-          {/* View toggle at the top of the panel */}
-          <div style={{ padding: '0 16px 16px' }}>
-            <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
-          </div>
-
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 16px' }} />
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 0' }} />
 
           {/* Search */}
           <div style={{ padding: '0 14px 14px', position: 'relative' }}>
@@ -581,6 +576,11 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
 
         {/* Gradient fade from panel into space */}
         <div style={{ position: 'absolute', top: 0, left: 214, bottom: 0, width: 40, background: 'linear-gradient(to right, rgba(3,5,16,0.35) 0%, transparent 100%)', pointerEvents: 'none', zIndex: 9 }} />
+
+        {/* View toggle — top-right, same position as Lista view */}
+        <div style={{ position: 'absolute', top: 96, right: 20, zIndex: 11 }}>
+          <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
+        </div>
 
         {/* ── Bubbles ── */}
         {bubblesRef.current.map(b => {
