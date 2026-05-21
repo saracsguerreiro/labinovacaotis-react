@@ -247,7 +247,42 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
 // ─── Stats section (shown below the Nebula) ───────────────────────────────────
 function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void }) {
   return (
-    <div style={{ background: '#050714', padding: '64px 40px 72px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+    <div style={{ background: '#050714', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+
+      {/* ── Resumo header ── */}
+      <div style={{ padding: '56px 40px 0', textAlign: 'center', position: 'relative' }}>
+        {/* Glow behind title */}
+        <div style={{ position: 'absolute', top: 40, left: '50%', transform: 'translateX(-50%)', width: 300, height: 80, background: 'radial-gradient(ellipse, rgba(37,99,235,0.18) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14, marginBottom: 10 }}>
+          <div style={{ height: 1, width: 48, background: 'linear-gradient(to right, transparent, rgba(37,99,235,0.6))' }} />
+          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#2563eb' }}>Resumo das ideias</span>
+          <div style={{ height: 1, width: 48, background: 'linear-gradient(to left, transparent, rgba(37,99,235,0.6))' }} />
+        </div>
+
+        {/* Key numbers */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 0, marginTop: 24, marginBottom: 56, flexWrap: 'wrap' }}>
+          {[
+            { n: '271', label: 'ideias submetidas', color: '#2563eb' },
+            { n: '89',  label: 'em análise',        color: '#9437FF' },
+            { n: '28',  label: 'em implementação',  color: '#4294F8' },
+            { n: '12',  label: 'concluídas',        color: '#FF0066' },
+          ].map((item, i, arr) => (
+            <div key={item.label} style={{ textAlign: 'center', padding: '0 36px', borderRight: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
+              <div style={{ fontSize: 42, fontWeight: 900, lineHeight: 1, color: item.color, textShadow: `0 0 32px ${item.color}66`, fontFamily: 'var(--font-mono)' }}>
+                {item.n}
+              </div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                {item.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.07) 20%, rgba(255,255,255,0.07) 80%, transparent)', margin: '0 40px 56px' }} />
+
+      <div style={{ padding: '0 40px 72px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 48 }}>
 
         {/* Por categoria */}
@@ -329,6 +364,7 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
         </div>
 
       </div>
+      </div>
     </div>
   );
 }
@@ -377,10 +413,10 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
       const t = maxVotes === minVotes ? 0.5 : (idea.votes - minVotes) / (maxVotes - minVotes);
       const radius = minR + t * (maxR - minR);
       const navBottom = 92;
-      const leftBound = 214;
+      const rightPanelW = 214;
       return {
         id: idea.id,
-        x: leftBound + radius + Math.random() * (width - leftBound - radius * 2),
+        x: radius + Math.random() * (width - rightPanelW - radius * 2),
         y: navBottom + radius + Math.random() * (height - navBottom - radius * 2),
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
@@ -416,9 +452,9 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         if (spd > 1.6) { b.vx = b.vx / spd * 1.6; b.vy = b.vy / spd * 1.6; }
         b.x += b.vx; b.y += b.vy;
         const navBottom = 92;
-        const leftBound = 214;
-        if (b.x - b.radius < leftBound)         { b.x = leftBound + b.radius;    b.vx =  Math.abs(b.vx); }
-        if (b.x + b.radius > width)             { b.x = width - b.radius;        b.vx = -Math.abs(b.vx); }
+        const rightPanelW = 214;
+        if (b.x - b.radius < 0)                          { b.x = b.radius;                         b.vx =  Math.abs(b.vx); }
+        if (b.x + b.radius > width - rightPanelW)        { b.x = width - rightPanelW - b.radius;   b.vx = -Math.abs(b.vx); }
         if (b.y - b.radius < navBottom)         { b.y = navBottom + b.radius;    b.vy =  Math.abs(b.vy); }
         if (b.y + b.radius > height)            { b.y = height - b.radius;       b.vy = -Math.abs(b.vy); }
 
@@ -484,20 +520,25 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         <div style={{ position: 'absolute', right: '6%', bottom: '15%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(148,55,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: '55%', top: '45%', width: 350, height: 350, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,102,0.03) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        {/* ══ Filter panel — vertical left column ══ */}
+        {/* ══ Filter panel — vertical right column ══ */}
         <div style={{
-          position: 'absolute', top: 0, left: 0, bottom: 0,
+          position: 'absolute', top: 0, right: 0, bottom: 0,
           width: 214,
           display: 'flex', flexDirection: 'column',
-          paddingTop: 96, // clear the nav
+          paddingTop: 96,
           background: 'rgba(3,5,16,0.88)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderRight: '1px solid rgba(255,255,255,0.09)',
-          boxShadow: '6px 0 32px rgba(0,0,0,0.55)',
+          borderLeft: '1px solid rgba(255,255,255,0.09)',
+          boxShadow: '-6px 0 32px rgba(0,0,0,0.55)',
           zIndex: 10,
           overflowY: 'auto',
         }}>
+          {/* View toggle — top of right panel, consistent with Lista */}
+          <div style={{ padding: '0 14px 14px' }}>
+            <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
+          </div>
+
           <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 0' }} />
 
           {/* Search */}
@@ -574,13 +615,8 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
           </div>
         </div>
 
-        {/* Gradient fade from panel into space */}
-        <div style={{ position: 'absolute', top: 0, left: 214, bottom: 0, width: 40, background: 'linear-gradient(to right, rgba(3,5,16,0.35) 0%, transparent 100%)', pointerEvents: 'none', zIndex: 9 }} />
-
-        {/* View toggle — top-right, same position as Lista view */}
-        <div style={{ position: 'absolute', top: 96, right: 20, zIndex: 11 }}>
-          <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
-        </div>
+        {/* Gradient fade from right panel into space */}
+        <div style={{ position: 'absolute', top: 0, right: 214, bottom: 0, width: 40, background: 'linear-gradient(to left, rgba(3,5,16,0.35) 0%, transparent 100%)', pointerEvents: 'none', zIndex: 9 }} />
 
         {/* ── Bubbles ── */}
         {bubblesRef.current.map(b => {
