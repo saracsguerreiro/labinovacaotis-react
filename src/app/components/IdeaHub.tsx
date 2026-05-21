@@ -244,15 +244,28 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
   );
 }
 
-// ─── Stats section (shown below the Nebula) ───────────────────────────────────
-function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void }) {
+// ─── Stats section (shown below the Nebula and Lista) ────────────────────────
+function StatsSection({ onStatusFilter, light }: { onStatusFilter?: (s: string) => void; light?: boolean }) {
+  const bg          = light ? 'var(--bg)'                        : '#050714';
+  const borderTop   = light ? '1px solid var(--border-light)'    : '1px solid rgba(255,255,255,0.06)';
+  const labelColor  = light ? 'var(--text-sub)'                  : 'rgba(255,255,255,0.35)';
+  const textMuted   = light ? 'var(--text-muted)'                : 'rgba(255,255,255,0.5)';
+  const dividerBg   = light ? 'var(--border-light)'              : 'rgba(255,255,255,0.07)';
+  const dividerLine = light
+    ? 'linear-gradient(to right, transparent, var(--border-light) 20%, var(--border-light) 80%, transparent)'
+    : 'linear-gradient(to right, transparent, rgba(255,255,255,0.07) 20%, rgba(255,255,255,0.07) 80%, transparent)';
+  const numShadow   = (color: string) => light ? 'none' : `0 0 32px ${color}66`;
+  const statCardBg  = light ? 'var(--surface)'                   : 'rgba(255,255,255,0.04)';
+  const statCardBdr = light ? 'var(--border-light)'              : 'rgba(255,255,255,0.08)';
+
   return (
-    <div style={{ background: '#050714', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+    <div style={{ background: bg, borderTop }}>
 
       {/* ── Resumo header ── */}
       <div style={{ padding: '56px 40px 0', textAlign: 'center', position: 'relative' }}>
-        {/* Glow behind title */}
-        <div style={{ position: 'absolute', top: 40, left: '50%', transform: 'translateX(-50%)', width: 300, height: 80, background: 'radial-gradient(ellipse, rgba(37,99,235,0.18) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        {!light && (
+          <div style={{ position: 'absolute', top: 40, left: '50%', transform: 'translateX(-50%)', width: 300, height: 80, background: 'radial-gradient(ellipse, rgba(37,99,235,0.18) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        )}
 
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14, marginBottom: 10 }}>
           <div style={{ height: 1, width: 48, background: 'linear-gradient(to right, transparent, rgba(37,99,235,0.6))' }} />
@@ -268,11 +281,11 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
             { n: '28',  label: 'em implementação',  color: '#4294F8' },
             { n: '12',  label: 'concluídas',        color: '#FF0066' },
           ].map((item, i, arr) => (
-            <div key={item.label} style={{ textAlign: 'center', padding: '0 36px', borderRight: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
-              <div style={{ fontSize: 42, fontWeight: 900, lineHeight: 1, color: item.color, textShadow: `0 0 32px ${item.color}66`, fontFamily: 'var(--font-mono)' }}>
+            <div key={item.label} style={{ textAlign: 'center', padding: '0 36px', borderRight: i < arr.length - 1 ? `1px solid ${dividerBg}` : 'none' }}>
+              <div style={{ fontSize: 42, fontWeight: 900, lineHeight: 1, color: item.color, textShadow: numShadow(item.color), fontFamily: 'var(--font-mono)' }}>
                 {item.n}
               </div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <div style={{ fontSize: 11, color: labelColor, marginTop: 6, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 {item.label}
               </div>
             </div>
@@ -280,14 +293,14 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
         </div>
       </div>
 
-      <div style={{ height: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.07) 20%, rgba(255,255,255,0.07) 80%, transparent)', margin: '0 40px 56px' }} />
+      <div style={{ height: 1, background: dividerLine, margin: '0 40px 56px' }} />
 
       <div style={{ padding: '0 40px 72px' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 48 }}>
 
         {/* Por categoria */}
         <div>
-          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: labelColor, marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
             Por categoria
           </div>
           {[
@@ -298,12 +311,12 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
             { name: 'Outros', pct: 6, color: '#87007f' },
           ].map(cat => (
             <div key={cat.name} style={{ marginBottom: 14 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 12, color: textMuted }}>
                 <span>{cat.name}</span>
                 <span style={{ fontFamily: 'var(--font-mono)', color: cat.color }}>{cat.pct}%</span>
               </div>
-              <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.07)' }}>
-                <div style={{ height: '100%', borderRadius: 2, width: `${cat.pct}%`, background: cat.color, boxShadow: `0 0 8px ${cat.color}88` }} />
+              <div style={{ height: 3, borderRadius: 2, background: dividerBg }}>
+                <div style={{ height: '100%', borderRadius: 2, width: `${cat.pct}%`, background: cat.color, boxShadow: light ? 'none' : `0 0 8px ${cat.color}88` }} />
               </div>
             </div>
           ))}
@@ -311,7 +324,7 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
 
         {/* Por estado */}
         <div>
-          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: labelColor, marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
             Por estado
           </div>
           {[
@@ -326,13 +339,13 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
               style={{
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 padding: '10px 14px', borderRadius: 10, marginBottom: 8,
-                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                background: statCardBg, border: `1px solid ${statCardBdr}`,
                 cursor: 'default', transition: 'background 0.18s',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 7, height: 7, borderRadius: '50%', background: stat.color, boxShadow: `0 0 6px ${stat.color}` }} />
-                <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13 }}>{stat.label}</span>
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: stat.color, boxShadow: light ? 'none' : `0 0 6px ${stat.color}` }} />
+                <span style={{ color: textMuted, fontSize: 13 }}>{stat.label}</span>
               </div>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 800, color: stat.color }}>{stat.n}</span>
             </div>
@@ -341,7 +354,7 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
 
         {/* Top colaboradores */}
         <div>
-          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: labelColor, marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
             Top colaboradores
           </div>
           {[
@@ -351,12 +364,12 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
             { name: 'SN', fullName: 'Sofia Neves', count: '4 ideias', bg: 'linear-gradient(135deg, #036ef2, #3126b4)' },
           ].map((user, i) => (
             <div key={user.name} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: user.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'white', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: user.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'white', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.25)' }}>
                 {user.name}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 600 }}>{user.fullName}</div>
-                <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, marginTop: 1 }}>#{i + 1} contributor</div>
+                <div style={{ color: textMuted, fontSize: 13, fontWeight: 600 }}>{user.fullName}</div>
+                <div style={{ color: labelColor, fontSize: 11, marginTop: 1 }}>#{i + 1} contributor</div>
               </div>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 800, color: '#2563eb' }}>{user.count}</span>
             </div>
@@ -709,7 +722,7 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
       </div>
 
       {/* ── Stats section below the nebula ── */}
-      <StatsSection />
+      <StatsSection light />
 
       {/* ── Detail modal ── */}
       {selected && (
@@ -736,7 +749,7 @@ const LIST_SORTS      = [
   { label: 'Mais comentadas', value: 'comments' },
 ];
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 8;
 
 function ListaView({ onSwitch }: { onSwitch: () => void }) {
   const navigate = useNavigate();
