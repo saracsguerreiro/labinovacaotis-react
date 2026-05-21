@@ -113,13 +113,15 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
         onClick={e => e.stopPropagation()}
         style={{
           position: 'relative', borderRadius: 24,
-          width: '100%', maxWidth: 580, maxHeight: '88vh', overflowY: 'auto',
+          width: '100%', maxWidth: 860, height: '82vh',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
           background: 'linear-gradient(145deg, #0c1345 0%, #040815 100%)',
           border: `1px solid ${color}44`,
           boxShadow: `0 0 80px ${color}22, 0 32px 64px rgba(0,0,0,0.6)`,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '20px 24px 0' }}>
+        {/* ── Header bar ── */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
           <span style={{ background: color + '28', color, padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 700 }}>
             {idea.cat}
           </span>
@@ -129,114 +131,126 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
           </span>
           <button onClick={onClose} style={{ marginLeft: 'auto', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%', width: 32, height: 32, color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
         </div>
-        <div style={{ padding: '16px 24px 0' }}>
-          <h2 style={{ color: 'white', fontSize: 22, fontWeight: 800, lineHeight: 1.3, margin: 0 }}>{idea.title}</h2>
-        </div>
-        <div style={{ padding: '14px 24px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>👤 {idea.author}</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>
-            <span style={{ color, fontWeight: 700 }}>▲</span>{voted ? idea.votes + 1 : idea.votes} votos
-          </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>💬 {idea.comments + localComments.length} comentários</span>
-        </div>
-        {content && (
-          <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-            <div>
-              <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 6px' }}>Problema</p>
-              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.65, margin: 0 }}>{content.problem}</p>
-            </div>
-            <div>
-              <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 6px' }}>Solução Proposta</p>
-              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.65, margin: 0 }}>{content.solution}</p>
-            </div>
-            <div>
-              <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 8px' }}>Impacto Esperado</p>
-              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {content.impact.map((item, i) => (
-                  <li key={i} style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                    <span style={{ color, fontSize: 13, flexShrink: 0, marginTop: 1 }}>›</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-        {/* Votar */}
-        <div style={{ padding: '0 24px 20px', borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20, display: 'flex', gap: 12 }}>
-          <button
-            onClick={e => toggleVote(idea.id, e)}
-            style={{
-              flex: 1, background: voted ? color : 'rgba(255,255,255,0.08)',
-              color: 'white', border: `1px solid ${voted ? color : 'rgba(255,255,255,0.2)'}`,
-              borderRadius: 99, padding: '12px 0', fontSize: 14, fontWeight: 700,
-              cursor: 'pointer', transition: 'all 0.22s',
-            }}
-          >▲ {voted ? 'Votado' : `Votar (${idea.votes})`}</button>
-        </div>
 
-        {/* Comentários */}
-        <div style={{ padding: '0 24px 28px', borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20 }}>
-          <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 14px' }}>
-            💬 Comentários ({idea.comments + localComments.length})
-          </p>
+        {/* ── Two-column body ── */}
+        <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
-          {/* Comentários sintéticos anteriores */}
-          {idea.comments > 0 && localComments.length === 0 && (
-            <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 12, fontStyle: 'italic', margin: '0 0 12px' }}>
-              {idea.comments} comentário{idea.comments !== 1 ? 's' : ''} de sessões anteriores
-            </p>
-          )}
-          {idea.comments > 0 && localComments.length > 0 && (
-            <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 12, fontStyle: 'italic', margin: '0 0 12px' }}>
-              + {idea.comments} comentário{idea.comments !== 1 ? 's' : ''} anteriores
-            </p>
-          )}
-
-          {/* Comentários locais */}
-          {localComments.map(c => (
-            <div key={c.id} style={{ marginBottom: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
-                <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
-                  {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+          {/* Left — idea info */}
+          <div style={{ flex: '0 0 55%', overflowY: 'auto', padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div>
+              <h2 style={{ color: 'white', fontSize: 22, fontWeight: 800, lineHeight: 1.3, margin: '0 0 12px' }}>{idea.title}</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>👤 {idea.author}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>
+                  <span style={{ color, fontWeight: 700 }}>▲</span>{voted ? idea.votes + 1 : idea.votes} votos
                 </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>💬 {idea.comments + localComments.length}</span>
               </div>
-              <p style={{ color: 'rgba(255,255,255,0.62)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
             </div>
-          ))}
 
-          {localComments.length === 0 && idea.comments === 0 && (
-            <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 13, margin: '0 0 12px', fontStyle: 'italic' }}>
-              Ainda sem comentários. Sê o primeiro!
-            </p>
-          )}
+            {content && (
+              <>
+                <div style={{ height: 1, background: 'rgba(255,255,255,0.07)' }} />
+                <div>
+                  <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 6px' }}>Problema</p>
+                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.65, margin: 0 }}>{content.problem}</p>
+                </div>
+                <div>
+                  <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 6px' }}>Solução Proposta</p>
+                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.65, margin: 0 }}>{content.solution}</p>
+                </div>
+                <div>
+                  <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 8px' }}>Impacto Esperado</p>
+                  <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {content.impact.map((item, i) => (
+                      <li key={i} style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                        <span style={{ color, fontSize: 13, flexShrink: 0, marginTop: 1 }}>›</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            )}
 
-          {/* Input novo comentário */}
-          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-            <input
-              type="text"
-              placeholder="Escreve um comentário..."
-              value={commentText}
-              onChange={e => setCommentText(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSubmitComment()}
-              style={{
-                flex: 1, background: 'rgba(255,255,255,0.07)',
-                border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10,
-                padding: '10px 14px', color: 'white', fontSize: 13, outline: 'none',
-                fontFamily: 'var(--font-outfit)',
-              }}
-            />
+            <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', marginTop: 'auto' }} />
             <button
-              onClick={handleSubmitComment}
+              onClick={e => toggleVote(idea.id, e)}
               style={{
-                background: commentText.trim() ? '#2563eb' : 'rgba(255,255,255,0.08)',
-                color: 'white', border: 'none', borderRadius: 10,
-                padding: '10px 18px', fontWeight: 700, fontSize: 14,
-                cursor: commentText.trim() ? 'pointer' : 'default',
-                transition: 'background 0.2s',
+                background: voted ? color : 'rgba(255,255,255,0.08)',
+                color: 'white', border: `1px solid ${voted ? color : 'rgba(255,255,255,0.2)'}`,
+                borderRadius: 99, padding: '12px 0', fontSize: 14, fontWeight: 700,
+                cursor: 'pointer', transition: 'all 0.22s',
               }}
-            >↩</button>
+            >▲ {voted ? 'Votado' : `Votar (${idea.votes})`}</button>
+          </div>
+
+          {/* Right — comments */}
+          <div style={{ flex: '0 0 45%', borderLeft: '1px solid rgba(255,255,255,0.07)', display: 'flex', flexDirection: 'column' }}>
+            {/* Comment list */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 12px' }}>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, fontSize: 14, margin: '0 0 14px' }}>
+                💬 Comentários ({idea.comments + localComments.length})
+              </p>
+
+              {idea.comments > 0 && localComments.length === 0 && (
+                <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 12, fontStyle: 'italic', margin: '0 0 12px' }}>
+                  {idea.comments} comentário{idea.comments !== 1 ? 's' : ''} de sessões anteriores
+                </p>
+              )}
+              {idea.comments > 0 && localComments.length > 0 && (
+                <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 12, fontStyle: 'italic', margin: '0 0 12px' }}>
+                  + {idea.comments} comentário{idea.comments !== 1 ? 's' : ''} anteriores
+                </p>
+              )}
+
+              {localComments.map(c => (
+                <div key={c.id} style={{ marginBottom: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                    <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
+                    <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
+                      {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <p style={{ color: 'rgba(255,255,255,0.62)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
+                </div>
+              ))}
+
+              {localComments.length === 0 && idea.comments === 0 && (
+                <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 13, fontStyle: 'italic', margin: 0 }}>
+                  Ainda sem comentários. Sê o primeiro!
+                </p>
+              )}
+            </div>
+
+            {/* Comment input — pinned to bottom */}
+            <div style={{ flexShrink: 0, borderTop: '1px solid rgba(255,255,255,0.07)', padding: '14px 20px' }}>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input
+                  type="text"
+                  placeholder="Escreve um comentário..."
+                  value={commentText}
+                  onChange={e => setCommentText(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleSubmitComment()}
+                  style={{
+                    flex: 1, background: 'rgba(255,255,255,0.07)',
+                    border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10,
+                    padding: '10px 14px', color: 'white', fontSize: 13, outline: 'none',
+                    fontFamily: 'var(--font-outfit)',
+                  }}
+                />
+                <button
+                  onClick={handleSubmitComment}
+                  style={{
+                    background: commentText.trim() ? '#2563eb' : 'rgba(255,255,255,0.08)',
+                    color: 'white', border: 'none', borderRadius: 10,
+                    padding: '10px 18px', fontWeight: 700, fontSize: 14,
+                    cursor: commentText.trim() ? 'pointer' : 'default',
+                    transition: 'background 0.2s',
+                  }}
+                >↩</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1011,52 +1025,61 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
       {/* ── Stats section ── */}
       <StatsSection />
 
-      {/* ── Idea detail modal (light theme) ── */}
+      {/* ── Idea detail modal (light theme, 2-column) ── */}
       {selectedIdea && (
         <div
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
           onClick={closeIdea}
         >
           <div
-            style={{ background: 'var(--surface)', borderRadius: 18, maxWidth: 680, width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
+            style={{ background: 'var(--surface)', borderRadius: 18, maxWidth: 860, width: '100%', height: '82vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
             onClick={e => e.stopPropagation()}
           >
-            <div style={{ position: 'sticky', top: 0, background: 'var(--surface)', borderBottom: '1px solid var(--border-light)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 4, fontWeight: 600, fontFamily: 'var(--font-mono)', color: selectedIdea.catColor, background: selectedIdea.catBg }}>{selectedIdea.cat}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: selectedIdea.statusColor }} />
-                  {selectedIdea.status}
-                </div>
+            {/* Header */}
+            <div style={{ flexShrink: 0, borderBottom: '1px solid var(--border-light)', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 4, fontWeight: 600, fontFamily: 'var(--font-mono)', color: selectedIdea.catColor, background: selectedIdea.catBg }}>{selectedIdea.cat}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: selectedIdea.statusColor }} />
+                {selectedIdea.status}
               </div>
-              <button style={{ width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'transparent', border: 'none', fontSize: 18, color: 'var(--text-muted)' }} onClick={closeIdea}>✕</button>
+              <button style={{ marginLeft: 'auto', width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'transparent', border: 'none', fontSize: 18, color: 'var(--text-muted)' }} onClick={closeIdea}>✕</button>
             </div>
-            <div style={{ padding: 24 }}>
-              <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 16, lineHeight: 1.3, letterSpacing: '-0.5px', color: 'var(--text)' }}>{selectedIdea.title}</h2>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, paddingBottom: 20, borderBottom: '1px solid var(--border-light)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-muted)' }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-                  </svg>
-                  {selectedIdea.author}
+
+            {/* Two-column body */}
+            <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+
+              {/* Left — idea info */}
+              <div style={{ flex: '0 0 55%', overflowY: 'auto', padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div>
+                  <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 12, lineHeight: 1.3, letterSpacing: '-0.5px', color: 'var(--text)', margin: '0 0 12px' }}>{selectedIdea.title}</h2>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-muted)' }}>
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+                      </svg>
+                      {selectedIdea.author}
+                    </div>
+                    <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                      ▲ {selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)} votos
+                    </div>
+                    <div style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                      💬 {selectedIdea.comments + getComments(selectedIdea.id).length}
+                    </div>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                  ▲ {selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)} votos
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                  💬 {selectedIdea.comments + getComments(selectedIdea.id).length} comentários
-                </div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+                <div style={{ height: 1, background: 'var(--border-light)' }} />
+
                 {[
-                  { label: 'Problema',         text: `Identificámos desafios significativos relacionados com ${selectedIdea.title.toLowerCase()}, que afectam directamente a eficiência operacional e a satisfação dos envolvidos.` },
-                  { label: 'Solução Proposta',  text: `A solução passa por implementar ${selectedIdea.title.toLowerCase()}, através de uma abordagem estruturada e centrada nas necessidades reais dos utilizadores.` },
+                  { label: 'Problema',        text: `Identificámos desafios significativos relacionados com ${selectedIdea.title.toLowerCase()}, que afectam directamente a eficiência operacional e a satisfação dos envolvidos.` },
+                  { label: 'Solução Proposta', text: `A solução passa por implementar ${selectedIdea.title.toLowerCase()}, através de uma abordagem estruturada e centrada nas necessidades reais dos utilizadores.` },
                 ].map(block => (
                   <div key={block.label}>
                     <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: 'var(--text)' }}>{block.label}</div>
                     <div style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--text-muted)' }}>{block.text}</div>
                   </div>
                 ))}
+
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8, color: 'var(--text)' }}>Impacto Esperado</div>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -1068,11 +1091,11 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                     ))}
                   </ul>
                 </div>
-              </div>
-              <div style={{ display: 'flex', gap: 10, marginTop: 28, paddingTop: 20, borderTop: '1px solid var(--border-light)' }}>
+
+                <div style={{ height: 1, background: 'var(--border-light)', marginTop: 'auto' }} />
                 <button
                   style={{
-                    flex: 1, padding: '10px 16px', borderRadius: 20,
+                    padding: '10px 0', borderRadius: 20,
                     border: `1.5px solid ${hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--border2)'}`,
                     color: hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--text)',
                     background: hasVoted(selectedIdea.id) ? 'var(--blue-light)' : 'transparent',
@@ -1083,61 +1106,67 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                 >▲ {hasVoted(selectedIdea.id) ? 'Votado' : 'Votar'} ({selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)})</button>
               </div>
 
-              {/* Comentários */}
-              <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--border-light)' }}>
-                <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12, color: 'var(--text)' }}>
-                  💬 Comentários ({selectedIdea.comments + getComments(selectedIdea.id).length})
+              {/* Right — comments */}
+              <div style={{ flex: '0 0 45%', borderLeft: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column' }}>
+                {/* Comment list */}
+                <div style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 12px' }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 14, color: 'var(--text)' }}>
+                    💬 Comentários ({selectedIdea.comments + getComments(selectedIdea.id).length})
+                  </div>
+
+                  {selectedIdea.comments > 0 && getComments(selectedIdea.id).length === 0 && (
+                    <p style={{ fontSize: 12, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>
+                      {selectedIdea.comments} comentário{selectedIdea.comments !== 1 ? 's' : ''} de sessões anteriores
+                    </p>
+                  )}
+                  {selectedIdea.comments > 0 && getComments(selectedIdea.id).length > 0 && (
+                    <p style={{ fontSize: 12, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>
+                      + {selectedIdea.comments} comentários anteriores
+                    </p>
+                  )}
+
+                  {getComments(selectedIdea.id).map(c => (
+                    <div key={c.id} style={{ marginBottom: 10, padding: 12, borderRadius: 12, border: '1px solid var(--border-light)', background: 'var(--surface2)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                          {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text-muted)', margin: 0 }}>{c.text}</p>
+                    </div>
+                  ))}
+
+                  {getComments(selectedIdea.id).length === 0 && selectedIdea.comments === 0 && (
+                    <p style={{ fontSize: 13, fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>Ainda sem comentários. Sê o primeiro!</p>
+                  )}
                 </div>
 
-                {selectedIdea.comments > 0 && getComments(selectedIdea.id).length === 0 && (
-                  <p style={{ fontSize: 12, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>
-                    {selectedIdea.comments} comentário{selectedIdea.comments !== 1 ? 's' : ''} de sessões anteriores
-                  </p>
-                )}
-                {selectedIdea.comments > 0 && getComments(selectedIdea.id).length > 0 && (
-                  <p style={{ fontSize: 12, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>
-                    + {selectedIdea.comments} comentários anteriores
-                  </p>
-                )}
-
-                {getComments(selectedIdea.id).map(c => (
-                  <div key={c.id} style={{ marginBottom: 12, padding: 12, borderRadius: 12, border: '1px solid var(--border-light)', background: 'var(--surface2)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
-                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                        {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
-                    <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text-muted)', margin: 0 }}>{c.text}</p>
-                  </div>
-                ))}
-
-                {getComments(selectedIdea.id).length === 0 && selectedIdea.comments === 0 && (
-                  <p style={{ fontSize: 13, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>Ainda sem comentários. Sê o primeiro!</p>
-                )}
-
-                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                  <input
-                    type="text"
-                    placeholder="Escreve um comentário..."
-                    value={listCommentText}
-                    onChange={e => setListCommentText(e.target.value)}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter' && listCommentText.trim()) {
+                {/* Comment input — pinned to bottom */}
+                <div style={{ flexShrink: 0, borderTop: '1px solid var(--border-light)', padding: '14px 20px' }}>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <input
+                      type="text"
+                      placeholder="Escreve um comentário..."
+                      value={listCommentText}
+                      onChange={e => setListCommentText(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && listCommentText.trim()) {
+                          addComment(selectedIdea.id, listCommentText);
+                          setListCommentText('');
+                        }
+                      }}
+                      style={{ flex: 1, padding: '9px 12px', borderRadius: 10, border: '1px solid var(--border-light)', fontSize: 13, outline: 'none', background: 'var(--surface2)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
+                    />
+                    <button
+                      onClick={() => {
+                        if (!listCommentText.trim()) return;
                         addComment(selectedIdea.id, listCommentText);
                         setListCommentText('');
-                      }
-                    }}
-                    style={{ flex: 1, padding: '8px 12px', borderRadius: 12, border: '1px solid var(--border-light)', fontSize: 13, outline: 'none', background: 'transparent', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
-                  />
-                  <button
-                    onClick={() => {
-                      if (!listCommentText.trim()) return;
-                      addComment(selectedIdea.id, listCommentText);
-                      setListCommentText('');
-                    }}
-                    style={{ padding: '8px 16px', borderRadius: 12, fontSize: 13, fontWeight: 700, color: 'white', border: 'none', background: listCommentText.trim() ? 'var(--blue)' : 'var(--surface3)', cursor: listCommentText.trim() ? 'pointer' : 'default', transition: 'background 0.2s' }}
-                  >↩</button>
+                      }}
+                      style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 700, color: 'white', border: 'none', background: listCommentText.trim() ? 'var(--blue)' : 'var(--surface3)', cursor: listCommentText.trim() ? 'pointer' : 'default', transition: 'background 0.2s' }}
+                    >↩</button>
+                  </div>
                 </div>
               </div>
             </div>
