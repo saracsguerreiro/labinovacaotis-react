@@ -10,7 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { useIdeas } from '../context/IdeaContext';
 import { useIdeaFilters } from '../hooks/useIdeaFilters';
 import { useIdeaModal } from '../hooks/useIdeaModal';
+import { useComments } from '../hooks/useComments';
 import type { Idea } from '../hooks/useIdeaFilters';
+import type { Comment } from '../hooks/useComments';
 
 // ─── View type ────────────────────────────────────────────────────────────────
 type HubView = 'nebula' | 'lista';
@@ -83,15 +85,24 @@ function ViewToggle({ view, onChange, dark }: { view: HubView; onChange: (v: Hub
 }
 
 // ─── Dark detail modal (used by Nebula) ───────────────────────────────────────
-function DarkModal({ idea, onClose, hasVoted, toggleVote }: {
+function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComment }: {
   idea: Idea;
   onClose: () => void;
   hasVoted: (id: number) => boolean;
   toggleVote: (id: number, e: ReactMouseEvent) => void;
+  localComments: Comment[];
+  addComment: (ideaId: number, text: string) => void;
 }) {
+  const [commentText, setCommentText] = useState('');
   const color   = CAT_COLOR[idea.cat] || '#2563eb';
   const content = IDEA_CONTENT[idea.id];
   const voted   = hasVoted(idea.id);
+
+  const handleSubmitComment = () => {
+    if (!commentText.trim()) return;
+    addComment(idea.id, commentText);
+    setCommentText('');
+  };
 
   return (
     <div
@@ -126,7 +137,7 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote }: {
           <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>
             <span style={{ color, fontWeight: 700 }}>▲</span>{voted ? idea.votes + 1 : idea.votes} votos
           </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>💬 {idea.comments} comentários</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>💬 {idea.comments + localComments.length} comentários</span>
         </div>
         {content && (
           <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -151,7 +162,8 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote }: {
             </div>
           </div>
         )}
-        <div style={{ padding: '0 24px 24px', borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20, display: 'flex', gap: 12 }}>
+        {/* Votar */}
+        <div style={{ padding: '0 24px 20px', borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20, display: 'flex', gap: 12 }}>
           <button
             onClick={e => toggleVote(idea.id, e)}
             style={{
@@ -161,10 +173,71 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote }: {
               cursor: 'pointer', transition: 'all 0.22s',
             }}
           >▲ {voted ? 'Votado' : `Votar (${idea.votes})`}</button>
-          <button style={{
-            flex: 1, background: '#2563eb', color: 'white', border: 'none',
-            borderRadius: 99, padding: '12px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer',
-          }}>💬 Comentar</button>
+        </div>
+
+        {/* Comentários */}
+        <div style={{ padding: '0 24px 28px', borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20 }}>
+          <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 14px' }}>
+            💬 Comentários ({idea.comments + localComments.length})
+          </p>
+
+          {/* Comentários sintéticos anteriores */}
+          {idea.comments > 0 && localComments.length === 0 && (
+            <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 12, fontStyle: 'italic', margin: '0 0 12px' }}>
+              {idea.comments} comentário{idea.comments !== 1 ? 's' : ''} de sessões anteriores
+            </p>
+          )}
+          {idea.comments > 0 && localComments.length > 0 && (
+            <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 12, fontStyle: 'italic', margin: '0 0 12px' }}>
+              + {idea.comments} comentário{idea.comments !== 1 ? 's' : ''} anteriores
+            </p>
+          )}
+
+          {/* Comentários locais */}
+          {localComments.map(c => (
+            <div key={c.id} style={{ marginBottom: 10, padding: '10px 14px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <span style={{ color, fontSize: 12, fontWeight: 700 }}>{c.author}</span>
+                <span style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11 }}>
+                  {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+              <p style={{ color: 'rgba(255,255,255,0.62)', fontSize: 13, margin: 0, lineHeight: 1.55 }}>{c.text}</p>
+            </div>
+          ))}
+
+          {localComments.length === 0 && idea.comments === 0 && (
+            <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: 13, margin: '0 0 12px', fontStyle: 'italic' }}>
+              Ainda sem comentários. Sê o primeiro!
+            </p>
+          )}
+
+          {/* Input novo comentário */}
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+            <input
+              type="text"
+              placeholder="Escreve um comentário..."
+              value={commentText}
+              onChange={e => setCommentText(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSubmitComment()}
+              style={{
+                flex: 1, background: 'rgba(255,255,255,0.07)',
+                border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10,
+                padding: '10px 14px', color: 'white', fontSize: 13, outline: 'none',
+                fontFamily: 'var(--font-outfit)',
+              }}
+            />
+            <button
+              onClick={handleSubmitComment}
+              style={{
+                background: commentText.trim() ? '#2563eb' : 'rgba(255,255,255,0.08)',
+                color: 'white', border: 'none', borderRadius: 10,
+                padding: '10px 18px', fontWeight: 700, fontSize: 14,
+                cursor: commentText.trim() ? 'pointer' : 'default',
+                transition: 'background 0.2s',
+              }}
+            >↩</button>
+          </div>
         </div>
       </div>
     </div>
@@ -263,8 +336,11 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
 // ═══════════════════════════════════════════════════════════════════════════════
 // NEBULA VIEW — full-screen space canvas with floating bubbles
 // ═══════════════════════════════════════════════════════════════════════════════
+const NEBULA_STATUSES = ['Todos', 'Submetida', 'Em análise', 'Em implementação', 'Concluída'];
+
 function NebulaView({ onSwitch }: { onSwitch: () => void }) {
   const { ideas, hasVoted, toggleVote } = useIdeas();
+  const { addComment, getComments } = useComments();
   const containerRef = useRef<HTMLDivElement>(null);
   const bubblesRef   = useRef<BubbleState[]>([]);
   const mouseRef     = useRef({ x: -9999, y: -9999 });
@@ -273,7 +349,10 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
 
   const [, setTick]      = useState(0);
   const [selected, setSelected] = useState<Idea | null>(null);
-  const [filterCat, setFilterCat] = useState<string | null>(null);
+  const [filterCat, setFilterCat]       = useState<string | null>(null);
+  const [filterStatus, setFilterStatus] = useState('Todos');
+  const [search, setSearch]             = useState('');
+  const [sortBy, setSortBy]             = useState<'votes' | 'comments'>('votes');
 
   const stars = useMemo(() =>
     Array.from({ length: 110 }, (_, i) => ({
@@ -403,41 +482,101 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         <div style={{ position: 'absolute', right: '6%', bottom: '15%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(148,55,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: '55%', top: '45%', width: 350, height: 350, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,102,0.03) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        {/* ── Filter legend — left side panel, below nav ── */}
+        {/* ── Filter panel — left side, below nav ── */}
         <div style={{
           position: 'absolute', top: 100, left: 20, zIndex: 10,
-          display: 'flex', flexDirection: 'column', gap: 8,
-          background: 'rgba(5,7,20,0.72)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
+          width: 196,
+          maxHeight: 'calc(100vh - 130px)',
+          overflowY: 'auto',
+          display: 'flex', flexDirection: 'column', gap: 0,
+          background: 'rgba(4,6,18,0.82)',
+          backdropFilter: 'blur(18px)',
+          WebkitBackdropFilter: 'blur(18px)',
           border: '1px solid rgba(255,255,255,0.13)',
           borderRadius: 16,
-          padding: '14px 18px',
         }}>
-          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 2 }}>
-            Categoria
+
+          {/* Search */}
+          <div style={{ padding: '14px 14px 10px' }}>
+            <div style={{ position: 'relative' }}>
+              <svg style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Pesquisar..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={{
+                  width: '100%', boxSizing: 'border-box',
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.14)',
+                  borderRadius: 9, padding: '7px 8px 7px 28px',
+                  color: 'white', fontSize: 12, outline: 'none',
+                  fontFamily: 'var(--font-outfit)',
+                }}
+              />
+            </div>
           </div>
-          <div
-            onClick={() => setFilterCat(null)}
-            style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', opacity: filterCat === null ? 1 : 0.45, transition: 'opacity 0.2s' }}
-          >
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,255,255,0.55)', boxShadow: '0 0 6px rgba(255,255,255,0.4)', flexShrink: 0 }} />
-            <span style={{ color: filterCat === null ? 'white' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: filterCat === null ? 700 : 500, transition: 'color 0.2s' }}>Todas</span>
+
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 14px' }} />
+
+          {/* Categoria */}
+          <div style={{ padding: '12px 14px 4px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8 }}>
+              Categoria
+            </div>
+            <div onClick={() => setFilterCat(null)} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', marginBottom: 7, opacity: filterCat === null ? 1 : 0.42, transition: 'opacity 0.2s' }}>
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,255,255,0.5)', flexShrink: 0 }} />
+              <span style={{ color: filterCat === null ? 'white' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: filterCat === null ? 700 : 400 }}>Todas</span>
+            </div>
+            {categories.map(cat => {
+              const catColor = CAT_COLOR[cat] || '#2563eb';
+              const active   = filterCat === cat;
+              return (
+                <div key={cat} onClick={() => setFilterCat(f => f === cat ? null : cat)} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', marginBottom: 7, opacity: filterCat === null || active ? 1 : 0.35, transition: 'opacity 0.2s' }}>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', background: catColor, boxShadow: `0 0 7px ${catColor}${active ? 'cc' : '55'}`, transform: active ? 'scale(1.3)' : 'scale(1)', transition: 'transform 0.2s', flexShrink: 0 }} />
+                  <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: active ? 700 : 400, transition: 'color 0.2s' }}>{cat}</span>
+                </div>
+              );
+            })}
           </div>
-          {categories.map(cat => {
-            const color  = CAT_COLOR[cat] || '#2563eb';
-            const active = filterCat === cat;
-            return (
-              <div
-                key={cat}
-                onClick={() => setFilterCat(f => f === cat ? null : cat)}
-                style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', opacity: filterCat === null || active ? 1 : 0.38, transition: 'opacity 0.2s' }}
-              >
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}${active ? 'dd' : '77'}`, transform: active ? 'scale(1.35)' : 'scale(1)', transition: 'transform 0.2s, box-shadow 0.2s', flexShrink: 0 }} />
-                <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: active ? 700 : 500, transition: 'color 0.2s' }}>{cat}</span>
-              </div>
-            );
-          })}
+
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '4px 14px' }} />
+
+          {/* Estado */}
+          <div style={{ padding: '10px 14px 4px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8 }}>
+              Estado
+            </div>
+            {NEBULA_STATUSES.map(s => {
+              const active = filterStatus === s;
+              return (
+                <div key={s} onClick={() => setFilterStatus(s)} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', marginBottom: 7, opacity: filterStatus === 'Todos' || active ? 1 : 0.38, transition: 'opacity 0.2s' }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 3, background: active ? '#2563eb' : 'rgba(255,255,255,0.2)', transition: 'background 0.2s', flexShrink: 0 }} />
+                  <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.2s' }}>{s}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '4px 14px' }} />
+
+          {/* Ordenar */}
+          <div style={{ padding: '10px 14px 14px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 8 }}>
+              Ordenar
+            </div>
+            {([['votes', 'Mais votadas'], ['comments', 'Mais comentadas']] as const).map(([val, label]) => {
+              const active = sortBy === val;
+              return (
+                <div key={val} onClick={() => setSortBy(val)} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', marginBottom: 7 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: '50%', border: `2px solid ${active ? '#2563eb' : 'rgba(255,255,255,0.25)'}`, background: active ? '#2563eb' : 'transparent', transition: 'all 0.2s', flexShrink: 0 }} />
+                  <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.5)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.2s' }}>{label}</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* ── View toggle — top-right corner, below nav ── */}
@@ -448,7 +587,16 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         {/* ── Bubbles ── */}
         {bubblesRef.current.map(b => {
           const color      = CAT_COLOR[b.idea.cat] || '#2563eb';
-          const isFiltered = filterCat !== null && b.idea.cat !== filterCat;
+          const q = search.trim().toLowerCase();
+          const isFiltered =
+            (filterCat !== null && b.idea.cat !== filterCat) ||
+            (filterStatus !== 'Todos' && b.idea.status !== filterStatus) ||
+            (q !== '' && !b.idea.title.toLowerCase().includes(q));
+          // highlight top ideas when sorted by votes
+          const rank = sortBy === 'votes'
+            ? [...ideas].sort((a, b2) => b2.votes - a.votes).findIndex(i => i.id === b.id)
+            : [...ideas].sort((a, b2) => b2.comments - a.comments).findIndex(i => i.id === b.id);
+          const isTopRanked = rank < 3;
           const voted      = hasVoted(b.id);
           const r          = b.radius;
           const maxChars   = Math.floor(r * 0.42);
@@ -478,6 +626,9 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
               }}
             >
               <div style={{ position: 'absolute', inset: -8, borderRadius: '50%', background: `radial-gradient(circle, ${color}22 0%, transparent 70%)`, pointerEvents: 'none' }} />
+              {isTopRanked && !isFiltered && (
+                <div style={{ position: 'absolute', inset: -4, borderRadius: '50%', border: `1.5px solid ${color}88`, boxShadow: `0 0 12px ${color}66`, pointerEvents: 'none', animation: 'none' }} />
+              )}
               <span style={{
                 fontSize, color: 'white', fontWeight: 700, lineHeight: 1.3,
                 textShadow: '0 1px 4px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8)',
@@ -514,6 +665,8 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
           onClose={() => setSelected(null)}
           hasVoted={hasVoted}
           toggleVote={toggleVote}
+          localComments={getComments(selected.id)}
+          addComment={addComment}
         />
       )}
     </div>
@@ -535,6 +688,8 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
   const { ideas, hasVoted, toggleVote: handleVote } = useIdeas();
   const { search, setSearch, activeCategory, setActiveCategory, activeStatus, setActiveStatus, sortBy, setSortBy, filtered, clearFilters } = useIdeaFilters(ideas);
   const { selectedIdea, open: openIdea, close: closeIdea } = useIdeaModal();
+  const { addComment, getComments } = useComments();
+  const [listCommentText, setListCommentText] = useState('');
 
   return (
     <div className="min-h-screen pt-[62px] bg-[var(--bg)]">
@@ -774,7 +929,7 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                   ▲ {selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)} votos
                 </div>
                 <div className="flex items-center gap-1.5 text-[12px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                  💬 {selectedIdea.comments} comentários
+                  💬 {selectedIdea.comments + getComments(selectedIdea.id).length} comentários
                 </div>
               </div>
               <div className="space-y-5">
@@ -810,10 +965,66 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                   }}
                   onClick={e => handleVote(selectedIdea.id, e)}
                 >▲ {hasVoted(selectedIdea.id) ? 'Votado' : 'Votar'} ({selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)})</button>
-                <button
-                  className="flex-1 px-4 py-2.5 rounded-full text-white text-[13px] font-semibold cursor-pointer transition-all hover:bg-[#1d4ed8] flex items-center justify-center gap-2"
-                  style={{ background: 'var(--blue)', fontFamily: 'var(--font-outfit)' }}
-                >💬 Comentar</button>
+              </div>
+
+              {/* Comentários */}
+              <div className="mt-6 pt-5 border-t" style={{ borderColor: 'var(--border-light)' }}>
+                <div className="text-[13px] font-bold mb-3" style={{ color: 'var(--text)' }}>
+                  💬 Comentários ({selectedIdea.comments + getComments(selectedIdea.id).length})
+                </div>
+
+                {selectedIdea.comments > 0 && getComments(selectedIdea.id).length === 0 && (
+                  <p className="text-[12px] mb-3 italic" style={{ color: 'var(--text-muted)' }}>
+                    {selectedIdea.comments} comentário{selectedIdea.comments !== 1 ? 's' : ''} de sessões anteriores
+                  </p>
+                )}
+                {selectedIdea.comments > 0 && getComments(selectedIdea.id).length > 0 && (
+                  <p className="text-[12px] mb-3 italic" style={{ color: 'var(--text-muted)' }}>
+                    + {selectedIdea.comments} comentários anteriores
+                  </p>
+                )}
+
+                {getComments(selectedIdea.id).map(c => (
+                  <div key={c.id} className="mb-3 p-3 rounded-xl border" style={{ background: 'var(--surface2)', borderColor: 'var(--border-light)' }}>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <span className="text-[12px] font-bold" style={{ color: selectedIdea.catColor }}>{c.author}</span>
+                      <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                        {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                    <p className="text-[13px] leading-[1.55]" style={{ color: 'var(--text-muted)', margin: 0 }}>{c.text}</p>
+                  </div>
+                ))}
+
+                {getComments(selectedIdea.id).length === 0 && selectedIdea.comments === 0 && (
+                  <p className="text-[13px] mb-3 italic" style={{ color: 'var(--text-muted)' }}>Ainda sem comentários. Sê o primeiro!</p>
+                )}
+
+                <div className="flex gap-2 mt-3">
+                  <input
+                    type="text"
+                    placeholder="Escreve um comentário..."
+                    value={listCommentText}
+                    onChange={e => setListCommentText(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && listCommentText.trim()) {
+                        addComment(selectedIdea.id, listCommentText);
+                        setListCommentText('');
+                      }
+                    }}
+                    className="flex-1 px-3 py-2 rounded-xl border text-[13px] outline-none bg-transparent focus:border-[var(--blue)]"
+                    style={{ borderColor: 'var(--border-light)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
+                  />
+                  <button
+                    onClick={() => {
+                      if (!listCommentText.trim()) return;
+                      addComment(selectedIdea.id, listCommentText);
+                      setListCommentText('');
+                    }}
+                    className="px-4 py-2 rounded-xl text-[13px] font-bold text-white"
+                    style={{ background: listCommentText.trim() ? 'var(--blue)' : 'var(--surface3)', cursor: listCommentText.trim() ? 'pointer' : 'default', transition: 'background 0.2s' }}
+                  >↩</button>
+                </div>
               </div>
             </div>
           </div>
