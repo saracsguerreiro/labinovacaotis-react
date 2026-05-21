@@ -60,7 +60,7 @@ function ViewToggle({ view, onChange, dark }: { view: HubView; onChange: (v: Hub
       border: dark ? '1px solid rgba(255,255,255,0.20)' : '1px solid rgba(13,19,51,0.14)',
       borderRadius: 14, padding: 4,
     }}>
-      {([['nebula', '🌌 Nebula'], ['lista', '☰ Lista']] as const).map(([v, label]) => (
+      {([['nebula', '🫧 Bolhas'], ['lista', '☰ Lista']] as const).map(([v, label]) => (
         <button
           key={v}
           onClick={() => onChange(v)}
@@ -71,7 +71,7 @@ function ViewToggle({ view, onChange, dark }: { view: HubView; onChange: (v: Hub
               : 'transparent',
             color: view === v
               ? 'white'
-              : dark ? 'rgba(255,255,255,0.50)' : 'rgba(13,19,51,0.45)',
+              : dark ? 'rgba(255,255,255,0.55)' : 'rgba(13,19,51,0.45)',
             fontSize: 13, fontWeight: 700, cursor: 'pointer',
             transition: 'all 0.22s',
             fontFamily: 'var(--font-outfit)',
@@ -297,10 +297,11 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
     bubblesRef.current = ideas.map(idea => {
       const t = maxVotes === minVotes ? 0.5 : (idea.votes - minVotes) / (maxVotes - minVotes);
       const radius = minR + t * (maxR - minR);
+      const navBottom = 92;
       return {
         id: idea.id,
         x: radius + Math.random() * (width  - radius * 2),
-        y: radius + Math.random() * (height - radius * 2),
+        y: navBottom + radius + Math.random() * (height - navBottom - radius * 2),
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
         radius,
@@ -334,10 +335,11 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         const spd = Math.hypot(b.vx, b.vy);
         if (spd > 1.6) { b.vx = b.vx / spd * 1.6; b.vy = b.vy / spd * 1.6; }
         b.x += b.vx; b.y += b.vy;
-        if (b.x - b.radius < 0)       { b.x = b.radius;         b.vx =  Math.abs(b.vx); }
-        if (b.x + b.radius > width)    { b.x = width - b.radius; b.vx = -Math.abs(b.vx); }
-        if (b.y - b.radius < 0)        { b.y = b.radius;          b.vy =  Math.abs(b.vy); }
-        if (b.y + b.radius > height)   { b.y = height - b.radius; b.vy = -Math.abs(b.vy); }
+        const navBottom = 92;
+        if (b.x - b.radius < 0)                { b.x = b.radius;                b.vx =  Math.abs(b.vx); }
+        if (b.x + b.radius > width)             { b.x = width - b.radius;        b.vx = -Math.abs(b.vx); }
+        if (b.y - b.radius < navBottom)         { b.y = navBottom + b.radius;    b.vy =  Math.abs(b.vy); }
+        if (b.y + b.radius > height)            { b.y = height - b.radius;       b.vy = -Math.abs(b.vy); }
 
         for (let j = i + 1; j < bs.length; j++) {
           const b2 = bs[j];
@@ -401,19 +403,26 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         <div style={{ position: 'absolute', right: '6%', bottom: '15%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(148,55,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: '55%', top: '45%', width: 350, height: 350, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,102,0.03) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        {/* ── Filter legend — absolute overlay, top-center ── */}
+        {/* ── Filter legend — left side panel, below nav ── */}
         <div style={{
-          position: 'absolute', top: 96, left: 0, right: 0,
-          display: 'flex', justifyContent: 'center', alignItems: 'center',
-          gap: 18, flexWrap: 'wrap', padding: '0 140px 0 24px', // right padding to avoid view toggle
-          zIndex: 10,
+          position: 'absolute', top: 100, left: 20, zIndex: 10,
+          display: 'flex', flexDirection: 'column', gap: 8,
+          background: 'rgba(5,7,20,0.72)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255,255,255,0.13)',
+          borderRadius: 16,
+          padding: '14px 18px',
         }}>
+          <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 2 }}>
+            Categoria
+          </div>
           <div
             onClick={() => setFilterCat(null)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', opacity: filterCat === null ? 1 : 0.45, transition: 'opacity 0.2s' }}
+            style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', opacity: filterCat === null ? 1 : 0.45, transition: 'opacity 0.2s' }}
           >
-            <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'rgba(255,255,255,0.5)', boxShadow: '0 0 5px rgba(255,255,255,0.4)' }} />
-            <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, fontWeight: 600 }}>Todas</span>
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'rgba(255,255,255,0.55)', boxShadow: '0 0 6px rgba(255,255,255,0.4)', flexShrink: 0 }} />
+            <span style={{ color: filterCat === null ? 'white' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: filterCat === null ? 700 : 500, transition: 'color 0.2s' }}>Todas</span>
           </div>
           {categories.map(cat => {
             const color  = CAT_COLOR[cat] || '#2563eb';
@@ -422,17 +431,17 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
               <div
                 key={cat}
                 onClick={() => setFilterCat(f => f === cat ? null : cat)}
-                style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', opacity: filterCat === null || active ? 1 : 0.4, transition: 'opacity 0.2s' }}
+                style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', opacity: filterCat === null || active ? 1 : 0.38, transition: 'opacity 0.2s' }}
               >
-                <div style={{ width: 9, height: 9, borderRadius: '50%', background: color, boxShadow: `0 0 7px ${color}${active ? 'cc' : '66'}`, transform: active ? 'scale(1.3)' : 'scale(1)', transition: 'transform 0.2s' }} />
-                <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)', fontSize: 12, fontWeight: active ? 700 : 500, transition: 'color 0.2s' }}>{cat}</span>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: color, boxShadow: `0 0 8px ${color}${active ? 'dd' : '77'}`, transform: active ? 'scale(1.35)' : 'scale(1)', transition: 'transform 0.2s, box-shadow 0.2s', flexShrink: 0 }} />
+                <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: active ? 700 : 500, transition: 'color 0.2s' }}>{cat}</span>
               </div>
             );
           })}
         </div>
 
         {/* ── View toggle — top-right corner, below nav ── */}
-        <div style={{ position: 'absolute', top: 92, right: 24, zIndex: 10 }}>
+        <div style={{ position: 'absolute', top: 100, right: 20, zIndex: 10 }}>
           <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
         </div>
 
@@ -442,9 +451,9 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
           const isFiltered = filterCat !== null && b.idea.cat !== filterCat;
           const voted      = hasVoted(b.id);
           const r          = b.radius;
-          const maxChars   = Math.floor(r * 0.52);
+          const maxChars   = Math.floor(r * 0.42);
           const label      = b.idea.title.length > maxChars ? b.idea.title.slice(0, maxChars - 1) + '…' : b.idea.title;
-          const fontSize   = Math.max(9, Math.min(13, r * 0.14));
+          const fontSize   = Math.max(11, Math.min(16, r * 0.19));
 
           return (
             <div
