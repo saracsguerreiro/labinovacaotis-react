@@ -375,6 +375,7 @@ function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void
 const NEBULA_STATUSES = ['Todos', 'Submetida', 'Em análise', 'Em implementação', 'Concluída'];
 
 function NebulaView({ onSwitch }: { onSwitch: () => void }) {
+  const navigate = useNavigate();
   const { ideas, hasVoted, toggleVote } = useIdeas();
   const { addComment, getComments } = useComments();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -537,6 +538,24 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
           {/* View toggle — top of right panel, consistent with Lista */}
           <div style={{ padding: '0 14px 14px' }}>
             <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
+          </div>
+
+          {/* Nova Ideia */}
+          <div style={{ padding: '0 14px 14px' }}>
+            <button
+              onClick={() => navigate('/criar')}
+              style={{
+                width: '100%', padding: '9px 0',
+                background: 'linear-gradient(135deg, #2563eb, #9437FF)',
+                border: 'none', borderRadius: 10,
+                color: 'white', fontSize: 13, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'var(--font-outfit)',
+                boxShadow: '0 4px 16px rgba(37,99,235,0.45)',
+                transition: 'opacity 0.18s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >+ Nova Ideia</button>
           </div>
 
           <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 0' }} />
@@ -717,6 +736,8 @@ const LIST_SORTS      = [
   { label: 'Mais comentadas', value: 'comments' },
 ];
 
+const PAGE_SIZE = 6;
+
 function ListaView({ onSwitch }: { onSwitch: () => void }) {
   const navigate = useNavigate();
   const { ideas, hasVoted, toggleVote: handleVote } = useIdeas();
@@ -724,277 +745,325 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
   const { selectedIdea, open: openIdea, close: closeIdea } = useIdeaModal();
   const { addComment, getComments } = useComments();
   const [listCommentText, setListCommentText] = useState('');
+  const [page, setPage] = useState(0);
+  const categories = useMemo(() => [...new Set(ideas.map(i => i.cat))], [ideas]);
+
+  // Reset to page 0 when filters change
+  useEffect(() => { setPage(0); }, [search, activeCategory, activeStatus, sortBy]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated  = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   return (
-    <div className="min-h-screen pt-[62px] bg-[var(--bg)]">
+    <div style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
 
-      {/* Header */}
-      <div className="px-9 py-5 border-b sticky top-[62px] z-50 bg-[var(--bg)]" style={{ borderColor: 'var(--border-light)' }}>
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div>
-            <div className="text-[22px] font-[800] tracking-[-0.5px]" style={{ color: 'var(--text)' }}>
-              Ideia HUB
+      {/* ── Main area: list + right panel ── */}
+      <div style={{ display: 'flex', flex: 1, paddingTop: 88, minHeight: 'calc(100vh - 88px)' }}>
+
+        {/* ── Left: idea list ── */}
+        <div style={{ flex: 1, minWidth: 0, overflowY: 'auto', paddingBottom: 32 }}>
+          {paginated.length === 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 320, gap: 12, color: 'var(--text-muted)' }}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3 }}>
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <div style={{ fontSize: 14 }}>Nenhuma ideia encontrada</div>
+              <button style={{ fontSize: 12, color: 'var(--blue)', textDecoration: 'underline', background: 'none', border: 'none', cursor: 'pointer' }} onClick={clearFilters}>Limpar filtros</button>
             </div>
-            <div className="text-[10px] mt-0.5" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
-              // {filtered.length} ideias · ordenadas por {sortBy === 'votes' ? 'votos' : 'comentários'}
+          ) : (
+            paginated.map((idea, i) => {
+              const globalIndex = page * PAGE_SIZE + i;
+              return (
+                <div
+                  key={idea.id}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: 16, padding: '20px 28px', borderBottom: '1px solid var(--border-light)', cursor: 'pointer', transition: 'background 0.15s' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface2)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                  onClick={() => openIdea(idea)}
+                >
+                  <div style={{ fontSize: 32, fontWeight: 900, lineHeight: 1, minWidth: 36, fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
+                    {String(globalIndex + 1).padStart(2, '0')}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6, lineHeight: 1.3, letterSpacing: '-0.2px', color: 'var(--text)' }}>
+                      {idea.title}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: idea.statusColor, flexShrink: 0 }} />
+                        {idea.status}
+                      </div>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{idea.author}</span>
+                      <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 4, fontWeight: 600, fontFamily: 'var(--font-mono)', color: idea.catColor, background: idea.catBg }}>
+                        {idea.cat}
+                      </span>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, paddingTop: 4 }} onClick={e => e.stopPropagation()}>
+                    <button
+                      style={{
+                        padding: '5px 10px', fontSize: 11, borderRadius: 20,
+                        border: `1.5px solid ${hasVoted(idea.id) ? 'var(--blue)' : 'var(--border-light)'}`,
+                        color: hasVoted(idea.id) ? 'var(--blue)' : 'var(--text-muted)',
+                        background: hasVoted(idea.id) ? 'var(--blue-light)' : 'transparent',
+                        fontFamily: 'var(--font-mono)', cursor: 'pointer',
+                      }}
+                      onClick={e => handleVote(idea.id, e)}
+                    >▲ {idea.votes + (hasVoted(idea.id) ? 1 : 0)}</button>
+                    <button
+                      style={{ padding: '5px 10px', fontSize: 11, borderRadius: 20, border: '1.5px solid var(--border-light)', color: 'var(--text-muted)', background: 'transparent', fontFamily: 'var(--font-mono)', cursor: 'pointer' }}
+                    >💬 {idea.comments + getComments(idea.id).length}</button>
+                    <button
+                      style={{ padding: '5px 10px', fontSize: 11, borderRadius: 20, border: '1.5px solid #036ef2', color: '#036ef2', background: 'transparent', fontFamily: 'var(--font-mono)', cursor: 'pointer' }}
+                      onClick={() => openIdea(idea)}
+                    >Ver →</button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '24px 0', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => setPage(p => Math.max(0, p - 1))}
+                disabled={page === 0}
+                style={{
+                  padding: '7px 16px', borderRadius: 20, border: '1.5px solid var(--border-light)',
+                  color: page === 0 ? 'var(--text-sub)' : 'var(--text)', background: 'transparent',
+                  fontSize: 12, cursor: page === 0 ? 'default' : 'pointer',
+                  fontFamily: 'var(--font-outfit)', opacity: page === 0 ? 0.4 : 1,
+                }}
+              >← Anterior</button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i)}
+                  style={{
+                    width: 34, height: 34, borderRadius: '50%',
+                    border: `1.5px solid ${page === i ? 'var(--blue)' : 'var(--border-light)'}`,
+                    background: page === i ? 'var(--blue)' : 'transparent',
+                    color: page === i ? 'white' : 'var(--text-muted)',
+                    fontSize: 13, fontWeight: page === i ? 700 : 400,
+                    cursor: 'pointer', fontFamily: 'var(--font-mono)',
+                  }}
+                >{i + 1}</button>
+              ))}
+              <button
+                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                disabled={page === totalPages - 1}
+                style={{
+                  padding: '7px 16px', borderRadius: 20, border: '1.5px solid var(--border-light)',
+                  color: page === totalPages - 1 ? 'var(--text-sub)' : 'var(--text)', background: 'transparent',
+                  fontSize: 12, cursor: page === totalPages - 1 ? 'default' : 'pointer',
+                  fontFamily: 'var(--font-outfit)', opacity: page === totalPages - 1 ? 0.4 : 1,
+                }}
+              >Próxima →</button>
             </div>
-          </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <ViewToggle view="lista" onChange={v => v === 'nebula' && onSwitch()} dark={false} />
-            <button
-              className="px-[18px] py-2 rounded-full border-none text-white text-[12px] font-bold cursor-pointer whitespace-nowrap transition-all hover:bg-[#1d4ed8]"
-              style={{ background: 'var(--blue)', boxShadow: '0 3px 10px var(--blue-glow)', fontFamily: 'var(--font-outfit)' }}
-              onClick={() => navigate('/criar')}
-            >
-              + Nova Ideia
-            </button>
-          </div>
+          )}
         </div>
 
-        {/* Search + filters */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative flex-1 min-w-[200px] max-w-[320px]">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-sub)' }}>
+        {/* ── Right: filter panel (214px, light, sticky) ── */}
+        <div style={{
+          width: 214, flexShrink: 0,
+          borderLeft: '1px solid var(--border-light)',
+          background: 'var(--bg)',
+          position: 'sticky', top: 88, alignSelf: 'flex-start',
+          height: 'calc(100vh - 88px)', overflowY: 'auto',
+          display: 'flex', flexDirection: 'column',
+          padding: '16px 0',
+        }}>
+
+          {/* View toggle */}
+          <div style={{ padding: '0 14px 14px' }}>
+            <ViewToggle view="lista" onChange={v => v === 'nebula' && onSwitch()} dark={false} />
+          </div>
+
+          {/* Nova Ideia */}
+          <div style={{ padding: '0 14px 14px' }}>
+            <button
+              onClick={() => navigate('/criar')}
+              style={{
+                width: '100%', padding: '9px 0',
+                background: 'var(--blue)',
+                border: 'none', borderRadius: 10,
+                color: 'white', fontSize: 13, fontWeight: 700,
+                cursor: 'pointer', fontFamily: 'var(--font-outfit)',
+                boxShadow: '0 3px 10px var(--blue-glow)',
+                transition: 'opacity 0.18s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >+ Nova Ideia</button>
+          </div>
+
+          <div style={{ height: 1, background: 'var(--border-light)', margin: '0 16px 14px' }} />
+
+          {/* Search */}
+          <div style={{ padding: '0 14px 14px', position: 'relative' }}>
+            <svg style={{ position: 'absolute', left: 23, top: '50%', transform: 'translateY(-50%)', opacity: 0.35, pointerEvents: 'none', color: 'var(--text-sub)' }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
               type="text"
-              placeholder="Pesquisar ideias..."
-              className="w-full pl-9 pr-4 py-1.5 border-[1.5px] rounded-full text-[12px] outline-none transition-all bg-transparent focus:border-[var(--blue)]"
-              style={{ borderColor: 'var(--border-light)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
+              placeholder="Pesquisar..."
               value={search}
               onChange={e => setSearch(e.target.value)}
+              style={{
+                width: '100%', boxSizing: 'border-box',
+                background: 'var(--surface2)',
+                border: '1px solid var(--border-light)', borderRadius: 9,
+                padding: '7px 8px 7px 28px', color: 'var(--text)', fontSize: 12,
+                outline: 'none', fontFamily: 'var(--font-outfit)',
+              }}
             />
           </div>
-          <div className="flex items-center gap-1 flex-wrap">
-            {LIST_CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                className="px-3 py-1 border-[1.5px] rounded-full text-[11px] cursor-pointer transition-all"
-                style={{
-                  borderColor: activeCategory === cat ? 'var(--blue)' : 'var(--border-light)',
-                  color: activeCategory === cat ? 'white' : 'var(--text-muted)',
-                  background: activeCategory === cat ? 'var(--blue)' : 'transparent',
-                  fontFamily: 'var(--font-outfit)',
-                }}
-                onClick={() => setActiveCategory(cat)}
-              >{cat}</button>
-            ))}
-          </div>
-          <div className="w-px h-4" style={{ background: 'var(--border-light)' }} />
-          <select
-            className="px-3 py-1 border-[1.5px] rounded-full text-[11px] cursor-pointer bg-transparent outline-none"
-            style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)', fontFamily: 'var(--font-outfit)' }}
-            value={activeStatus}
-            onChange={e => setActiveStatus(e.target.value)}
-          >
-            {LIST_STATUSES.map(s => <option key={s}>{s}</option>)}
-          </select>
-          <select
-            className="px-3 py-1 border-[1.5px] rounded-full text-[11px] cursor-pointer bg-transparent outline-none"
-            style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)', fontFamily: 'var(--font-outfit)' }}
-            value={sortBy}
-            onChange={e => setSortBy(e.target.value as 'votes' | 'comments')}
-          >
-            {LIST_SORTS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-          </select>
-        </div>
-      </div>
 
-      {/* Two-column layout */}
-      <div className="grid grid-cols-[1fr_260px]" style={{ height: 'calc(100vh - 178px)', overflow: 'hidden' }}>
+          <div style={{ height: 1, background: 'var(--border-light)', margin: '0 16px 14px' }} />
 
-        {/* Feed */}
-        <div className="overflow-y-auto">
-          {filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full gap-3" style={{ color: 'var(--text-muted)' }}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.3 }}>
-                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-              <div className="text-[14px]">Nenhuma ideia encontrada</div>
-              <button className="text-[12px] underline" style={{ color: 'var(--blue)' }} onClick={clearFilters}>Limpar filtros</button>
+          {/* Categoria */}
+          <div style={{ padding: '0 16px 14px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-sub)', marginBottom: 10 }}>Categoria</div>
+            <div
+              onClick={() => setActiveCategory('Todas')}
+              style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: activeCategory === 'Todas' ? 1 : 0.42, transition: 'opacity 0.18s' }}
+            >
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: activeCategory === 'Todas' ? 'var(--text)' : 'var(--border-light)', flexShrink: 0, transition: 'all 0.18s' }} />
+              <span style={{ color: activeCategory === 'Todas' ? 'var(--text)' : 'var(--text-muted)', fontSize: 13, fontWeight: activeCategory === 'Todas' ? 700 : 400 }}>Todas</span>
             </div>
-          ) : (
-            filtered.map((idea, i) => (
-              <div
-                key={idea.id}
-                className="flex items-start gap-4 px-7 py-5 border-b cursor-pointer transition-all hover:bg-[var(--surface2)]"
-                style={{ borderColor: 'var(--border-light)' }}
-                onClick={() => openIdea(idea)}
-              >
-                <div className="text-[32px] font-[900] leading-[1] min-w-[36px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
-                  {String(i + 1).padStart(2, '0')}
+            {categories.map(cat => {
+              const catColor = CAT_COLOR[cat] || '#2563eb';
+              const active   = activeCategory === cat;
+              return (
+                <div
+                  key={cat}
+                  onClick={() => setActiveCategory(active ? 'Todas' : cat)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: activeCategory === 'Todas' || active ? 1 : 0.32, transition: 'opacity 0.18s' }}
+                >
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: catColor, flexShrink: 0, transform: active ? 'scale(1.35)' : 'scale(1)', boxShadow: active ? `0 0 10px ${catColor}cc` : `0 0 4px ${catColor}55`, transition: 'all 0.18s' }} />
+                  <span style={{ color: active ? 'var(--text)' : 'var(--text-muted)', fontSize: 13, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{cat}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[15px] font-bold mb-1.5 leading-[1.3] tracking-[-0.2px]" style={{ color: 'var(--text)' }}>
-                    {idea.title}
-                  </div>
-                  <div className="flex items-center gap-2.5 flex-wrap">
-                    <div className="flex items-center gap-1 text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: idea.statusColor }} />
-                      {idea.status}
-                    </div>
-                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{idea.author}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded font-semibold" style={{ fontFamily: 'var(--font-mono)', color: idea.catColor, background: idea.catBg }}>
-                      {idea.cat}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 flex-shrink-0 pt-1" onClick={e => e.stopPropagation()}>
-                  <button
-                    className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full bg-transparent cursor-pointer transition-all flex items-center gap-1"
-                    style={{
-                      borderColor: hasVoted(idea.id) ? 'var(--blue)' : 'var(--border-light)',
-                      color:       hasVoted(idea.id) ? 'var(--blue)' : 'var(--text-muted)',
-                      background:  hasVoted(idea.id) ? 'var(--blue-light)' : 'transparent',
-                      fontFamily: 'var(--font-mono)',
-                    }}
-                    onClick={e => handleVote(idea.id, e)}
-                  >▲ {idea.votes + (hasVoted(idea.id) ? 1 : 0)}</button>
-                  <button
-                    className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full bg-transparent cursor-pointer"
-                    style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
-                  >💬 {idea.comments}</button>
-                  <button
-                    className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full cursor-pointer transition-all hover:bg-[var(--blue-light)]"
-                    style={{ borderColor: '#036ef2', color: '#036ef2', fontFamily: 'var(--font-mono)', background: 'transparent' }}
-                    onClick={() => openIdea(idea)}
-                  >Ver →</button>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Sidebar */}
-        <div className="border-l px-6 py-6 overflow-y-auto bg-[var(--bg2)]" style={{ borderColor: 'var(--border-light)' }}>
-          <div className="mb-6">
-            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>Por categoria</div>
-            {[
-              { name: 'Processo',   pct: 34, color: '#3126b4' },
-              { name: 'Tecnologia', pct: 28, color: '#036ef2' },
-              { name: 'Pessoas',    pct: 22, color: '#9437FF' },
-              { name: 'CX',         pct: 10, color: '#4294F8' },
-              { name: 'Outros',     pct: 6,  color: '#87007f' },
-            ].map(cat => (
-              <div key={cat.name} className="mb-2.5">
-                <div className="flex justify-between text-[11px] mb-1" style={{ color: 'var(--text-muted)' }}>
-                  <span>{cat.name}</span>
-                  <span style={{ fontFamily: 'var(--font-mono)' }}>{cat.pct}%</span>
-                </div>
-                <div className="h-[3px] rounded-sm overflow-hidden" style={{ background: 'var(--surface3)' }}>
-                  <div className="h-full rounded-sm" style={{ width: `${cat.pct}%`, background: cat.color }} />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <div className="mb-6">
-            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>Por estado</div>
-            {[
-              { label: 'Submetidas',        n: '142', color: '#036ef2' },
-              { label: 'Em análise',        n: '89',  color: '#4294F8' },
-              { label: 'Em implementação',  n: '28',  color: '#9437FF' },
-              { label: 'Concluídas',        n: '12',  color: '#FF0066' },
-            ].map(stat => (
-              <div
-                key={stat.label}
-                className="flex justify-between px-3 py-2 rounded-lg border text-[12px] mb-1.5 cursor-pointer transition-all hover:bg-[var(--surface2)]"
-                style={{ background: 'var(--surface)', borderColor: 'var(--border-light)' }}
-                onClick={() => setActiveStatus(stat.label)}
-              >
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: stat.color }} />
-                  <span style={{ color: 'var(--text)' }}>{stat.label}</span>
+          <div style={{ height: 1, background: 'var(--border-light)', margin: '0 16px 14px' }} />
+
+          {/* Estado */}
+          <div style={{ padding: '0 16px 14px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-sub)', marginBottom: 10 }}>Estado</div>
+            {LIST_STATUSES.map(s => {
+              const active = activeStatus === s;
+              return (
+                <div
+                  key={s}
+                  onClick={() => setActiveStatus(s)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: activeStatus === 'Todos' || active ? 1 : 0.35, transition: 'opacity 0.18s' }}
+                >
+                  <div style={{ width: 11, height: 11, borderRadius: 3, background: active ? 'var(--blue)' : 'var(--border-light)', flexShrink: 0, boxShadow: active ? '0 0 8px rgba(37,99,235,0.5)' : 'none', transition: 'all 0.18s' }} />
+                  <span style={{ color: active ? 'var(--text)' : 'var(--text-muted)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{s}</span>
                 </div>
-                <span className="font-bold" style={{ fontFamily: 'var(--font-mono)', color: stat.color }}>{stat.n}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <div>
-            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>Top colaboradores</div>
-            {[
-              { name: 'CM', fullName: 'Carla Moreira', count: '8 ideias', bg: 'linear-gradient(135deg, #3126b4, #9437FF)' },
-              { name: 'TC', fullName: 'Tiago Costa',   count: '6 ideias', bg: 'linear-gradient(135deg, #4294F8, #87007F)' },
-              { name: 'MA', fullName: 'Miguel Alves',  count: '5 ideias', bg: 'linear-gradient(135deg, #FF0066, #9437FF)' },
-              { name: 'SN', fullName: 'Sofia Neves',   count: '4 ideias', bg: 'linear-gradient(135deg, #036ef2, #3126b4)' },
-            ].map(user => (
-              <div key={user.name} className="flex items-center gap-2.5 text-[11px] mb-2" style={{ color: 'var(--text-muted)' }}>
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0" style={{ background: user.bg }}>{user.name}</div>
-                <span className="flex-1 truncate">{user.fullName}</span>
-                <span className="font-bold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--blue)' }}>{user.count}</span>
-              </div>
-            ))}
+          <div style={{ height: 1, background: 'var(--border-light)', margin: '0 16px 14px' }} />
+
+          {/* Ordenar */}
+          <div style={{ padding: '0 16px 20px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-sub)', marginBottom: 10 }}>Ordenar</div>
+            {([['votes', '▲ Mais votadas'], ['comments', '💬 Mais coment.']] as const).map(([val, label]) => {
+              const active = sortBy === val;
+              return (
+                <div
+                  key={val}
+                  onClick={() => setSortBy(val)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8 }}
+                >
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', border: `2px solid ${active ? 'var(--blue)' : 'var(--border-light)'}`, background: active ? 'var(--blue)' : 'transparent', flexShrink: 0, transition: 'all 0.18s' }} />
+                  <span style={{ color: active ? 'var(--text)' : 'var(--text-muted)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{label}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Count */}
+          <div style={{ marginTop: 'auto', padding: '12px 16px', borderTop: '1px solid var(--border-light)', fontSize: 10, fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
+            {filtered.length} ideia{filtered.length !== 1 ? 's' : ''} · pág. {page + 1}/{Math.max(1, totalPages)}
           </div>
         </div>
       </div>
 
-      {/* Idea detail modal (light theme) */}
+      {/* ── Stats section ── */}
+      <StatsSection />
+
+      {/* ── Idea detail modal (light theme) ── */}
       {selectedIdea && (
         <div
-          className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-6"
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}
           onClick={closeIdea}
         >
           <div
-            className="bg-[var(--surface)] rounded-2xl max-w-[680px] w-full max-h-[85vh] overflow-y-auto shadow-[0_24px_64px_rgba(0,0,0,0.25)]"
+            style={{ background: 'var(--surface)', borderRadius: 18, maxWidth: 680, width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
             onClick={e => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-[var(--surface)] border-b px-6 py-4 flex items-center justify-between z-10" style={{ borderColor: 'var(--border-light)' }}>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] px-2 py-0.5 rounded font-semibold" style={{ fontFamily: 'var(--font-mono)', color: selectedIdea.catColor, background: selectedIdea.catBg }}>{selectedIdea.cat}</span>
-                <div className="flex items-center gap-1 text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                  <div className="w-1.5 h-1.5 rounded-full" style={{ background: selectedIdea.statusColor }} />
+            <div style={{ position: 'sticky', top: 0, background: 'var(--surface)', borderBottom: '1px solid var(--border-light)', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 10, padding: '2px 7px', borderRadius: 4, fontWeight: 600, fontFamily: 'var(--font-mono)', color: selectedIdea.catColor, background: selectedIdea.catBg }}>{selectedIdea.cat}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                  <div style={{ width: 6, height: 6, borderRadius: '50%', background: selectedIdea.statusColor }} />
                   {selectedIdea.status}
                 </div>
               </div>
-              <button className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all hover:bg-[var(--surface2)] text-[18px]" style={{ color: 'var(--text-muted)' }} onClick={closeIdea}>✕</button>
+              <button style={{ width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'transparent', border: 'none', fontSize: 18, color: 'var(--text-muted)' }} onClick={closeIdea}>✕</button>
             </div>
-            <div className="px-6 py-6">
-              <h2 className="text-[22px] font-bold mb-4 leading-[1.3] tracking-[-0.5px]" style={{ color: 'var(--text)' }}>{selectedIdea.title}</h2>
-              <div className="flex items-center gap-4 mb-6 pb-5 border-b" style={{ borderColor: 'var(--border-light)' }}>
-                <div className="flex items-center gap-1.5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
+            <div style={{ padding: 24 }}>
+              <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 16, lineHeight: 1.3, letterSpacing: '-0.5px', color: 'var(--text)' }}>{selectedIdea.title}</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24, paddingBottom: 20, borderBottom: '1px solid var(--border-light)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-muted)' }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                   </svg>
                   {selectedIdea.author}
                 </div>
-                <div className="flex items-center gap-1.5 text-[12px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                   ▲ {selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)} votos
                 </div>
-                <div className="flex items-center gap-1.5 text-[12px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                   💬 {selectedIdea.comments + getComments(selectedIdea.id).length} comentários
                 </div>
               </div>
-              <div className="space-y-5">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
                 {[
                   { label: 'Problema',         text: `Identificámos desafios significativos relacionados com ${selectedIdea.title.toLowerCase()}, que afectam directamente a eficiência operacional e a satisfação dos envolvidos.` },
                   { label: 'Solução Proposta',  text: `A solução passa por implementar ${selectedIdea.title.toLowerCase()}, através de uma abordagem estruturada e centrada nas necessidades reais dos utilizadores.` },
                 ].map(block => (
                   <div key={block.label}>
-                    <div className="text-[12px] font-bold mb-1.5" style={{ color: 'var(--text)' }}>{block.label}</div>
-                    <div className="text-[13px] leading-[1.7]" style={{ color: 'var(--text-muted)' }}>{block.text}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, color: 'var(--text)' }}>{block.label}</div>
+                    <div style={{ fontSize: 13, lineHeight: 1.7, color: 'var(--text-muted)' }}>{block.text}</div>
                   </div>
                 ))}
                 <div>
-                  <div className="text-[12px] font-bold mb-2" style={{ color: 'var(--text)' }}>Impacto Esperado</div>
-                  <ul className="space-y-1.5">
+                  <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 8, color: 'var(--text)' }}>Impacto Esperado</div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {['Aumento de 30% na produtividade', 'Redução de custos operacionais em 20%', 'Melhoria da satisfação dos utilizadores', 'Optimização dos processos internos'].map((impact, i) => (
-                      <li key={i} className="flex items-start gap-2 text-[13px]" style={{ color: 'var(--text-muted)' }}>
-                        <span className="mt-0.5 flex-shrink-0" style={{ color: selectedIdea.catColor }}>›</span>
+                      <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'var(--text-muted)' }}>
+                        <span style={{ marginTop: 2, flexShrink: 0, color: selectedIdea.catColor }}>›</span>
                         {impact}
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
-              <div className="flex gap-2.5 mt-7 pt-5 border-t" style={{ borderColor: 'var(--border-light)' }}>
+              <div style={{ display: 'flex', gap: 10, marginTop: 28, paddingTop: 20, borderTop: '1px solid var(--border-light)' }}>
                 <button
-                  className="flex-1 px-4 py-2.5 rounded-full border-[1.5px] text-[13px] font-semibold cursor-pointer transition-all hover:bg-[var(--surface2)] flex items-center justify-center gap-2"
                   style={{
-                    borderColor: hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--border2)',
-                    color:       hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--text)',
-                    background:  hasVoted(selectedIdea.id) ? 'var(--blue-light)' : 'transparent',
+                    flex: 1, padding: '10px 16px', borderRadius: 20,
+                    border: `1.5px solid ${hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--border2)'}`,
+                    color: hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--text)',
+                    background: hasVoted(selectedIdea.id) ? 'var(--blue-light)' : 'transparent',
+                    fontSize: 13, fontWeight: 600, cursor: 'pointer',
                     fontFamily: 'var(--font-outfit)',
                   }}
                   onClick={e => handleVote(selectedIdea.id, e)}
@@ -1002,39 +1071,39 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
               </div>
 
               {/* Comentários */}
-              <div className="mt-6 pt-5 border-t" style={{ borderColor: 'var(--border-light)' }}>
-                <div className="text-[13px] font-bold mb-3" style={{ color: 'var(--text)' }}>
+              <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--border-light)' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12, color: 'var(--text)' }}>
                   💬 Comentários ({selectedIdea.comments + getComments(selectedIdea.id).length})
                 </div>
 
                 {selectedIdea.comments > 0 && getComments(selectedIdea.id).length === 0 && (
-                  <p className="text-[12px] mb-3 italic" style={{ color: 'var(--text-muted)' }}>
+                  <p style={{ fontSize: 12, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>
                     {selectedIdea.comments} comentário{selectedIdea.comments !== 1 ? 's' : ''} de sessões anteriores
                   </p>
                 )}
                 {selectedIdea.comments > 0 && getComments(selectedIdea.id).length > 0 && (
-                  <p className="text-[12px] mb-3 italic" style={{ color: 'var(--text-muted)' }}>
+                  <p style={{ fontSize: 12, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>
                     + {selectedIdea.comments} comentários anteriores
                   </p>
                 )}
 
                 {getComments(selectedIdea.id).map(c => (
-                  <div key={c.id} className="mb-3 p-3 rounded-xl border" style={{ background: 'var(--surface2)', borderColor: 'var(--border-light)' }}>
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-[12px] font-bold" style={{ color: selectedIdea.catColor }}>{c.author}</span>
-                      <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                  <div key={c.id} style={{ marginBottom: 12, padding: 12, borderRadius: 12, border: '1px solid var(--border-light)', background: 'var(--surface2)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: selectedIdea.catColor }}>{c.author}</span>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                         {new Date(c.timestamp).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
-                    <p className="text-[13px] leading-[1.55]" style={{ color: 'var(--text-muted)', margin: 0 }}>{c.text}</p>
+                    <p style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--text-muted)', margin: 0 }}>{c.text}</p>
                   </div>
                 ))}
 
                 {getComments(selectedIdea.id).length === 0 && selectedIdea.comments === 0 && (
-                  <p className="text-[13px] mb-3 italic" style={{ color: 'var(--text-muted)' }}>Ainda sem comentários. Sê o primeiro!</p>
+                  <p style={{ fontSize: 13, marginBottom: 12, fontStyle: 'italic', color: 'var(--text-muted)' }}>Ainda sem comentários. Sê o primeiro!</p>
                 )}
 
-                <div className="flex gap-2 mt-3">
+                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                   <input
                     type="text"
                     placeholder="Escreve um comentário..."
@@ -1046,8 +1115,7 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                         setListCommentText('');
                       }
                     }}
-                    className="flex-1 px-3 py-2 rounded-xl border text-[13px] outline-none bg-transparent focus:border-[var(--blue)]"
-                    style={{ borderColor: 'var(--border-light)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
+                    style={{ flex: 1, padding: '8px 12px', borderRadius: 12, border: '1px solid var(--border-light)', fontSize: 13, outline: 'none', background: 'transparent', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
                   />
                   <button
                     onClick={() => {
@@ -1055,8 +1123,7 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                       addComment(selectedIdea.id, listCommentText);
                       setListCommentText('');
                     }}
-                    className="px-4 py-2 rounded-xl text-[13px] font-bold text-white"
-                    style={{ background: listCommentText.trim() ? 'var(--blue)' : 'var(--surface3)', cursor: listCommentText.trim() ? 'pointer' : 'default', transition: 'background 0.2s' }}
+                    style={{ padding: '8px 16px', borderRadius: 12, fontSize: 13, fontWeight: 700, color: 'white', border: 'none', background: listCommentText.trim() ? 'var(--blue)' : 'var(--surface3)', cursor: listCommentText.trim() ? 'pointer' : 'default', transition: 'background 0.2s' }}
                   >↩</button>
                 </div>
               </div>
