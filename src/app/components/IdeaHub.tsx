@@ -376,10 +376,11 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
     bubblesRef.current = ideas.map(idea => {
       const t = maxVotes === minVotes ? 0.5 : (idea.votes - minVotes) / (maxVotes - minVotes);
       const radius = minR + t * (maxR - minR);
-      const navBottom = 164; // nav (~88px) + filter bar (~68px) + 8px buffer
+      const navBottom = 92;
+      const leftBound = 214;
       return {
         id: idea.id,
-        x: radius + Math.random() * (width  - radius * 2),
+        x: leftBound + radius + Math.random() * (width - leftBound - radius * 2),
         y: navBottom + radius + Math.random() * (height - navBottom - radius * 2),
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
@@ -414,8 +415,9 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         const spd = Math.hypot(b.vx, b.vy);
         if (spd > 1.6) { b.vx = b.vx / spd * 1.6; b.vy = b.vy / spd * 1.6; }
         b.x += b.vx; b.y += b.vy;
-        const navBottom = 164; // nav (~88px) + filter bar (~68px) + 8px buffer
-        if (b.x - b.radius < 0)                { b.x = b.radius;                b.vx =  Math.abs(b.vx); }
+        const navBottom = 92;
+        const leftBound = 214;
+        if (b.x - b.radius < leftBound)         { b.x = leftBound + b.radius;    b.vx =  Math.abs(b.vx); }
         if (b.x + b.radius > width)             { b.x = width - b.radius;        b.vx = -Math.abs(b.vx); }
         if (b.y - b.radius < navBottom)         { b.y = navBottom + b.radius;    b.vy =  Math.abs(b.vy); }
         if (b.y + b.radius > height)            { b.y = height - b.radius;       b.vy = -Math.abs(b.vy); }
@@ -482,107 +484,103 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         <div style={{ position: 'absolute', right: '6%', bottom: '15%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(148,55,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: '55%', top: '45%', width: 350, height: 350, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,102,0.03) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-        {/* ══ Filter bar — full-width zone between nav and bubbles ══ */}
+        {/* ══ Filter panel — vertical left column ══ */}
         <div style={{
-          position: 'absolute', top: 88, left: 0, right: 0,
-          height: 68,
-          display: 'flex', alignItems: 'center',
-          gap: 0, padding: '0 20px',
-          background: 'rgba(3,5,16,0.82)',
+          position: 'absolute', top: 0, left: 0, bottom: 0,
+          width: 214,
+          display: 'flex', flexDirection: 'column',
+          paddingTop: 96, // clear the nav
+          background: 'rgba(3,5,16,0.88)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: '0 6px 28px rgba(0,0,0,0.5)',
+          borderRight: '1px solid rgba(255,255,255,0.09)',
+          boxShadow: '6px 0 32px rgba(0,0,0,0.55)',
           zIndex: 10,
-          overflowX: 'auto',
+          overflowY: 'auto',
         }}>
+          {/* View toggle at the top of the panel */}
+          <div style={{ padding: '0 16px 16px' }}>
+            <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
+          </div>
+
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 16px' }} />
 
           {/* Search */}
-          <div style={{ position: 'relative', flexShrink: 0 }}>
-            <svg style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', opacity: 0.38, pointerEvents: 'none' }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <div style={{ padding: '0 14px 14px', position: 'relative' }}>
+            <svg style={{ position: 'absolute', left: 23, top: '50%', transform: 'translateY(-50%)', opacity: 0.38, pointerEvents: 'none' }} width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
               type="text"
-              placeholder="Pesquisar ideias..."
+              placeholder="Pesquisar..."
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={{
-                width: 168, background: 'rgba(255,255,255,0.07)',
-                border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8,
-                padding: '6px 8px 6px 28px', color: 'white', fontSize: 12,
+                width: '100%', boxSizing: 'border-box',
+                background: 'rgba(255,255,255,0.07)',
+                border: '1px solid rgba(255,255,255,0.12)', borderRadius: 9,
+                padding: '7px 8px 7px 28px', color: 'white', fontSize: 12,
                 outline: 'none', fontFamily: 'var(--font-outfit)',
               }}
             />
           </div>
 
-          <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.10)', margin: '0 18px', flexShrink: 0 }} />
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 14px' }} />
 
-          {/* Categoria — dots only, with title tooltip */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', marginRight: 2 }}>Cat</span>
-            <div
-              title="Todas"
-              onClick={() => setFilterCat(null)}
-              style={{ width: 13, height: 13, borderRadius: '50%', background: filterCat === null ? 'white' : 'rgba(255,255,255,0.25)', cursor: 'pointer', transition: 'all 0.18s', boxShadow: filterCat === null ? '0 0 10px rgba(255,255,255,0.7)' : 'none', flexShrink: 0 }}
-            />
+          {/* Categoria */}
+          <div style={{ padding: '0 16px 14px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', marginBottom: 10 }}>Categoria</div>
+            <div onClick={() => setFilterCat(null)} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: filterCat === null ? 1 : 0.42, transition: 'opacity 0.18s' }}>
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: filterCat === null ? 'white' : 'rgba(255,255,255,0.35)', flexShrink: 0, boxShadow: filterCat === null ? '0 0 8px rgba(255,255,255,0.6)' : 'none', transition: 'all 0.18s' }} />
+              <span style={{ color: filterCat === null ? 'white' : 'rgba(255,255,255,0.55)', fontSize: 13, fontWeight: filterCat === null ? 700 : 400 }}>Todas</span>
+            </div>
             {categories.map(cat => {
               const catColor = CAT_COLOR[cat] || '#2563eb';
               const active   = filterCat === cat;
               return (
-                <div
-                  key={cat}
-                  title={cat}
-                  onClick={() => setFilterCat(f => f === cat ? null : cat)}
-                  style={{ width: 13, height: 13, borderRadius: '50%', background: catColor, cursor: 'pointer', transition: 'all 0.18s', opacity: filterCat !== null && !active ? 0.28 : 1, transform: active ? 'scale(1.45)' : 'scale(1)', boxShadow: active ? `0 0 12px ${catColor}cc` : `0 0 5px ${catColor}44`, flexShrink: 0 }}
-                />
+                <div key={cat} onClick={() => setFilterCat(f => f === cat ? null : cat)} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: filterCat === null || active ? 1 : 0.32, transition: 'opacity 0.18s' }}>
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', background: catColor, flexShrink: 0, transform: active ? 'scale(1.35)' : 'scale(1)', boxShadow: active ? `0 0 10px ${catColor}cc` : `0 0 4px ${catColor}55`, transition: 'all 0.18s' }} />
+                  <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{cat}</span>
+                </div>
               );
             })}
           </div>
 
-          <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.10)', margin: '0 18px', flexShrink: 0 }} />
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 14px' }} />
 
           {/* Estado */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Estado</span>
-            <select
-              value={filterStatus}
-              onChange={e => setFilterStatus(e.target.value)}
-              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '5px 10px', color: 'white', fontSize: 12, outline: 'none', cursor: 'pointer', fontFamily: 'var(--font-outfit)' }}
-            >
-              {NEBULA_STATUSES.map(s => <option key={s} value={s} style={{ background: '#0a0f2a' }}>{s}</option>)}
-            </select>
+          <div style={{ padding: '0 16px 14px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', marginBottom: 10 }}>Estado</div>
+            {NEBULA_STATUSES.map(s => {
+              const active = filterStatus === s;
+              return (
+                <div key={s} onClick={() => setFilterStatus(s)} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: filterStatus === 'Todos' || active ? 1 : 0.35, transition: 'opacity 0.18s' }}>
+                  <div style={{ width: 11, height: 11, borderRadius: 3, background: active ? '#2563eb' : 'rgba(255,255,255,0.2)', flexShrink: 0, boxShadow: active ? '0 0 8px rgba(37,99,235,0.7)' : 'none', transition: 'all 0.18s' }} />
+                  <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{s}</span>
+                </div>
+              );
+            })}
           </div>
 
-          <div style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.10)', margin: '0 18px', flexShrink: 0 }} />
+          <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 14px' }} />
 
           {/* Ordenar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.28)', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Ordenar</span>
-            {([['votes', '▲ Votos'], ['comments', '💬 Coment.']] as const).map(([val, label]) => (
-              <button
-                key={val}
-                onClick={() => setSortBy(val)}
-                style={{
-                  background: sortBy === val ? 'rgba(37,99,235,0.38)' : 'rgba(255,255,255,0.05)',
-                  border: `1px solid ${sortBy === val ? 'rgba(37,99,235,0.7)' : 'rgba(255,255,255,0.10)'}`,
-                  borderRadius: 8, padding: '5px 11px',
-                  color: sortBy === val ? 'white' : 'rgba(255,255,255,0.42)',
-                  fontSize: 12, fontWeight: sortBy === val ? 700 : 400,
-                  cursor: 'pointer', transition: 'all 0.18s',
-                }}
-              >{label}</button>
-            ))}
-          </div>
-
-          {/* View toggle — pushed to the right */}
-          <div style={{ marginLeft: 'auto', flexShrink: 0 }}>
-            <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
+          <div style={{ padding: '0 16px 20px' }}>
+            <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)', marginBottom: 10 }}>Ordenar</div>
+            {([['votes', '▲ Mais votadas'], ['comments', '💬 Mais coment.']] as const).map(([val, label]) => {
+              const active = sortBy === val;
+              return (
+                <div key={val} onClick={() => setSortBy(val)} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8 }}>
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', border: `2px solid ${active ? '#2563eb' : 'rgba(255,255,255,0.22)'}`, background: active ? '#2563eb' : 'transparent', flexShrink: 0, transition: 'all 0.18s' }} />
+                  <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.5)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{label}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Soft gradient fade below the filter bar */}
-        <div style={{ position: 'absolute', top: 156, left: 0, right: 0, height: 36, background: 'linear-gradient(to bottom, rgba(3,5,16,0.40) 0%, transparent 100%)', pointerEvents: 'none', zIndex: 9 }} />
+        {/* Gradient fade from panel into space */}
+        <div style={{ position: 'absolute', top: 0, left: 214, bottom: 0, width: 40, background: 'linear-gradient(to right, rgba(3,5,16,0.35) 0%, transparent 100%)', pointerEvents: 'none', zIndex: 9 }} />
 
         {/* ── Bubbles ── */}
         {bubblesRef.current.map(b => {
