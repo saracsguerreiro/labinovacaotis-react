@@ -3,29 +3,52 @@ import { useState, useEffect } from 'react';
 /**
  * Returns whether the navbar should use dark (light-text) styling.
  *
- * Only the home route needs dynamic detection — it starts over a dark
- * full-screen banner and transitions to light sections as the user scrolls.
- * All other routes have a light background, so they are always light.
+ * - Home (/): scroll-based — dark while the hero banner dominates
+ * - /hub2: always dark
+ * - /hub: dark when the Nebula view is active, light when Lista view is active
+ *         (IdeaHub dispatches a 'hub-view-change' CustomEvent with detail: 'nebula' | 'lista')
+ * - All other routes: always light
  */
 export function useNavTheme(pathname: string): boolean {
   const isHome = pathname === '/';
-  const [isDark, setIsDark] = useState(isHome);
+  const isHub  = pathname === '/hub';
+  const isHub2 = pathname === '/hub2';
+
+  const [isDark, setIsDark] = useState(isHome || isHub || isHub2);
 
   useEffect(() => {
-    if (!isHome) {
+    // Non-special routes: always light
+    if (!isHome && !isHub && !isHub2) {
       setIsDark(false);
       return;
     }
 
-    const check = () => {
-      // Dark while the banner (≈ full viewport height) dominates the top
-      setIsDark(window.scrollY < window.innerHeight * 0.8);
-    };
+    // /hub2: always dark
+    if (isHub2) {
+      setIsDark(true);
+      return;
+    }
 
-    check();
-    window.addEventListener('scroll', check, { passive: true });
-    return () => window.removeEventListener('scroll', check);
-  }, [isHome]);
+    // /hub: dark = nebula, light = lista; listen for the event
+    if (isHub) {
+      setIsDark(true); // nebula is the default view
+      const handler = (e: Event) => {
+        setIsDark((e as CustomEvent<string>).detail === 'nebula');
+      };
+      window.addEventListener('hub-view-change', handler);
+      return () => window.removeEventListener('hub-view-change', handler);
+    }
+
+    // Home: scroll-based
+    if (isHome) {
+      const check = () => {
+        setIsDark(window.scrollY < window.innerHeight * 0.8);
+      };
+      check();
+      window.addEventListener('scroll', check, { passive: true });
+      return () => window.removeEventListener('scroll', check);
+    }
+  }, [isHome, isHub, isHub2]);
 
   return isDark;
 }

@@ -1,16 +1,527 @@
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useIdeas } from '../context/IdeaContext';
 import { useIdeaFilters } from '../hooks/useIdeaFilters';
 import { useIdeaModal } from '../hooks/useIdeaModal';
+import type { Idea } from '../hooks/useIdeaFilters';
 
-const CATEGORIES = ['Todas', 'Processo', 'Produto', 'Tech', 'CX', 'Pessoas', 'Outros'];
-const STATUSES = ['Todos', 'Submetida', 'Em análise', 'Em implementação', 'Concluída'];
-const SORTS = [
-  { label: 'Mais votadas', value: 'votes' },
+// ─── View type ────────────────────────────────────────────────────────────────
+type HubView = 'nebula' | 'lista';
+
+// ─── Category colour map ──────────────────────────────────────────────────────
+const CAT_COLOR: Record<string, string> = {
+  Pessoas:  '#9437FF',
+  Produto:  '#FF0066',
+  CX:       '#4294F8',
+  Processo: '#3126b4',
+  Tech:     '#036ef2',
+  Outros:   '#87007f',
+};
+
+// ─── Rich idea content ────────────────────────────────────────────────────────
+const IDEA_CONTENT: Record<number, { problem: string; solution: string; impact: string[] }> = {
+  1:  { problem: 'Identificámos desafios significativos relacionados com o modelo de trabalho híbrido estruturado, que afectam directamente a eficiência operacional e a satisfação dos envolvidos.', solution: 'A solução passa por implementar um modelo de trabalho híbrido estruturado, através de uma abordagem centrada nas necessidades reais dos utilizadores.', impact: ['Aumento de 30% na produtividade', 'Redução de custos operacionais em 20%', 'Melhoria da satisfação dos colaboradores', 'Optimização dos processos internos'] },
+  2:  { problem: 'Os clientes enfrentam dificuldades no acesso a suporte imediato, resultando em elevado tempo de espera e redução da satisfação geral com o serviço.', solution: 'Desenvolver uma app self-service com IA conversacional que resolva pedidos sem intervenção humana, disponível 24/7.', impact: ['Redução de 40% nos tickets de suporte', 'NPS aumenta em 25 pontos', 'Disponibilidade de suporte 24/7', 'Diminuição do custo por contacto'] },
+  3:  { problem: 'Colaboradores internos perdem tempo significativo à espera de respostas a questões operacionais, afectando a produtividade diária das equipas.', solution: 'Implementar um chatbot interno com IA capaz de responder automaticamente a questões de RH, TI e operações em tempo real.', impact: ['Resposta imediata a 80% das questões', 'Redução de 60% nos pedidos de suporte interno', 'Maior autonomia dos colaboradores', 'Libertação de tempo nas equipas de suporte'] },
+  4:  { problem: 'O processo de aprovação de despesas é manual, lento e propenso a erros, causando atrasos no reembolso e frustração nos colaboradores.', solution: 'Automatizar o fluxo de aprovação através de um sistema inteligente com regras de negócio configuráveis e notificações em tempo real.', impact: ['Redução de 70% no tempo de aprovação', 'Eliminação de erros manuais', 'Maior transparência no processo', 'Poupança estimada de 15h/semana por equipa'] },
+  5:  { problem: 'O processo de integração de novos colaboradores é inconsistente e demorado, resultando numa experiência inicial negativa e maior rotatividade.', solution: 'Criar uma plataforma de onboarding digital com percursos personalizados por função e um assistente de IA que guia cada colaborador.', impact: ['Redução de 50% no tempo de integração', 'Aumento de 35% na retenção nos primeiros 6 meses', 'Experiência consistente e personalizada', 'Maior engajamento desde o primeiro dia'] },
+  6:  { problem: 'A falta de visibilidade centralizada sobre as métricas operacionais obriga os gestores a consultar múltiplos sistemas, perdendo tempo e eficácia.', solution: 'Desenvolver um dashboard unificado com métricas em tempo real de todos os departamentos, com alertas automáticos e drill-down por área.', impact: ['Decisões baseadas em dados em tempo real', 'Redução de 80% no tempo de reporte', 'Identificação rápida de desvios', 'Maior alinhamento entre equipas'] },
+  7:  { problem: 'A integração com parceiros externos é complexa e pouco padronizada, causando atrasos nos projetos e elevados custos de desenvolvimento.', solution: 'Criar uma API standard bem documentada e segura que permita integrações rápidas com sistemas externos de forma escalável.', impact: ['Redução de 60% no tempo de integração', 'Maior segurança nas trocas de dados', 'Ecossistema de parceiros mais ágil', 'Redução de custos de desenvolvimento'] },
+  8:  { problem: 'Os clientes dependem de canais tradicionais para gerir contratos, o que gera filas de espera, erros e baixa satisfação com o serviço.', solution: 'Desenvolver uma app web self-service que permita aos clientes gerir contratos, pedidos e histórico de forma autónoma e intuitiva.', impact: ['Redução de 45% nas chamadas de suporte', 'Aumento de 30% na satisfação do cliente', 'Disponibilidade 24/7 para gestão', 'Redução de erros no processamento'] },
+  9:  { problem: 'Os eventos internos da empresa geram emissões de carbono significativas sem qualquer monitorização ou estratégia de compensação definida.', solution: 'Implementar um programa de neutralidade carbónica para eventos, com medição de emissões, compensação via créditos e práticas sustentáveis.', impact: ['Redução de 50% nas emissões por evento', 'Certificação de sustentabilidade', 'Melhoria da imagem corporativa', 'Alinhamento com metas ESG da empresa'] },
+  10: { problem: 'O conhecimento e experiência estão concentrados em silos departamentais, limitando o desenvolvimento profissional e a inovação transversal.', solution: 'Criar um programa estruturado de mentoria cruzada que conecte colaboradores de departamentos diferentes por áreas de interesse.', impact: ['Partilha de conhecimento entre 100+ colaboradores', 'Aumento de 40% na satisfação profissional', 'Redução de silos organizacionais', 'Desenvolvimento de competências transversais'] },
+  11: { problem: 'Os dados de comportamento do cliente estão dispersos por múltiplas plataformas, impossibilitando análises coerentes e acções personalizadas.', solution: 'Construir um data lake centralizado que consolide dados de todas as fontes, com capacidade de análise avançada e modelos preditivos.', impact: ['Visão 360° do comportamento do cliente', 'Personalização de ofertas em escala', 'Antecipação de churn em 60%', 'Decisões de produto mais informadas'] },
+  12: { problem: 'A falta de reconhecimento formal entre pares reduz a motivação e o sentimento de pertença, afectando a cultura organizacional positivamente.', solution: 'Implementar um sistema digital de reconhecimento entre pares, com badges, pontos e visibilidade na plataforma interna.', impact: ['Aumento de 45% no engagement', 'Melhoria do clima organizacional', 'Reconhecimento de 500+ contribuições/mês', 'Retenção de talentos melhorada'] },
+};
+
+interface BubbleState {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  idea: Idea;
+}
+
+// ─── View toggle pill ─────────────────────────────────────────────────────────
+function ViewToggle({ view, onChange, dark }: { view: HubView; onChange: (v: HubView) => void; dark: boolean }) {
+  return (
+    <div style={{
+      display: 'inline-flex', gap: 0,
+      background: dark ? 'rgba(255,255,255,0.10)' : 'rgba(13,19,51,0.07)',
+      border: dark ? '1px solid rgba(255,255,255,0.20)' : '1px solid rgba(13,19,51,0.14)',
+      borderRadius: 14, padding: 4,
+    }}>
+      {([['nebula', '🌌 Nebula'], ['lista', '☰ Lista']] as const).map(([v, label]) => (
+        <button
+          key={v}
+          onClick={() => onChange(v)}
+          style={{
+            padding: '7px 18px', borderRadius: 10, border: 'none',
+            background: view === v
+              ? dark ? 'rgba(255,255,255,0.18)' : '#2563eb'
+              : 'transparent',
+            color: view === v
+              ? 'white'
+              : dark ? 'rgba(255,255,255,0.50)' : 'rgba(13,19,51,0.45)',
+            fontSize: 13, fontWeight: 700, cursor: 'pointer',
+            transition: 'all 0.22s',
+            fontFamily: 'var(--font-outfit)',
+          }}
+        >{label}</button>
+      ))}
+    </div>
+  );
+}
+
+// ─── Dark detail modal (used by Nebula) ───────────────────────────────────────
+function DarkModal({ idea, onClose, hasVoted, toggleVote }: {
+  idea: Idea;
+  onClose: () => void;
+  hasVoted: (id: number) => boolean;
+  toggleVote: (id: number, e: ReactMouseEvent) => void;
+}) {
+  const color   = CAT_COLOR[idea.cat] || '#2563eb';
+  const content = IDEA_CONTENT[idea.id];
+  const voted   = hasVoted(idea.id);
+
+  return (
+    <div
+      onClick={onClose}
+      style={{ position: 'fixed', inset: 0, zIndex: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: 'rgba(0,0,0,0.74)', backdropFilter: 'blur(12px)' }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: 'relative', borderRadius: 24,
+          width: '100%', maxWidth: 580, maxHeight: '88vh', overflowY: 'auto',
+          background: 'linear-gradient(145deg, #0c1345 0%, #040815 100%)',
+          border: `1px solid ${color}44`,
+          boxShadow: `0 0 80px ${color}22, 0 32px 64px rgba(0,0,0,0.6)`,
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '20px 24px 0' }}>
+          <span style={{ background: color + '28', color, padding: '4px 12px', borderRadius: 99, fontSize: 12, fontWeight: 700 }}>
+            {idea.cat}
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>
+            <span style={{ width: 7, height: 7, borderRadius: '50%', background: color, display: 'inline-block' }} />
+            {idea.status}
+          </span>
+          <button onClick={onClose} style={{ marginLeft: 'auto', background: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '50%', width: 32, height: 32, color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
+        </div>
+        <div style={{ padding: '16px 24px 0' }}>
+          <h2 style={{ color: 'white', fontSize: 22, fontWeight: 800, lineHeight: 1.3, margin: 0 }}>{idea.title}</h2>
+        </div>
+        <div style={{ padding: '14px 24px', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>👤 {idea.author}</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>
+            <span style={{ color, fontWeight: 700 }}>▲</span>{voted ? idea.votes + 1 : idea.votes} votos
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>💬 {idea.comments} comentários</span>
+        </div>
+        {content && (
+          <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div>
+              <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 6px' }}>Problema</p>
+              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.65, margin: 0 }}>{content.problem}</p>
+            </div>
+            <div>
+              <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 6px' }}>Solução Proposta</p>
+              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.65, margin: 0 }}>{content.solution}</p>
+            </div>
+            <div>
+              <p style={{ color: 'white', fontWeight: 700, fontSize: 14, margin: '0 0 8px' }}>Impacto Esperado</p>
+              <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {content.impact.map((item, i) => (
+                  <li key={i} style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                    <span style={{ color, fontSize: 13, flexShrink: 0, marginTop: 1 }}>›</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+        <div style={{ padding: '0 24px 24px', borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 20, display: 'flex', gap: 12 }}>
+          <button
+            onClick={e => toggleVote(idea.id, e)}
+            style={{
+              flex: 1, background: voted ? color : 'rgba(255,255,255,0.08)',
+              color: 'white', border: `1px solid ${voted ? color : 'rgba(255,255,255,0.2)'}`,
+              borderRadius: 99, padding: '12px 0', fontSize: 14, fontWeight: 700,
+              cursor: 'pointer', transition: 'all 0.22s',
+            }}
+          >▲ {voted ? 'Votado' : `Votar (${idea.votes})`}</button>
+          <button style={{
+            flex: 1, background: '#2563eb', color: 'white', border: 'none',
+            borderRadius: 99, padding: '12px 0', fontSize: 14, fontWeight: 700, cursor: 'pointer',
+          }}>💬 Comentar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Stats section (shown below the Nebula) ───────────────────────────────────
+function StatsSection({ onStatusFilter }: { onStatusFilter?: (s: string) => void }) {
+  return (
+    <div style={{ background: '#050714', padding: '64px 40px 72px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 48 }}>
+
+        {/* Por categoria */}
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
+            Por categoria
+          </div>
+          {[
+            { name: 'Processo', pct: 34, color: '#3126b4' },
+            { name: 'Tecnologia', pct: 28, color: '#036ef2' },
+            { name: 'Pessoas', pct: 22, color: '#9437FF' },
+            { name: 'CX', pct: 10, color: '#4294F8' },
+            { name: 'Outros', pct: 6, color: '#87007f' },
+          ].map(cat => (
+            <div key={cat.name} style={{ marginBottom: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
+                <span>{cat.name}</span>
+                <span style={{ fontFamily: 'var(--font-mono)', color: cat.color }}>{cat.pct}%</span>
+              </div>
+              <div style={{ height: 3, borderRadius: 2, background: 'rgba(255,255,255,0.07)' }}>
+                <div style={{ height: '100%', borderRadius: 2, width: `${cat.pct}%`, background: cat.color, boxShadow: `0 0 8px ${cat.color}88` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Por estado */}
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
+            Por estado
+          </div>
+          {[
+            { label: 'Submetidas', n: '142', color: '#036ef2' },
+            { label: 'Em análise', n: '89', color: '#4294F8' },
+            { label: 'Em implementação', n: '28', color: '#9437FF' },
+            { label: 'Concluídas', n: '12', color: '#FF0066' },
+          ].map(stat => (
+            <div
+              key={stat.label}
+              onClick={() => onStatusFilter?.(stat.label)}
+              style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '10px 14px', borderRadius: 10, marginBottom: 8,
+                background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                cursor: 'default', transition: 'background 0.18s',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 7, height: 7, borderRadius: '50%', background: stat.color, boxShadow: `0 0 6px ${stat.color}` }} />
+                <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13 }}>{stat.label}</span>
+              </div>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 15, fontWeight: 800, color: stat.color }}>{stat.n}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Top colaboradores */}
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', marginBottom: 20, fontFamily: 'var(--font-mono)' }}>
+            Top colaboradores
+          </div>
+          {[
+            { name: 'CM', fullName: 'Carla Moreira', count: '8 ideias', bg: 'linear-gradient(135deg, #3126b4, #9437FF)' },
+            { name: 'TC', fullName: 'Tiago Costa', count: '6 ideias', bg: 'linear-gradient(135deg, #4294F8, #87007F)' },
+            { name: 'MA', fullName: 'Miguel Alves', count: '5 ideias', bg: 'linear-gradient(135deg, #FF0066, #9437FF)' },
+            { name: 'SN', fullName: 'Sofia Neves', count: '4 ideias', bg: 'linear-gradient(135deg, #036ef2, #3126b4)' },
+          ].map((user, i) => (
+            <div key={user.name} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: user.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800, color: 'white', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+                {user.name}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: 13, fontWeight: 600 }}>{user.fullName}</div>
+                <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, marginTop: 1 }}>#{i + 1} contributor</div>
+              </div>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 800, color: '#2563eb' }}>{user.count}</span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// NEBULA VIEW — full-screen space canvas with floating bubbles
+// ═══════════════════════════════════════════════════════════════════════════════
+function NebulaView({ onSwitch }: { onSwitch: () => void }) {
+  const { ideas, hasVoted, toggleVote } = useIdeas();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const bubblesRef   = useRef<BubbleState[]>([]);
+  const mouseRef     = useRef({ x: -9999, y: -9999 });
+  const rafRef       = useRef<number>(0);
+  const frameRef     = useRef(0);
+
+  const [, setTick]      = useState(0);
+  const [selected, setSelected] = useState<Idea | null>(null);
+  const [filterCat, setFilterCat] = useState<string | null>(null);
+
+  const stars = useMemo(() =>
+    Array.from({ length: 110 }, (_, i) => ({
+      id: i,
+      left:    parseFloat((Math.random() * 100).toFixed(2)),
+      top:     parseFloat((Math.random() * 100).toFixed(2)),
+      size:    parseFloat((Math.random() * 1.8 + 0.4).toFixed(2)),
+      opacity: parseFloat((Math.random() * 0.55 + 0.08).toFixed(2)),
+    })), []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    if (!width || !height) return;
+
+    const minVotes = Math.min(...ideas.map(i => i.votes));
+    const maxVotes = Math.max(...ideas.map(i => i.votes));
+    const minR = 48, maxR = 96;
+
+    bubblesRef.current = ideas.map(idea => {
+      const t = maxVotes === minVotes ? 0.5 : (idea.votes - minVotes) / (maxVotes - minVotes);
+      const radius = minR + t * (maxR - minR);
+      return {
+        id: idea.id,
+        x: radius + Math.random() * (width  - radius * 2),
+        y: radius + Math.random() * (height - radius * 2),
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius,
+        idea,
+      };
+    });
+    setTick(t => t + 1);
+  }, [ideas]);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || bubblesRef.current.length === 0) return;
+
+    const loop = () => {
+      const { width, height } = el.getBoundingClientRect();
+      const { x: mx, y: my } = mouseRef.current;
+      const bs = bubblesRef.current;
+
+      for (let i = 0; i < bs.length; i++) {
+        const b = bs[i];
+        const dx = b.x - mx, dy = b.y - my;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 170 && dist > 0) {
+          const f = ((170 - dist) / 170) * 0.22;
+          b.vx += (dx / dist) * f;
+          b.vy += (dy / dist) * f;
+        }
+        b.vx += (Math.random() - 0.5) * 0.012;
+        b.vy += (Math.random() - 0.5) * 0.012;
+        b.vx *= 0.986; b.vy *= 0.986;
+        const spd = Math.hypot(b.vx, b.vy);
+        if (spd > 1.6) { b.vx = b.vx / spd * 1.6; b.vy = b.vy / spd * 1.6; }
+        b.x += b.vx; b.y += b.vy;
+        if (b.x - b.radius < 0)       { b.x = b.radius;         b.vx =  Math.abs(b.vx); }
+        if (b.x + b.radius > width)    { b.x = width - b.radius; b.vx = -Math.abs(b.vx); }
+        if (b.y - b.radius < 0)        { b.y = b.radius;          b.vy =  Math.abs(b.vy); }
+        if (b.y + b.radius > height)   { b.y = height - b.radius; b.vy = -Math.abs(b.vy); }
+
+        for (let j = i + 1; j < bs.length; j++) {
+          const b2 = bs[j];
+          const cx = b2.x - b.x, cy = b2.y - b.y;
+          const cd = Math.hypot(cx, cy);
+          const minD = b.radius + b2.radius + 6;
+          if (cd < minD && cd > 0) {
+            const overlap = (minD - cd) * 0.5;
+            const nx = cx / cd, ny = cy / cd;
+            b.x  -= nx * overlap; b.y  -= ny * overlap;
+            b2.x += nx * overlap; b2.y += ny * overlap;
+            const dvx = b2.vx - b.vx, dvy = b2.vy - b.vy;
+            const dot = dvx * nx + dvy * ny;
+            if (dot < 0) {
+              b.vx  += dot * nx * 0.55; b.vy  += dot * ny * 0.55;
+              b2.vx -= dot * nx * 0.55; b2.vy -= dot * ny * 0.55;
+            }
+          }
+        }
+      }
+
+      frameRef.current++;
+      if (frameRef.current % 2 === 0) setTick(t => t + 1);
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    rafRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(rafRef.current);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bubblesRef.current.length]);
+
+  const handleMouseMove = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (rect) mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }, []);
+
+  const categories = useMemo(() => [...new Set(ideas.map(i => i.cat))], [ideas]);
+
+  return (
+    <div style={{ background: '#050714' }}>
+
+      {/* ── Full-screen nebula canvas ── */}
+      <div
+        ref={containerRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => { mouseRef.current = { x: -9999, y: -9999 }; }}
+        style={{
+          position: 'relative',
+          height: '100vh',
+          overflow: 'hidden',
+          background: 'radial-gradient(ellipse at 50% 38%, #0a1240 0%, #060b1e 55%, #010308 100%)',
+        }}
+      >
+        {/* Stars */}
+        {stars.map(s => (
+          <div key={s.id} style={{ position: 'absolute', left: `${s.left}%`, top: `${s.top}%`, width: s.size, height: s.size, borderRadius: '50%', background: 'white', opacity: s.opacity, pointerEvents: 'none' }} />
+        ))}
+
+        {/* Ambient glows */}
+        <div style={{ position: 'absolute', left: '8%', top: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', right: '6%', bottom: '15%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(148,55,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', left: '55%', top: '45%', width: 350, height: 350, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,102,0.03) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+        {/* ── Filter legend — absolute overlay, top-center ── */}
+        <div style={{
+          position: 'absolute', top: 96, left: 0, right: 0,
+          display: 'flex', justifyContent: 'center', alignItems: 'center',
+          gap: 18, flexWrap: 'wrap', padding: '0 140px 0 24px', // right padding to avoid view toggle
+          zIndex: 10,
+        }}>
+          <div
+            onClick={() => setFilterCat(null)}
+            style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', opacity: filterCat === null ? 1 : 0.45, transition: 'opacity 0.2s' }}
+          >
+            <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'rgba(255,255,255,0.5)', boxShadow: '0 0 5px rgba(255,255,255,0.4)' }} />
+            <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12, fontWeight: 600 }}>Todas</span>
+          </div>
+          {categories.map(cat => {
+            const color  = CAT_COLOR[cat] || '#2563eb';
+            const active = filterCat === cat;
+            return (
+              <div
+                key={cat}
+                onClick={() => setFilterCat(f => f === cat ? null : cat)}
+                style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', opacity: filterCat === null || active ? 1 : 0.4, transition: 'opacity 0.2s' }}
+              >
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: color, boxShadow: `0 0 7px ${color}${active ? 'cc' : '66'}`, transform: active ? 'scale(1.3)' : 'scale(1)', transition: 'transform 0.2s' }} />
+                <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)', fontSize: 12, fontWeight: active ? 700 : 500, transition: 'color 0.2s' }}>{cat}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── View toggle — top-right corner, below nav ── */}
+        <div style={{ position: 'absolute', top: 92, right: 24, zIndex: 10 }}>
+          <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
+        </div>
+
+        {/* ── Bubbles ── */}
+        {bubblesRef.current.map(b => {
+          const color      = CAT_COLOR[b.idea.cat] || '#2563eb';
+          const isFiltered = filterCat !== null && b.idea.cat !== filterCat;
+          const voted      = hasVoted(b.id);
+          const r          = b.radius;
+          const maxChars   = Math.floor(r * 0.52);
+          const label      = b.idea.title.length > maxChars ? b.idea.title.slice(0, maxChars - 1) + '…' : b.idea.title;
+          const fontSize   = Math.max(9, Math.min(13, r * 0.14));
+
+          return (
+            <div
+              key={b.id}
+              onClick={() => !isFiltered && setSelected(b.idea)}
+              style={{
+                position: 'absolute',
+                left: b.x - r, top: b.y - r,
+                width: r * 2, height: r * 2,
+                borderRadius: '50%',
+                background: `radial-gradient(circle at 36% 30%, ${color}99 0%, ${color}33 55%, ${color}0d 100%)`,
+                border:     `1.5px solid ${color}${voted ? 'cc' : '66'}`,
+                boxShadow:  isFiltered ? 'none' : `0 0 ${r * 0.5}px ${color}55, inset 0 0 ${r * 0.3}px ${color}1e`,
+                opacity:    isFiltered ? 0.08 : 1,
+                transition: 'opacity 0.35s ease',
+                cursor:     isFiltered ? 'default' : 'pointer',
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+                textAlign: 'center',
+                userSelect: 'none',
+                gap: 4,
+              }}
+            >
+              <div style={{ position: 'absolute', inset: -8, borderRadius: '50%', background: `radial-gradient(circle, ${color}22 0%, transparent 70%)`, pointerEvents: 'none' }} />
+              <span style={{
+                fontSize, color: 'white', fontWeight: 700, lineHeight: 1.3,
+                textShadow: '0 1px 4px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8)',
+                display: 'block', wordBreak: 'break-word', padding: '0 8px', textAlign: 'center',
+              }}>{label}</span>
+              <span style={{ fontSize: Math.max(8, fontSize - 1), color, fontWeight: 800, textShadow: `0 0 8px ${color}` }}>
+                ▲ {voted ? b.idea.votes + 1 : b.idea.votes}
+              </span>
+            </div>
+          );
+        })}
+
+        {/* Hint */}
+        <div style={{ position: 'absolute', bottom: 16, right: 20, color: 'rgba(255,255,255,0.18)', fontSize: 11, fontStyle: 'italic', pointerEvents: 'none' }}>
+          move o rato · clica para explorar
+        </div>
+
+        {/* Scroll indicator */}
+        <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, pointerEvents: 'none', animation: 'none' }}>
+          <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase' }}>resumo</span>
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="none">
+            <path d="M1 1l7 7 7-7" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      </div>
+
+      {/* ── Stats section below the nebula ── */}
+      <StatsSection />
+
+      {/* ── Detail modal ── */}
+      {selected && (
+        <DarkModal
+          idea={selected}
+          onClose={() => setSelected(null)}
+          hasVoted={hasVoted}
+          toggleVote={toggleVote}
+        />
+      )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LISTA VIEW — original list layout (light theme)
+// ═══════════════════════════════════════════════════════════════════════════════
+const LIST_CATEGORIES = ['Todas', 'Processo', 'Produto', 'Tech', 'CX', 'Pessoas', 'Outros'];
+const LIST_STATUSES   = ['Todos', 'Submetida', 'Em análise', 'Em implementação', 'Concluída'];
+const LIST_SORTS      = [
+  { label: 'Mais votadas',    value: 'votes'    },
   { label: 'Mais comentadas', value: 'comments' },
 ];
 
-export default function IdeaHub() {
+function ListaView({ onSwitch }: { onSwitch: () => void }) {
   const navigate = useNavigate();
   const { ideas, hasVoted, toggleVote: handleVote } = useIdeas();
   const { search, setSearch, activeCategory, setActiveCategory, activeStatus, setActiveStatus, sortBy, setSortBy, filtered, clearFilters } = useIdeaFilters(ideas);
@@ -18,6 +529,7 @@ export default function IdeaHub() {
 
   return (
     <div className="min-h-screen pt-[62px] bg-[var(--bg)]">
+
       {/* Header */}
       <div className="px-9 py-5 border-b sticky top-[62px] z-50 bg-[var(--bg)]" style={{ borderColor: 'var(--border-light)' }}>
         <div className="flex items-start justify-between gap-4 mb-4">
@@ -29,18 +541,20 @@ export default function IdeaHub() {
               // {filtered.length} ideias · ordenadas por {sortBy === 'votes' ? 'votos' : 'comentários'}
             </div>
           </div>
-          <button
-            className="px-[18px] py-2 rounded-full border-none text-white text-[12px] font-bold cursor-pointer whitespace-nowrap transition-all hover:bg-[#1d4ed8] flex-shrink-0"
-            style={{ background: 'var(--blue)', boxShadow: '0 3px 10px var(--blue-glow)', fontFamily: 'var(--font-outfit)' }}
-            onClick={() => navigate('/criar')}
-          >
-            + Nova Ideia
-          </button>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <ViewToggle view="lista" onChange={v => v === 'nebula' && onSwitch()} dark={false} />
+            <button
+              className="px-[18px] py-2 rounded-full border-none text-white text-[12px] font-bold cursor-pointer whitespace-nowrap transition-all hover:bg-[#1d4ed8]"
+              style={{ background: 'var(--blue)', boxShadow: '0 3px 10px var(--blue-glow)', fontFamily: 'var(--font-outfit)' }}
+              onClick={() => navigate('/criar')}
+            >
+              + Nova Ideia
+            </button>
+          </div>
         </div>
 
-        {/* Search + filters row */}
+        {/* Search + filters */}
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Search */}
           <div className="relative flex-1 min-w-[200px] max-w-[320px]">
             <svg className="absolute left-3 top-1/2 -translate-y-1/2" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-sub)' }}>
               <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -49,19 +563,13 @@ export default function IdeaHub() {
               type="text"
               placeholder="Pesquisar ideias..."
               className="w-full pl-9 pr-4 py-1.5 border-[1.5px] rounded-full text-[12px] outline-none transition-all bg-transparent focus:border-[var(--blue)]"
-              style={{
-                borderColor: 'var(--border-light)',
-                color: 'var(--text)',
-                fontFamily: 'var(--font-outfit)',
-              }}
+              style={{ borderColor: 'var(--border-light)', color: 'var(--text)', fontFamily: 'var(--font-outfit)' }}
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
             />
           </div>
-
-          {/* Category pills */}
           <div className="flex items-center gap-1 flex-wrap">
-            {CATEGORIES.map((cat) => (
+            {LIST_CATEGORIES.map(cat => (
               <button
                 key={cat}
                 className="px-3 py-1 border-[1.5px] rounded-full text-[11px] cursor-pointer transition-all"
@@ -72,37 +580,32 @@ export default function IdeaHub() {
                   fontFamily: 'var(--font-outfit)',
                 }}
                 onClick={() => setActiveCategory(cat)}
-              >
-                {cat}
-              </button>
+              >{cat}</button>
             ))}
           </div>
-
           <div className="w-px h-4" style={{ background: 'var(--border-light)' }} />
-
-          {/* Status filter */}
           <select
             className="px-3 py-1 border-[1.5px] rounded-full text-[11px] cursor-pointer bg-transparent outline-none"
             style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)', fontFamily: 'var(--font-outfit)' }}
             value={activeStatus}
-            onChange={(e) => setActiveStatus(e.target.value)}
+            onChange={e => setActiveStatus(e.target.value)}
           >
-            {STATUSES.map((s) => <option key={s}>{s}</option>)}
+            {LIST_STATUSES.map(s => <option key={s}>{s}</option>)}
           </select>
-
-          {/* Sort */}
           <select
             className="px-3 py-1 border-[1.5px] rounded-full text-[11px] cursor-pointer bg-transparent outline-none"
             style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)', fontFamily: 'var(--font-outfit)' }}
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'votes' | 'comments')}
+            onChange={e => setSortBy(e.target.value as 'votes' | 'comments')}
           >
-            {SORTS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+            {LIST_SORTS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
           </select>
         </div>
       </div>
 
+      {/* Two-column layout */}
       <div className="grid grid-cols-[1fr_260px]" style={{ height: 'calc(100vh - 178px)', overflow: 'hidden' }}>
+
         {/* Feed */}
         <div className="overflow-y-auto">
           {filtered.length === 0 ? (
@@ -111,9 +614,7 @@ export default function IdeaHub() {
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
               <div className="text-[14px]">Nenhuma ideia encontrada</div>
-              <button className="text-[12px] underline" style={{ color: 'var(--blue)' }} onClick={clearFilters}>
-                Limpar filtros
-              </button>
+              <button className="text-[12px] underline" style={{ color: 'var(--blue)' }} onClick={clearFilters}>Limpar filtros</button>
             </div>
           ) : (
             filtered.map((idea, i) => (
@@ -123,10 +624,7 @@ export default function IdeaHub() {
                 style={{ borderColor: 'var(--border-light)' }}
                 onClick={() => openIdea(idea)}
               >
-                <div
-                  className="text-[32px] font-[900] leading-[1] min-w-[36px] transition-colors"
-                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}
-                >
+                <div className="text-[32px] font-[900] leading-[1] min-w-[36px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
                   {String(i + 1).padStart(2, '0')}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -138,40 +636,32 @@ export default function IdeaHub() {
                       <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: idea.statusColor }} />
                       {idea.status}
                     </div>
-                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                      {idea.author}
-                    </span>
+                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{idea.author}</span>
                     <span className="text-[10px] px-2 py-0.5 rounded font-semibold" style={{ fontFamily: 'var(--font-mono)', color: idea.catColor, background: idea.catBg }}>
                       {idea.cat}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 flex-shrink-0 pt-1" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center gap-1.5 flex-shrink-0 pt-1" onClick={e => e.stopPropagation()}>
                   <button
                     className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full bg-transparent cursor-pointer transition-all flex items-center gap-1"
                     style={{
                       borderColor: hasVoted(idea.id) ? 'var(--blue)' : 'var(--border-light)',
-                      color: hasVoted(idea.id) ? 'var(--blue)' : 'var(--text-muted)',
-                      background: hasVoted(idea.id) ? 'var(--blue-light)' : 'transparent',
+                      color:       hasVoted(idea.id) ? 'var(--blue)' : 'var(--text-muted)',
+                      background:  hasVoted(idea.id) ? 'var(--blue-light)' : 'transparent',
                       fontFamily: 'var(--font-mono)',
                     }}
-                    onClick={(e) => handleVote(idea.id, e)}
-                  >
-                    ▲ {idea.votes + (hasVoted(idea.id) ? 1 : 0)}
-                  </button>
+                    onClick={e => handleVote(idea.id, e)}
+                  >▲ {idea.votes + (hasVoted(idea.id) ? 1 : 0)}</button>
                   <button
-                    className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full bg-transparent cursor-pointer transition-all flex items-center gap-1"
+                    className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full bg-transparent cursor-pointer"
                     style={{ borderColor: 'var(--border-light)', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
-                  >
-                    💬 {idea.comments}
-                  </button>
+                  >💬 {idea.comments}</button>
                   <button
                     className="px-2.5 py-1.5 text-[11px] border-[1.5px] rounded-full cursor-pointer transition-all hover:bg-[var(--blue-light)]"
                     style={{ borderColor: '#036ef2', color: '#036ef2', fontFamily: 'var(--font-mono)', background: 'transparent' }}
                     onClick={() => openIdea(idea)}
-                  >
-                    Ver →
-                  </button>
+                  >Ver →</button>
                 </div>
               </div>
             ))
@@ -181,38 +671,34 @@ export default function IdeaHub() {
         {/* Sidebar */}
         <div className="border-l px-6 py-6 overflow-y-auto bg-[var(--bg2)]" style={{ borderColor: 'var(--border-light)' }}>
           <div className="mb-6">
-            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
-              Por categoria
-            </div>
+            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>Por categoria</div>
             {[
-              { name: 'Processo', pct: 34, color: '#3126b4' },
+              { name: 'Processo',   pct: 34, color: '#3126b4' },
               { name: 'Tecnologia', pct: 28, color: '#036ef2' },
-              { name: 'Pessoas', pct: 22, color: '#9437FF' },
-              { name: 'CX', pct: 10, color: '#4294F8' },
-              { name: 'Outros', pct: 6, color: '#87007f' },
-            ].map((cat) => (
+              { name: 'Pessoas',    pct: 22, color: '#9437FF' },
+              { name: 'CX',         pct: 10, color: '#4294F8' },
+              { name: 'Outros',     pct: 6,  color: '#87007f' },
+            ].map(cat => (
               <div key={cat.name} className="mb-2.5">
                 <div className="flex justify-between text-[11px] mb-1" style={{ color: 'var(--text-muted)' }}>
                   <span>{cat.name}</span>
                   <span style={{ fontFamily: 'var(--font-mono)' }}>{cat.pct}%</span>
                 </div>
                 <div className="h-[3px] rounded-sm overflow-hidden" style={{ background: 'var(--surface3)' }}>
-                  <div className="h-full rounded-sm transition-all" style={{ width: `${cat.pct}%`, background: cat.color }} />
+                  <div className="h-full rounded-sm" style={{ width: `${cat.pct}%`, background: cat.color }} />
                 </div>
               </div>
             ))}
           </div>
 
           <div className="mb-6">
-            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
-              Por estado
-            </div>
+            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>Por estado</div>
             {[
-              { label: 'Submetidas', n: '142', color: '#036ef2' },
-              { label: 'Em análise', n: '89', color: '#4294F8' },
-              { label: 'Em implementação', n: '28', color: '#9437FF' },
-              { label: 'Concluídas', n: '12', color: '#FF0066' },
-            ].map((stat) => (
+              { label: 'Submetidas',        n: '142', color: '#036ef2' },
+              { label: 'Em análise',        n: '89',  color: '#4294F8' },
+              { label: 'Em implementação',  n: '28',  color: '#9437FF' },
+              { label: 'Concluídas',        n: '12',  color: '#FF0066' },
+            ].map(stat => (
               <div
                 key={stat.label}
                 className="flex justify-between px-3 py-2 rounded-lg border text-[12px] mb-1.5 cursor-pointer transition-all hover:bg-[var(--surface2)]"
@@ -223,38 +709,30 @@ export default function IdeaHub() {
                   <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: stat.color }} />
                   <span style={{ color: 'var(--text)' }}>{stat.label}</span>
                 </div>
-                <span className="font-bold" style={{ fontFamily: 'var(--font-mono)', color: stat.color }}>
-                  {stat.n}
-                </span>
+                <span className="font-bold" style={{ fontFamily: 'var(--font-mono)', color: stat.color }}>{stat.n}</span>
               </div>
             ))}
           </div>
 
           <div>
-            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
-              Top colaboradores
-            </div>
+            <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>Top colaboradores</div>
             {[
               { name: 'CM', fullName: 'Carla Moreira', count: '8 ideias', bg: 'linear-gradient(135deg, #3126b4, #9437FF)' },
-              { name: 'TC', fullName: 'Tiago Costa', count: '6 ideias', bg: 'linear-gradient(135deg, #4294F8, #87007F)' },
-              { name: 'MA', fullName: 'Miguel Alves', count: '5 ideias', bg: 'linear-gradient(135deg, #FF0066, #9437FF)' },
-              { name: 'SN', fullName: 'Sofia Neves', count: '4 ideias', bg: 'linear-gradient(135deg, #036ef2, #3126b4)' },
-            ].map((user) => (
+              { name: 'TC', fullName: 'Tiago Costa',   count: '6 ideias', bg: 'linear-gradient(135deg, #4294F8, #87007F)' },
+              { name: 'MA', fullName: 'Miguel Alves',  count: '5 ideias', bg: 'linear-gradient(135deg, #FF0066, #9437FF)' },
+              { name: 'SN', fullName: 'Sofia Neves',   count: '4 ideias', bg: 'linear-gradient(135deg, #036ef2, #3126b4)' },
+            ].map(user => (
               <div key={user.name} className="flex items-center gap-2.5 text-[11px] mb-2" style={{ color: 'var(--text-muted)' }}>
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0" style={{ background: user.bg }}>
-                  {user.name}
-                </div>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0" style={{ background: user.bg }}>{user.name}</div>
                 <span className="flex-1 truncate">{user.fullName}</span>
-                <span className="font-bold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--blue)' }}>
-                  {user.count}
-                </span>
+                <span className="font-bold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--blue)' }}>{user.count}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Idea detail modal */}
+      {/* Idea detail modal (light theme) */}
       {selectedIdea && (
         <div
           className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center p-6"
@@ -262,32 +740,20 @@ export default function IdeaHub() {
         >
           <div
             className="bg-[var(--surface)] rounded-2xl max-w-[680px] w-full max-h-[85vh] overflow-y-auto shadow-[0_24px_64px_rgba(0,0,0,0.25)]"
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <div className="sticky top-0 bg-[var(--surface)] border-b px-6 py-4 flex items-center justify-between z-10" style={{ borderColor: 'var(--border-light)' }}>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] px-2 py-0.5 rounded font-semibold" style={{ fontFamily: 'var(--font-mono)', color: selectedIdea.catColor, background: selectedIdea.catBg }}>
-                  {selectedIdea.cat}
-                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded font-semibold" style={{ fontFamily: 'var(--font-mono)', color: selectedIdea.catColor, background: selectedIdea.catBg }}>{selectedIdea.cat}</span>
                 <div className="flex items-center gap-1 text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                   <div className="w-1.5 h-1.5 rounded-full" style={{ background: selectedIdea.statusColor }} />
                   {selectedIdea.status}
                 </div>
               </div>
-              <button
-                className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all hover:bg-[var(--surface2)] text-[18px]"
-                style={{ color: 'var(--text-muted)' }}
-                onClick={closeIdea}
-              >
-                ✕
-              </button>
+              <button className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all hover:bg-[var(--surface2)] text-[18px]" style={{ color: 'var(--text-muted)' }} onClick={closeIdea}>✕</button>
             </div>
-
             <div className="px-6 py-6">
-              <h2 className="text-[22px] font-bold mb-4 leading-[1.3] tracking-[-0.5px]" style={{ color: 'var(--text)' }}>
-                {selectedIdea.title}
-              </h2>
-
+              <h2 className="text-[22px] font-bold mb-4 leading-[1.3] tracking-[-0.5px]" style={{ color: 'var(--text)' }}>{selectedIdea.title}</h2>
               <div className="flex items-center gap-4 mb-6 pb-5 border-b" style={{ borderColor: 'var(--border-light)' }}>
                 <div className="flex items-center gap-1.5 text-[12px]" style={{ color: 'var(--text-muted)' }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -302,18 +768,16 @@ export default function IdeaHub() {
                   💬 {selectedIdea.comments} comentários
                 </div>
               </div>
-
               <div className="space-y-5">
                 {[
-                  { label: 'Problema', text: `Identificámos desafios significativos relacionados com ${selectedIdea.title.toLowerCase()}, que afectam directamente a eficiência operacional e a satisfação dos envolvidos.` },
-                  { label: 'Solução Proposta', text: `A solução passa por implementar ${selectedIdea.title.toLowerCase()}, através de uma abordagem estruturada e centrada nas necessidades reais dos utilizadores.` },
-                ].map((block) => (
+                  { label: 'Problema',         text: `Identificámos desafios significativos relacionados com ${selectedIdea.title.toLowerCase()}, que afectam directamente a eficiência operacional e a satisfação dos envolvidos.` },
+                  { label: 'Solução Proposta',  text: `A solução passa por implementar ${selectedIdea.title.toLowerCase()}, através de uma abordagem estruturada e centrada nas necessidades reais dos utilizadores.` },
+                ].map(block => (
                   <div key={block.label}>
                     <div className="text-[12px] font-bold mb-1.5" style={{ color: 'var(--text)' }}>{block.label}</div>
                     <div className="text-[13px] leading-[1.7]" style={{ color: 'var(--text-muted)' }}>{block.text}</div>
                   </div>
                 ))}
-
                 <div>
                   <div className="text-[12px] font-bold mb-2" style={{ color: 'var(--text)' }}>Impacto Esperado</div>
                   <ul className="space-y-1.5">
@@ -326,26 +790,21 @@ export default function IdeaHub() {
                   </ul>
                 </div>
               </div>
-
               <div className="flex gap-2.5 mt-7 pt-5 border-t" style={{ borderColor: 'var(--border-light)' }}>
                 <button
                   className="flex-1 px-4 py-2.5 rounded-full border-[1.5px] text-[13px] font-semibold cursor-pointer transition-all hover:bg-[var(--surface2)] flex items-center justify-center gap-2"
                   style={{
                     borderColor: hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--border2)',
-                    color: hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--text)',
-                    background: hasVoted(selectedIdea.id) ? 'var(--blue-light)' : 'transparent',
+                    color:       hasVoted(selectedIdea.id) ? 'var(--blue)' : 'var(--text)',
+                    background:  hasVoted(selectedIdea.id) ? 'var(--blue-light)' : 'transparent',
                     fontFamily: 'var(--font-outfit)',
                   }}
-                  onClick={(e) => handleVote(selectedIdea.id, e)}
-                >
-                  ▲ {hasVoted(selectedIdea.id) ? 'Votado' : 'Votar'} ({selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)})
-                </button>
+                  onClick={e => handleVote(selectedIdea.id, e)}
+                >▲ {hasVoted(selectedIdea.id) ? 'Votado' : 'Votar'} ({selectedIdea.votes + (hasVoted(selectedIdea.id) ? 1 : 0)})</button>
                 <button
                   className="flex-1 px-4 py-2.5 rounded-full text-white text-[13px] font-semibold cursor-pointer transition-all hover:bg-[#1d4ed8] flex items-center justify-center gap-2"
                   style={{ background: 'var(--blue)', fontFamily: 'var(--font-outfit)' }}
-                >
-                  💬 Comentar
-                </button>
+                >💬 Comentar</button>
               </div>
             </div>
           </div>
@@ -353,4 +812,25 @@ export default function IdeaHub() {
       )}
     </div>
   );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAIN — IdeaHub with Nebula / Lista toggle
+// ═══════════════════════════════════════════════════════════════════════════════
+export default function IdeaHub() {
+  const [view, setView] = useState<HubView>('nebula');
+
+  // Notify Navigation of the current view so it can theme itself
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('hub-view-change', { detail: view }));
+  }, [view]);
+
+  // Reset to light when leaving the page
+  useEffect(() => {
+    return () => window.dispatchEvent(new CustomEvent('hub-view-change', { detail: 'lista' }));
+  }, []);
+
+  return view === 'nebula'
+    ? <NebulaView   onSwitch={() => setView('lista')} />
+    : <ListaView    onSwitch={() => setView('nebula')} />;
 }

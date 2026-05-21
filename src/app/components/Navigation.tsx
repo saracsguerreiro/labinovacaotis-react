@@ -7,7 +7,8 @@ import logoAiLabBlack from './logo-tis-ai-lab-dark.png';
 
 const navLinks: { path: string; label: string }[] = [
   { path: '/', label: 'Início' },
-  { path: '/hub', label: 'Ideia HUB' },
+  { path: '/hub',  label: 'Ideia HUB' },
+  { path: '/hub2', label: '✦ HUB 2.0' },
   { path: '/impacto', label: 'Impacto' },
   { path: '/agentes', label: 'Agentes IA' },
   { path: '/sobre', label: 'Sobre' },

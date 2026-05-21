@@ -8,6 +8,7 @@ const ImpactDashboard = lazy(() => import('./components/ImpactDashboard'));
 const AgentsPage = lazy(() => import('./components/AgentsPage'));
 const SobrePage = lazy(() => import('./components/SobrePage'));
 const CreateView = lazy(() => import('./components/CreateView'));
+const IdeaHub2   = lazy(() => import('./components/IdeaHub2'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/agentes" element={<AgentsPage />} />
           <Route path="/sobre" element={<SobrePage />} />
           <Route path="/criar" element={<CreateView />} />
+          <Route path="/hub2"  element={<IdeaHub2 />} />
         </Routes>
       </Suspense>
     </div>
