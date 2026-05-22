@@ -504,13 +504,13 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
 
 /* ── Página principal ── */
 const categoryFilters = [
-  { key: null,         label: 'Todos' },
-  { key: 'Processos',  label: 'Processos' },
-  { key: 'Produtos',   label: 'Produtos' },
-  { key: 'CX',         label: 'CX' },
-  { key: 'Pessoas',    label: 'Pessoas' },
-  { key: 'Tecnologia', label: 'Tecnologia' },
-  { key: 'Gestão',     label: 'Gestão' },
+  { key: null,         label: 'Todos',      dot: null },
+  { key: 'Processos',  label: 'Processos',  dot: '#4294F8' },
+  { key: 'Produtos',   label: 'Produtos',   dot: '#FF0066' },
+  { key: 'CX',         label: 'CX',         dot: '#0891b2' },
+  { key: 'Pessoas',    label: 'Pessoas',    dot: '#9437FF' },
+  { key: 'Tecnologia', label: 'Tecnologia', dot: '#036ef2' },
+  { key: 'Gestão',     label: 'Gestão',     dot: '#c084fc' },
 ];
 
 export default function AgentsPage() {
@@ -529,27 +529,20 @@ export default function AgentsPage() {
 
       {/* ── Cabeçalho ── */}
       <div style={{ textAlign: 'center', padding: '36px 40px 28px' }}>
-        <div style={{
-          fontSize: 10, fontFamily: 'var(--font-mono)',
-          color: 'rgba(96,165,250,0.6)', letterSpacing: 3,
-          marginBottom: 12, textTransform: 'uppercase',
-        }}>
-          COLECÇÃO IDEALAB · SÉRIE 2025 · 6 AGENTES
-        </div>
         <h1 style={{
-          fontSize: 40, fontWeight: 900, letterSpacing: -1.2,
+          fontSize: 32, fontWeight: 900, letterSpacing: -1,
           color: '#fff', marginBottom: 10,
           fontFamily: 'var(--font-outfit)',
           textShadow: '0 0 48px rgba(66,148,248,0.35)',
         }}>
-          Agentes IA do IdeaLab
+          Agentes IA do Laboratório de Inovação TIS
         </h1>
         <p style={{
           fontSize: 14, color: 'rgba(200,220,255,0.4)',
           maxWidth: 420, margin: '0 auto 28px',
           lineHeight: 1.6, fontFamily: 'var(--font-mono)',
         }}>
-          Hover para holografia · Clica para virar a carta
+          Clica para virar a carta
         </p>
 
         {/* Filtro de categoria */}
@@ -570,8 +563,17 @@ export default function AgentsPage() {
                 fontSize: 12, fontWeight: 600,
                 cursor: 'pointer', transition: 'all 0.18s',
                 fontFamily: 'var(--font-outfit)',
+                display: 'flex', alignItems: 'center', gap: 7,
               }}
             >
+              {f.dot && (
+                <span style={{
+                  width: 8, height: 8, borderRadius: '50%',
+                  background: f.dot, flexShrink: 0,
+                  boxShadow: filter === f.key ? `0 0 6px ${f.dot}` : 'none',
+                  display: 'inline-block',
+                }} />
+              )}
               {f.label}
             </button>
           ))}
