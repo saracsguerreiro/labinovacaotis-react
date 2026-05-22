@@ -404,10 +404,11 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
             alt={agent.name}
             style={{
               width: 76, height: 76, borderRadius: '50%',
-              objectFit: 'cover', objectPosition: 'top',
+              objectFit: 'cover', objectPosition: 'center top',
               border: `3px solid ${agent.color}75`,
               boxShadow: `0 0 28px ${agent.color}55`,
               marginBottom: 12,
+              display: 'block', flexShrink: 0,
             }}
           />
 
