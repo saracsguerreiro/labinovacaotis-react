@@ -122,7 +122,7 @@ const agents = [
     color: '#c084fc',
     rarity: RARITY.lendario,
     type: 'GENERALISTA',
-    skills: ['Facilitação Criativa', 'Pensamento Sistémico', 'Reframing Estratégico', 'Inovação Transversal'],
+    skills: ['Facilitação Criativa', 'Pensamento Sistémico', 'Inovação Transversal'],
     stats: [
       { label: 'Facilitação Criativa',   value: 97 },
       { label: 'Reframing Estratégico',  value: 93 },
