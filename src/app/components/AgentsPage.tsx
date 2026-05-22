@@ -13,7 +13,7 @@ const RARITY = {
 /* ── Dados dos agentes ── */
 const agents = [
   {
-    name: 'Leonardo Silva',
+    name: 'Armindo Kapessa',
     agentLabel: 'Agente PMO',
     specialty: 'Melhoria de Processos',
     category: 'Processos',
@@ -33,7 +33,7 @@ const agents = [
     bio: 'Transforma processos caóticos em sistemas de alta performance.',
   },
   {
-    name: 'Ana Costa',
+    name: 'Esperança Ngunga',
     agentLabel: 'Agente Produto',
     specialty: 'Novo Produto',
     category: 'Produtos',
@@ -53,7 +53,7 @@ const agents = [
     bio: 'Converte ideias brutas em produtos com proposta de valor irresistível.',
   },
   {
-    name: 'Mariana Ramos',
+    name: 'Domingas Tchikota',
     agentLabel: 'Agente CX',
     specialty: 'Experiência do Cliente',
     category: 'CX',
@@ -73,7 +73,7 @@ const agents = [
     bio: 'Lê o cliente melhor do que ele se lê a si mesmo.',
   },
   {
-    name: 'Carlos Mendes',
+    name: 'Jacinto Bumba',
     agentLabel: 'Agente RH',
     specialty: 'Cultura & Pessoas',
     category: 'Pessoas',
@@ -93,7 +93,7 @@ const agents = [
     bio: 'Constrói equipas que querem vir trabalhar de manhã.',
   },
   {
-    name: 'Sofia Neves',
+    name: 'Maria Nzinga',
     agentLabel: 'Agente Tech',
     specialty: 'Tecnologia & Digital',
     category: 'Tecnologia',
@@ -113,7 +113,7 @@ const agents = [
     bio: 'Transforma visões de negócio em arquitecturas técnicas sólidas.',
   },
   {
-    name: 'Rui Ferreira',
+    name: 'Ernesto Quiala',
     agentLabel: 'Agente Gestão',
     specialty: 'CX & Inovação',
     category: 'Gestão',
