@@ -26,10 +26,10 @@ const MATRIX_COLS = Array.from({ length: 10 }, (_, i) => ({
 /* ── Mini bar chart data ── */
 const BARS = [
   { h: '55%', color: '#2563eb', delay: '0s',    dur: '2.1s' },
-  { h: '80%', color: '#06b6d4', delay: '0.2s',  dur: '2.6s' },
+  { h: '80%', color: '#00FFFF', delay: '0.2s',  dur: '2.6s' },
   { h: '40%', color: '#7c3aed', delay: '0.4s',  dur: '1.9s' },
   { h: '90%', color: '#2563eb', delay: '0.6s',  dur: '2.3s' },
-  { h: '65%', color: '#06b6d4', delay: '0.8s',  dur: '2.8s' },
+  { h: '65%', color: '#00FFFF', delay: '0.8s',  dur: '2.8s' },
   { h: '75%', color: '#7c3aed', delay: '1.0s',  dur: '2.0s' },
   { h: '50%', color: '#2563eb', delay: '1.2s',  dur: '2.5s' },
 ];
@@ -87,7 +87,7 @@ const IconChart = () => (
   <svg width="52" height="52" viewBox="0 0 48 48" fill="none">
     <rect x="1" y="1" width="46" height="46" rx="8" fill="#0a2840" stroke="#00c8ff" strokeWidth="1.5"/>
     <rect x="8"  y="28" width="6"  height="12" rx="1" fill="#2563eb" opacity="0.9"/>
-    <rect x="18" y="20" width="6"  height="20" rx="1" fill="#06b6d4" opacity="0.9"/>
+    <rect x="18" y="20" width="6"  height="20" rx="1" fill="#00FFFF" opacity="0.9"/>
     <rect x="28" y="14" width="6"  height="26" rx="1" fill="#8833ff" opacity="0.9"/>
     <rect x="38" y="22" width="6"  height="18" rx="1" fill="#2563eb" opacity="0.7"/>
     <line x1="6" y1="40" x2="46" y2="40" stroke="#00e5ff" strokeWidth="1" opacity="0.4"/>

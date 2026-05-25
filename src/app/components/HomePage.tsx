@@ -225,7 +225,7 @@ export default function HomePage() {
             <h2 className="text-[40px] font-[900] tracking-[-1.5px] leading-[1.1] mb-3.5 text-white">
               A próxima grande ideia<br />pode ser{' '}
               <em className="not-italic" style={{
-                background: 'linear-gradient(90deg, #4294F8, #06b6d4)',
+                background: 'linear-gradient(90deg, #4294F8, #00FFFF)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}>a tua.</em>
             </h2>

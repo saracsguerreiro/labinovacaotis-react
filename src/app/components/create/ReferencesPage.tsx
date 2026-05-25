@@ -209,20 +209,20 @@ export default function ReferencesPage({ onBack, onNextPage, isAnonymous, setIsA
             Referências seleccionadas
           </div>
 
-          <div className="flex items-center gap-2 bg-[var(--cyan-light)] border-[1.5px] rounded-full px-3 py-2 text-[11px] mb-1.5" style={{ borderColor: 'rgba(8,145,178,0.2)' }}>
+          <div className="flex items-center gap-2 bg-[var(--cyan-light)] border-[1.5px] rounded-full px-3 py-2 text-[11px] mb-1.5" style={{ borderColor: 'rgba(0,255,255,0.2)' }}>
             <span>📄</span>
             <span className="flex-1" style={{ color: 'var(--text-muted)' }}>
               benchmark_aprovacoes_2024.pdf
             </span>
           </div>
-          <div className="flex items-center gap-2 bg-[var(--cyan-light)] border-[1.5px] rounded-full px-3 py-2 text-[11px] mb-1.5" style={{ borderColor: 'rgba(8,145,178,0.2)' }}>
+          <div className="flex items-center gap-2 bg-[var(--cyan-light)] border-[1.5px] rounded-full px-3 py-2 text-[11px] mb-1.5" style={{ borderColor: 'rgba(0,255,255,0.2)' }}>
             <span>🔗</span>
             <span className="flex-1" style={{ color: 'var(--text-muted)' }}>
               notion.so/exemplos-processo-aprovacao
             </span>
           </div>
           {savedCases.includes(1) && (
-            <div className="flex items-center gap-2 bg-[var(--cyan-light)] border-[1.5px] rounded-full px-3 py-2 text-[11px] mb-1.5" style={{ borderColor: 'rgba(8,145,178,0.2)' }}>
+            <div className="flex items-center gap-2 bg-[var(--cyan-light)] border-[1.5px] rounded-full px-3 py-2 text-[11px] mb-1.5" style={{ borderColor: 'rgba(0,255,255,0.2)' }}>
               <span>🌍</span>
               <span className="flex-1" style={{ color: 'var(--text-muted)' }}>
                 Caso Unilever — SLA 48h globais

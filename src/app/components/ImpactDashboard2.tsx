@@ -23,8 +23,8 @@ const P = {
   indigo:  '#3126b4',
   violet:  '#9437ff',
   pink:    '#FF0066',
-  cyan:    '#06b6d4',
-  green:   '#06b6d4',
+  cyan:    '#00FFFF',
+  green:   '#00FFFF',
   // chart line / area
   waveLine:   '#ffffff',
   waveArea:   'rgba(148,55,255,0.55)',
@@ -318,7 +318,7 @@ export default function ImpactDashboard2() {
   const kpis = [
     { label: 'Total de Ideias',   value: 347, suffix: '',  color: P.blue,   sub: '+23% vs. mês anterior', icon: '◈' },
     { label: 'Em Implementação',  value: 28,  suffix: '',  color: P.violet, sub: 'projectos activos',      icon: '◐' },
-    { label: 'Taxa de Aprovação', value: 34,  suffix: '%', color: '#06b6d4', sub: 'ideias que avançam',     icon: '◉' },
+    { label: 'Taxa de Aprovação', value: 34,  suffix: '%', color: '#00FFFF', sub: 'ideias que avançam',     icon: '◉' },
     { label: 'Colaboradores',     value: 94,  suffix: '',  color: P.pink,   sub: 'em 8 departamentos',     icon: '◎' },
   ];
 
