@@ -318,7 +318,7 @@ export default function ImpactDashboard2() {
   const kpis = [
     { label: 'Total de Ideias',   value: 347, suffix: '',  color: P.blue,   sub: '+23% vs. mês anterior', icon: '◈' },
     { label: 'Em Implementação',  value: 28,  suffix: '',  color: P.violet, sub: 'projectos activos',      icon: '◐' },
-    { label: 'Taxa de Aprovação', value: 34,  suffix: '%', color: P.cyan,   sub: 'ideias que avançam',     icon: '◉' },
+    { label: 'Taxa de Aprovação', value: 34,  suffix: '%', color: '#00e5ff', sub: 'ideias que avançam',     icon: '◉' },
     { label: 'Colaboradores',     value: 94,  suffix: '',  color: P.pink,   sub: 'em 8 departamentos',     icon: '◎' },
   ];
 
@@ -336,13 +336,6 @@ export default function ImpactDashboard2() {
   return (
     <div style={{ minHeight: '100vh', paddingTop: 72, background: P.bgPage, color: P.text }}>
 
-      {/* subtle grid overlay */}
-      <div style={{
-        position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
-        backgroundImage: `linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-                          linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)`,
-        backgroundSize: '60px 60px',
-      }} />
 
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1280, margin: '0 auto', padding: '24px 32px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
@@ -409,13 +402,7 @@ export default function ImpactDashboard2() {
         </div>
 
         {/* ── Central Chart Window ── */}
-        <div style={{
-          borderRadius: 20, overflow: 'hidden',
-          background: 'rgba(20,15,65,0.80)',
-          border: `1px solid ${P.border}`,
-          backdropFilter: 'blur(28px)',
-          boxShadow: '0 12px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08)',
-        }}>
+        <div style={{ overflow: 'hidden' }}>
 
           {/* title bar */}
           <div style={{
