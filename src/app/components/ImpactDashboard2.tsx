@@ -8,7 +8,7 @@ import {
 /* ─── Palette — medium indigo (matches reference) ──────────────────────── */
 const P = {
   // backgrounds — medium indigo, not near-black
-  bgPage:  'linear-gradient(145deg, #1e1b4b 0%, #2d2070 45%, #1a1744 100%)',
+  bgPage:  'radial-gradient(ellipse at 70% 30%, #0f2258 0%, #090e2a 45%, #050816 100%)',
   bgCard:  'rgba(255,255,255,0.10)',
   bgCardH: 'rgba(255,255,255,0.15)',
   bgWin:   'rgba(15,12,60,0.70)',
