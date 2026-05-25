@@ -324,15 +324,6 @@ export default function ImpactDashboard2() {
 
   const activeTabMeta = TABS.find(t => t.key === activeTab)!;
 
-  /* bottom strip */
-  const strip = [
-    { label: 'Submetidas',    val: 142, color: P.blue,   pct: 41 },
-    { label: 'Em análise',    val: 89,  color: P.indigo, pct: 26 },
-    { label: 'Seleccionadas', val: 76,  color: P.violet, pct: 22 },
-    { label: 'Implementação', val: 28,  color: P.pink,   pct: 8  },
-    { label: 'Concluídas',    val: 12,  color: P.green,  pct: 3  },
-  ];
-
   return (
     <div style={{ minHeight: '100vh', paddingTop: 72, background: P.bgPage, color: P.text }}>
 
@@ -363,42 +354,6 @@ export default function ImpactDashboard2() {
               }}>{p}</button>
             ))}
           </div>
-        </div>
-
-        {/* ── KPI Cards ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
-          {kpis.map(card => (
-            <div key={card.label} style={{
-              borderRadius: 18, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16,
-              background: P.bgCard,
-              border: `1px solid ${P.border}`,
-              backdropFilter: 'blur(20px)',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.12)',
-              transition: 'transform 0.2s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
-              onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-            >
-              <div style={{
-                width: 46, height: 46, borderRadius: 14, flexShrink: 0,
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
-                background: `${card.color}25`,
-                boxShadow: `0 0 18px ${card.color}35`,
-                border: `1px solid ${card.color}35`,
-              }}>{card.icon}</div>
-              <div>
-                <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '1.5px', color: P.sub, marginBottom: 2, fontFamily: "'JetBrains Mono',monospace" }}>
-                  {card.label}
-                </div>
-                <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1, letterSpacing: '-1px', color: card.color }}>
-                  <Counter target={card.value} suffix={card.suffix} />
-                </div>
-                <div style={{ fontSize: 11, marginTop: 3, color: P.sub }}>
-                  <span style={{ color: card.color }}>↑ </span>{card.sub}
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* ── Central Chart Window ── */}
@@ -480,38 +435,38 @@ export default function ImpactDashboard2() {
           </div>
         </div>
 
-        {/* ── Bottom strip ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12 }}>
-          {strip.map(s => (
-            <div key={s.label} style={{
-              borderRadius: 14, padding: '14px 16px',
+        {/* ── KPI Cards ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
+          {kpis.map(card => (
+            <div key={card.label} style={{
+              borderRadius: 18, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 16,
               background: P.bgCard,
               border: `1px solid ${P.border}`,
-              backdropFilter: 'blur(16px)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)',
+              backdropFilter: 'blur(20px)',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.12)',
               transition: 'transform 0.2s',
             }}
-              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.03)')}
+              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
               onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '1px', color: P.sub, fontFamily: "'JetBrains Mono',monospace" }}>
-                  {s.label}
-                </span>
-                <span style={{ fontSize: 15, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono',monospace" }}>
-                  {s.val}
-                </span>
+              <div style={{
+                width: 46, height: 46, borderRadius: 14, flexShrink: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+                background: `${card.color}25`,
+                boxShadow: `0 0 18px ${card.color}35`,
+                border: `1px solid ${card.color}35`,
+              }}>{card.icon}</div>
+              <div>
+                <div style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '1.5px', color: P.sub, marginBottom: 2, fontFamily: "'JetBrains Mono',monospace" }}>
+                  {card.label}
+                </div>
+                <div style={{ fontSize: 30, fontWeight: 900, lineHeight: 1, letterSpacing: '-1px', color: card.color }}>
+                  <Counter target={card.value} suffix={card.suffix} />
+                </div>
+                <div style={{ fontSize: 11, marginTop: 3, color: P.sub }}>
+                  <span style={{ color: card.color }}>↑ </span>{card.sub}
+                </div>
               </div>
-              <div style={{ height: 4, borderRadius: 2, overflow: 'hidden', background: 'rgba(255,255,255,0.08)', marginBottom: 6 }}>
-                <div style={{
-                  height: '100%', borderRadius: 2,
-                  width: `${s.pct}%`,
-                  background: `linear-gradient(90deg, ${s.color}80, ${s.color})`,
-                  boxShadow: `0 0 6px ${s.color}88`,
-                  transition: 'width 0.8s ease',
-                }} />
-              </div>
-              <span style={{ fontSize: 11, color: s.color, fontFamily: "'JetBrains Mono',monospace" }}>{s.pct}%</span>
             </div>
           ))}
         </div>
