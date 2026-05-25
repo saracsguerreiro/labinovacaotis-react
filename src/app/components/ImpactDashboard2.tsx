@@ -324,18 +324,8 @@ export default function ImpactDashboard2() {
 
   const activeTabMeta = TABS.find(t => t.key === activeTab)!;
 
-  /* bottom strip */
-  const strip = [
-    { label: 'Submetidas',    val: 142, color: P.blue,   pct: 41 },
-    { label: 'Em análise',    val: 89,  color: P.indigo, pct: 26 },
-    { label: 'Seleccionadas', val: 76,  color: P.violet, pct: 22 },
-    { label: 'Implementação', val: 28,  color: P.pink,   pct: 8  },
-    { label: 'Concluídas',    val: 12,  color: P.green,  pct: 3  },
-  ];
-
   return (
     <div style={{ minHeight: '100vh', paddingTop: 72, background: P.bgPage, color: P.text }}>
-
 
       <div style={{ position: 'relative', zIndex: 1, maxWidth: 1280, margin: '0 auto', padding: '24px 32px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
@@ -365,7 +355,92 @@ export default function ImpactDashboard2() {
           </div>
         </div>
 
-        {/* ── KPI Cards ── */}
+        {/* ── Main row: chart LEFT + spacer RIGHT ── */}
+        <div style={{ display: 'grid', gridTemplateColumns: '65% 35%', gap: 20, alignItems: 'start' }}>
+
+          {/* Chart window */}
+          <div style={{ overflow: 'hidden' }}>
+
+            {/* title bar */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '12px 20px', borderBottom: `1px solid ${P.border}`,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {['#ff5f57','#ffbd2e','#28c840'].map(c => (
+                    <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />
+                  ))}
+                </div>
+                <span style={{ fontSize: 12, letterSpacing: '0.06em', color: P.sub, fontFamily: "'JetBrains Mono',monospace" }}>
+                  // {activeTabMeta.label.toLowerCase()}
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ position: 'relative', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <ProgressRing progress={progress} color={P.violet} />
+                  <button
+                    onClick={() => setIsAutoPlay(a => !a)}
+                    style={{ position: 'absolute', fontSize: 11, cursor: 'pointer', background: 'none', border: 'none', color: isAutoPlay ? P.violet : P.sub, transition: 'all 0.2s' }}
+                    title={isAutoPlay ? 'Pausar rotação' : 'Iniciar rotação'}
+                  >
+                    {isAutoPlay ? '⏸' : '▶'}
+                  </button>
+                </div>
+                <span style={{ fontSize: 10, color: P.sub, fontFamily: "'JetBrains Mono',monospace" }}>auto</span>
+              </div>
+            </div>
+
+            {/* tabs */}
+            <div style={{ display: 'flex', gap: 6, padding: '10px 16px', borderBottom: `1px solid ${P.border}` }}>
+              {TABS.map(tab => {
+                const isActive = tab.key === activeTab;
+                return (
+                  <button key={tab.key}
+                    onClick={() => { switchTab(tab.key); setIsAutoPlay(false); }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      padding: '7px 16px', borderRadius: 20, fontSize: 12, cursor: 'pointer', transition: 'all 0.2s',
+                      background: isActive ? 'rgba(139,92,250,0.28)' : 'rgba(255,255,255,0.05)',
+                      border: `1px solid ${isActive ? P.violet : 'transparent'}`,
+                      color: isActive ? '#fff' : P.muted,
+                      fontWeight: isActive ? 600 : 400,
+                      boxShadow: isActive ? `0 0 14px rgba(139,92,250,0.3)` : 'none',
+                    }}
+                  >
+                    <span style={{ color: isActive ? P.violet : P.sub, fontSize: 10 }}>{tab.icon}</span>
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* chart */}
+            <div key={activeTab} style={{ padding: '20px 24px', animation: 'fadeSlide 0.4s ease forwards' }}>
+              <ChartPanel tab={activeTab} />
+            </div>
+
+            {/* dot nav */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingBottom: 16 }}>
+              {TABS.map(tab => (
+                <button key={tab.key}
+                  onClick={() => { switchTab(tab.key); setIsAutoPlay(false); }}
+                  style={{
+                    height: 6, borderRadius: 3, cursor: 'pointer', border: 'none', transition: 'all 0.3s',
+                    width: activeTab === tab.key ? 22 : 6,
+                    background: activeTab === tab.key ? P.violet : P.border,
+                    boxShadow: activeTab === tab.key ? `0 0 8px ${P.violet}` : 'none',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Right spacer — intentionally empty */}
+          <div />
+        </div>
+
+        {/* ── KPI Cards — bottom ── */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
           {kpis.map(card => (
             <div key={card.label} style={{
@@ -397,121 +472,6 @@ export default function ImpactDashboard2() {
                   <span style={{ color: card.color }}>↑ </span>{card.sub}
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* ── Central Chart Window ── */}
-        <div style={{ overflow: 'hidden' }}>
-
-          {/* title bar */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '12px 20px', borderBottom: `1px solid ${P.border}`,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {/* macOS dots */}
-              <div style={{ display: 'flex', gap: 6 }}>
-                {['#ff5f57','#ffbd2e','#28c840'].map(c => (
-                  <div key={c} style={{ width: 11, height: 11, borderRadius: '50%', background: c }} />
-                ))}
-              </div>
-              <span style={{ fontSize: 12, letterSpacing: '0.06em', color: P.sub, fontFamily: "'JetBrains Mono',monospace" }}>
-                // {activeTabMeta.label.toLowerCase()}
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ position: 'relative', width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <ProgressRing progress={progress} color={P.violet} />
-                <button
-                  onClick={() => setIsAutoPlay(a => !a)}
-                  style={{ position: 'absolute', fontSize: 11, cursor: 'pointer', background: 'none', border: 'none', color: isAutoPlay ? P.violet : P.sub, transition: 'all 0.2s' }}
-                  title={isAutoPlay ? 'Pausar rotação' : 'Iniciar rotação'}
-                >
-                  {isAutoPlay ? '⏸' : '▶'}
-                </button>
-              </div>
-              <span style={{ fontSize: 10, color: P.sub, fontFamily: "'JetBrains Mono',monospace" }}>auto</span>
-            </div>
-          </div>
-
-          {/* tabs */}
-          <div style={{ display: 'flex', gap: 6, padding: '10px 16px', borderBottom: `1px solid ${P.border}` }}>
-            {TABS.map(tab => {
-              const isActive = tab.key === activeTab;
-              return (
-                <button key={tab.key}
-                  onClick={() => { switchTab(tab.key); setIsAutoPlay(false); }}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '7px 16px', borderRadius: 20, fontSize: 12, cursor: 'pointer', transition: 'all 0.2s',
-                    background: isActive ? 'rgba(139,92,250,0.28)' : 'rgba(255,255,255,0.05)',
-                    border: `1px solid ${isActive ? P.violet : 'transparent'}`,
-                    color: isActive ? '#fff' : P.muted,
-                    fontWeight: isActive ? 600 : 400,
-                    boxShadow: isActive ? `0 0 14px rgba(139,92,250,0.3)` : 'none',
-                  }}
-                >
-                  <span style={{ color: isActive ? P.violet : P.sub, fontSize: 10 }}>{tab.icon}</span>
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* chart */}
-          <div key={activeTab} style={{ padding: '20px 24px', animation: 'fadeSlide 0.4s ease forwards' }}>
-            <ChartPanel tab={activeTab} />
-          </div>
-
-          {/* dot nav */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, paddingBottom: 16 }}>
-            {TABS.map(tab => (
-              <button key={tab.key}
-                onClick={() => { switchTab(tab.key); setIsAutoPlay(false); }}
-                style={{
-                  height: 6, borderRadius: 3, cursor: 'pointer', border: 'none', transition: 'all 0.3s',
-                  width: activeTab === tab.key ? 22 : 6,
-                  background: activeTab === tab.key ? P.violet : P.border,
-                  boxShadow: activeTab === tab.key ? `0 0 8px ${P.violet}` : 'none',
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* ── Bottom strip ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 12 }}>
-          {strip.map(s => (
-            <div key={s.label} style={{
-              borderRadius: 14, padding: '14px 16px',
-              background: P.bgCard,
-              border: `1px solid ${P.border}`,
-              backdropFilter: 'blur(16px)',
-              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)',
-              transition: 'transform 0.2s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.03)')}
-              onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '1px', color: P.sub, fontFamily: "'JetBrains Mono',monospace" }}>
-                  {s.label}
-                </span>
-                <span style={{ fontSize: 15, fontWeight: 700, color: s.color, fontFamily: "'JetBrains Mono',monospace" }}>
-                  {s.val}
-                </span>
-              </div>
-              <div style={{ height: 4, borderRadius: 2, overflow: 'hidden', background: 'rgba(255,255,255,0.08)', marginBottom: 6 }}>
-                <div style={{
-                  height: '100%', borderRadius: 2,
-                  width: `${s.pct}%`,
-                  background: `linear-gradient(90deg, ${s.color}80, ${s.color})`,
-                  boxShadow: `0 0 6px ${s.color}88`,
-                  transition: 'width 0.8s ease',
-                }} />
-              </div>
-              <span style={{ fontSize: 11, color: s.color, fontFamily: "'JetBrains Mono',monospace" }}>{s.pct}%</span>
             </div>
           ))}
         </div>
