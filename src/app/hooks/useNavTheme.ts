@@ -12,20 +12,21 @@ import { useState, useEffect } from 'react';
 export function useNavTheme(pathname: string): boolean {
   const isHome     = pathname === '/';
   const isHub      = pathname === '/hub';
-  const isHub2     = pathname === '/hub2';
-  const isAgentes  = pathname === '/agentes';
+  const isHub2      = pathname === '/hub2';
+  const isAgentes   = pathname === '/agentes';
+  const isImpacto2  = pathname === '/impacto2';
 
-  const [isDark, setIsDark] = useState(isHome || isHub || isHub2 || isAgentes);
+  const [isDark, setIsDark] = useState(isHome || isHub || isHub2 || isAgentes || isImpacto2);
 
   useEffect(() => {
     // Rotas sempre escuras (fundo escuro)
-    if (isHub2 || isAgentes) {
+    if (isHub2 || isAgentes || isImpacto2) {
       setIsDark(true);
       return;
     }
 
     // Non-special routes: always light
-    if (!isHome && !isHub) {
+    if (!isHome && !isHub && !isImpacto2) {
       setIsDark(false);
       return;
     }
@@ -49,7 +50,7 @@ export function useNavTheme(pathname: string): boolean {
       window.addEventListener('scroll', check, { passive: true });
       return () => window.removeEventListener('scroll', check);
     }
-  }, [isHome, isHub, isHub2, isAgentes]);
+  }, [isHome, isHub, isHub2, isAgentes, isImpacto2]);
 
   return isDark;
 }
