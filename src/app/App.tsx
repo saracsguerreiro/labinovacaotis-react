@@ -33,7 +33,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/hub" element={<IdeaHub />} />
-          <Route path="/impacto" element={<ImpactDashboard />} />
           <Route path="/agentes" element={<AgentsPage />} />
           <Route path="/sobre" element={<SobrePage />} />
           <Route path="/criar" element={<CreateView />} />
