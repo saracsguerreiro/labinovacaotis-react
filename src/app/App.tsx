@@ -4,7 +4,6 @@ import Navigation from './components/Navigation';
 
 const HomePage = lazy(() => import('./components/HomePage'));
 const IdeaHub = lazy(() => import('./components/IdeaHub'));
-const ImpactDashboard = lazy(() => import('./components/ImpactDashboard'));
 const AgentsPage = lazy(() => import('./components/AgentsPage'));
 const SobrePage = lazy(() => import('./components/SobrePage'));
 const CreateView = lazy(() => import('./components/CreateView'));

@@ -9,7 +9,6 @@ const navLinks: { path: string; label: string }[] = [
   { path: '/sobre',   label: 'Sobre' },
   { path: '/hub',     label: 'Ideia HUB' },
   { path: '/agentes', label: 'Agentes IA' },
-  { path: '/impacto',  label: 'Impacto' },
   { path: '/impacto2', label: 'Impacto 2' },
 ];
 

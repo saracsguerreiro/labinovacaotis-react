@@ -229,7 +229,7 @@ export default function AnimatedBanner() {
 
       {/* ── Mini bar chart ── */}
       <div className="mini-chart" style={{ zIndex: 4 }}>
-        <div className="mini-chart-title">Ideias · 2024</div>
+        <div className="mini-chart-title">Ideias · 2026</div>
         <div className="mini-chart-bars">
           {BARS.map((b, i) => (
             <div key={i} className="mini-bar" style={{

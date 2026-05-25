@@ -336,7 +336,7 @@ export default function ImpactDashboard2() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
               <div style={{ width: 7, height: 7, borderRadius: '50%', background: P.green, boxShadow: `0 0 8px ${P.green}`, animation: 'pulse 2s infinite' }} />
               <span style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: P.sub, fontFamily: "'JetBrains Mono',monospace" }}>
-                live · jan–dez 2024
+                live · jan–dez 2026
               </span>
             </div>
             <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.5px', fontFamily: "'Bronkoh-Bold', sans-serif", margin: 0 }}>
@@ -344,12 +344,12 @@ export default function ImpactDashboard2() {
             </h1>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
-            {['2024', '2023', 'Tudo'].map(p => (
+            {['2026', '2025', 'Tudo'].map(p => (
               <button key={p} style={{
                 padding: '6px 16px', fontSize: 11, borderRadius: 20, cursor: 'pointer', transition: 'all 0.2s',
-                border: `1px solid ${p === '2024' ? P.violet : P.border}`,
-                background: p === '2024' ? 'rgba(167,139,250,0.25)' : 'rgba(255,255,255,0.06)',
-                color: p === '2024' ? '#fff' : P.muted,
+                border: `1px solid ${p === '2026' ? P.violet : P.border}`,
+                background: p === '2026' ? 'rgba(167,139,250,0.25)' : 'rgba(255,255,255,0.06)',
+                color: p === '2026' ? '#fff' : P.muted,
                 fontFamily: "'JetBrains Mono',monospace",
               }}>{p}</button>
             ))}

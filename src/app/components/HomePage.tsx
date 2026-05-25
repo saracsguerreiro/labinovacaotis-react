@@ -91,7 +91,7 @@ export default function HomePage() {
           <div className="grid grid-cols-4 max-w-[960px] mx-auto mb-[52px] border rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(30,50,140,0.06)] reveal"
             style={{ borderColor: 'var(--border-light)' }}>
             {[
-              { n: 347, lbl: 'Ideias submetidas',  sub: 'desde jan_2024',      color: '#036ef2' },
+              { n: 347, lbl: 'Ideias submetidas',  sub: 'desde jan_2026',      color: '#036ef2' },
               { n: 28,  lbl: 'Em implementação',   sub: 'projectos activos',   color: '#036ef2' },
               { n: 12,  lbl: 'Concluídas',         sub: 'impacto real',        color: '#036ef2' },
               { n: 94,  lbl: 'Colaboradores',      sub: '8 departamentos',     color: '#036ef2' },
@@ -115,7 +115,7 @@ export default function HomePage() {
               "A ideia que mais <em className="not-italic" style={{ color: 'var(--blue)' }}>impactou a empresa</em> este ano veio de alguém que nunca tinha partilhado uma ideia antes."
             </div>
             <div className="text-[11px]" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
-              — Relatório de Inovação Q3_2024
+              — Relatório de Inovação Q3_2026
             </div>
           </div>
         </section>

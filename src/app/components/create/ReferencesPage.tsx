@@ -34,7 +34,7 @@ const aiCases = [
 
 export default function ReferencesPage({ onBack, onNextPage, isAnonymous, setIsAnonymous }: ReferencesPageProps) {
   const [savedCases, setSavedCases] = useState([1]);
-  const [files, setFiles] = useState(['benchmark_aprovacoes_2024.pdf', 'notion.so/exemplos-processo-aprovacao']);
+  const [files, setFiles] = useState(['benchmark_aprovacoes_2026.pdf', 'notion.so/exemplos-processo-aprovacao']);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<LinkForm>({
     defaultValues: { url: '' },

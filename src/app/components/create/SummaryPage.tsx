@@ -232,7 +232,7 @@ export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: Sum
                 gerir
               </button>
             </div>
-            {['📄 benchmark_aprovacoes_2024.pdf', '🌍 Caso Unilever — SLA 48h globais', '🔗 notion.so/exemplos-processo-aprovacao'].map((ref, i) => (
+            {['📄 benchmark_aprovacoes_2026.pdf', '🌍 Caso Unilever — SLA 48h globais', '🔗 notion.so/exemplos-processo-aprovacao'].map((ref, i) => (
               <div
                 key={i}
                 className="flex items-center gap-1.5 text-[11px] px-2 py-1.5 rounded-[7px] mb-1.5"
