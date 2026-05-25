@@ -19,16 +19,16 @@ const P = {
   muted:   'rgba(255,255,255,0.70)',
   sub:     'rgba(255,255,255,0.40)',
   // accents
-  blue:    '#60a5fa',
-  indigo:  '#818cf8',
-  violet:  '#a78bfa',
-  pink:    '#f472b6',
-  cyan:    '#22d3ee',
-  green:   '#4ade80',
+  blue:    '#4294F8',
+  indigo:  '#3126b4',
+  violet:  '#9437ff',
+  pink:    '#FF0066',
+  cyan:    '#06b6d4',
+  green:   '#06b6d4',
   // chart line / area
   waveLine:   '#ffffff',
-  waveArea:   'rgba(139,92,250,0.55)',
-  waveArea0:  'rgba(139,92,250,0.02)',
+  waveArea:   'rgba(148,55,255,0.55)',
+  waveArea0:  'rgba(148,55,255,0.02)',
 };
 
 /* ─── Data ──────────────────────────────────────────────────────────────── */
@@ -157,7 +157,7 @@ function ChartPanel({ tab }: { tab: TabKey }) {
             strokeWidth={2.5}
             fill="url(#waveGrad)"
             dot={false}
-            activeDot={{ r: 6, fill: '#a78bfa', stroke: '#fff', strokeWidth: 2 }}
+            activeDot={{ r: 6, fill: '#9437ff', stroke: '#fff', strokeWidth: 2 }}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -170,12 +170,12 @@ function ChartPanel({ tab }: { tab: TabKey }) {
         <AreaChart data={trendData} margin={{ top: 16, right: 16, left: -16, bottom: 0 }}>
           <defs>
             <linearGradient id="gradAprov" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor="#60a5fa" stopOpacity={0.55} />
-              <stop offset="100%" stopColor="#60a5fa" stopOpacity={0.02} />
+              <stop offset="0%"   stopColor="#4294F8" stopOpacity={0.55} />
+              <stop offset="100%" stopColor="#4294F8" stopOpacity={0.02} />
             </linearGradient>
             <linearGradient id="gradConc" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor="#f472b6" stopOpacity={0.45} />
-              <stop offset="100%" stopColor="#f472b6" stopOpacity={0.02} />
+              <stop offset="0%"   stopColor="#FF0066" stopOpacity={0.45} />
+              <stop offset="100%" stopColor="#FF0066" stopOpacity={0.02} />
             </linearGradient>
           </defs>
           <CartesianGrid stroke="rgba(255,255,255,0.07)" strokeDasharray="4 4" vertical={false} />
@@ -193,12 +193,12 @@ function ChartPanel({ tab }: { tab: TabKey }) {
             iconSize={8}
             wrapperStyle={{ fontSize: 11, color: P.muted, fontFamily: "'JetBrains Mono',monospace", paddingTop: 8 }}
           />
-          <Area type="natural" dataKey="aprovadas"  stroke="#60a5fa" strokeWidth={2.5} fill="url(#gradAprov)"
-            dot={{ r: 4, fill: '#60a5fa', stroke: '#fff', strokeWidth: 1.5 }}
+          <Area type="natural" dataKey="aprovadas"  stroke="#4294F8" strokeWidth={2.5} fill="url(#gradAprov)"
+            dot={{ r: 4, fill: '#4294F8', stroke: '#fff', strokeWidth: 1.5 }}
             activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }} />
-          <Area type="natural" dataKey="concluidas" stroke="#f472b6" strokeWidth={2}   fill="url(#gradConc)"
+          <Area type="natural" dataKey="concluidas" stroke="#FF0066" strokeWidth={2}   fill="url(#gradConc)"
             strokeDasharray="6 3"
-            dot={{ r: 4, fill: '#f472b6', stroke: '#fff', strokeWidth: 1.5 }}
+            dot={{ r: 4, fill: '#FF0066', stroke: '#fff', strokeWidth: 1.5 }}
             activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }} />
         </AreaChart>
       </ResponsiveContainer>
@@ -234,7 +234,7 @@ function ChartPanel({ tab }: { tab: TabKey }) {
           <defs>
             <linearGradient id="barGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0%"   stopColor="#6366f1" />
-              <stop offset="100%" stopColor="#60a5fa" />
+              <stop offset="100%" stopColor="#4294F8" />
             </linearGradient>
           </defs>
           <XAxis type="number" hide />
@@ -318,7 +318,7 @@ export default function ImpactDashboard2() {
   const kpis = [
     { label: 'Total de Ideias',   value: 347, suffix: '',  color: P.blue,   sub: '+23% vs. mês anterior', icon: '◈' },
     { label: 'Em Implementação',  value: 28,  suffix: '',  color: P.violet, sub: 'projectos activos',      icon: '◐' },
-    { label: 'Taxa de Aprovação', value: 34,  suffix: '%', color: '#00e5ff', sub: 'ideias que avançam',     icon: '◉' },
+    { label: 'Taxa de Aprovação', value: 34,  suffix: '%', color: '#06b6d4', sub: 'ideias que avançam',     icon: '◉' },
     { label: 'Colaboradores',     value: 94,  suffix: '',  color: P.pink,   sub: 'em 8 departamentos',     icon: '◎' },
   ];
 
@@ -400,11 +400,11 @@ export default function ImpactDashboard2() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: 6,
                     padding: '7px 16px', borderRadius: 20, fontSize: 12, cursor: 'pointer', transition: 'all 0.2s',
-                    background: isActive ? 'rgba(139,92,250,0.28)' : 'rgba(255,255,255,0.05)',
+                    background: isActive ? 'rgba(148,55,255,0.28)' : 'rgba(255,255,255,0.05)',
                     border: `1px solid ${isActive ? P.violet : 'transparent'}`,
                     color: isActive ? '#fff' : P.muted,
                     fontWeight: isActive ? 600 : 400,
-                    boxShadow: isActive ? `0 0 14px rgba(139,92,250,0.3)` : 'none',
+                    boxShadow: isActive ? `0 0 14px rgba(148,55,255,0.3)` : 'none',
                   }}
                 >
                   <span style={{ color: isActive ? P.violet : P.sub, fontSize: 10 }}>{tab.icon}</span>

@@ -70,7 +70,7 @@ export default function Navigation() {
                 {isActive && (
                   <span
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ background: '#2563eb', boxShadow: '0 0 6px rgba(37,99,235,0.9)' }}
+                    style={{ background: '#036ef2', boxShadow: '0 0 6px rgba(3,110,242,0.9)' }}
                   />
                 )}
                 {label}
@@ -92,7 +92,7 @@ export default function Navigation() {
                 className="px-2 py-0.5 rounded text-[11px] font-bold transition-all border-none cursor-pointer"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  background: activeLang === lang ? '#2563eb' : 'transparent',
+                  background: activeLang === lang ? '#036ef2' : 'transparent',
                   color: activeLang === lang ? 'white' : isDark ? 'rgba(255,255,255,0.5)' : 'rgba(13,19,51,0.4)',
                 }}
                 onClick={() => setActiveLang(lang)}

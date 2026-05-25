@@ -5,9 +5,9 @@ import { ArrowRight } from 'lucide-react';
 
 /* ── Raridade ── */
 const RARITY = {
-  lendario: { label: 'LENDÁRIO', color: '#f59e0b', glow: 'rgba(245,158,11,0.55)', bg: 'rgba(245,158,11,0.12)' },
-  epico:    { label: 'ÉPICO',    color: '#a855f7', glow: 'rgba(168,85,247,0.55)',  bg: 'rgba(168,85,247,0.12)' },
-  raro:     { label: 'RARO',     color: '#3b82f6', glow: 'rgba(59,130,246,0.55)',  bg: 'rgba(59,130,246,0.12)' },
+  lendario: { label: 'LENDÁRIO', color: '#FF0066', glow: 'rgba(255,0,102,0.55)',   bg: 'rgba(255,0,102,0.12)'  },
+  epico:    { label: 'ÉPICO',    color: '#9437ff', glow: 'rgba(148,55,255,0.55)',  bg: 'rgba(148,55,255,0.12)' },
+  raro:     { label: 'RARO',     color: '#4294F8', glow: 'rgba(66,148,248,0.55)',  bg: 'rgba(66,148,248,0.12)' },
 };
 
 /* ── Dados dos agentes ── */
@@ -58,8 +58,8 @@ const agents = [
     specialty: 'Experiência do Cliente',
     category: 'CX',
     photo: '/labinovacaotis-react/agents/domingas.png',
-    avatarBg: 'linear-gradient(135deg, #0891b2, #15803d)',
-    color: '#0891b2',
+    avatarBg: 'linear-gradient(135deg, #06b6d4, #036ef2)',
+    color: '#06b6d4',
     rarity: RARITY.raro,
     type: 'EMPÁTICO',
     skills: ['Mapeamento da Jornada', 'NPS & Voz do Cliente', 'Planta de Serviço', 'Design de Personas'],
@@ -78,7 +78,7 @@ const agents = [
     specialty: 'Cultura & Pessoas',
     category: 'Pessoas',
     photo: '/labinovacaotis-react/agents/jacinto.png',
-    avatarBg: 'linear-gradient(135deg, #9437FF, #b45309)',
+    avatarBg: 'linear-gradient(135deg, #9437FF, #9437ff)',
     color: '#9437FF',
     rarity: RARITY.raro,
     type: 'HUMANISTA',
@@ -118,7 +118,7 @@ const agents = [
     specialty: 'CX & Inovação',
     category: 'Gestão',
     photo: '/labinovacaotis-react/agents/ernesto.png',
-    avatarBg: 'linear-gradient(135deg, #87007f, #15803d)',
+    avatarBg: 'linear-gradient(135deg, #87007f, #036ef2)',
     color: '#c084fc',
     rarity: RARITY.lendario,
     type: 'GENERALISTA',
@@ -508,7 +508,7 @@ const categoryFilters = [
   { key: null,         label: 'Todos',      dot: null },
   { key: 'Processos',  label: 'Processos',  dot: '#4294F8' },
   { key: 'Produtos',   label: 'Produtos',   dot: '#FF0066' },
-  { key: 'CX',         label: 'CX',         dot: '#0891b2' },
+  { key: 'CX',         label: 'CX',         dot: '#06b6d4' },
   { key: 'Pessoas',    label: 'Pessoas',    dot: '#9437FF' },
   { key: 'Tecnologia', label: 'Tecnologia', dot: '#036ef2' },
   { key: 'Gestão',     label: 'Gestão',     dot: '#c084fc' },

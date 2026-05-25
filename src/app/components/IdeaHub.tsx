@@ -117,7 +117,7 @@ function ViewToggle({ view, onChange, dark }: { view: HubView; onChange: (v: Hub
           style={{
             padding: '7px 18px', borderRadius: 10, border: 'none',
             background: view === v
-              ? dark ? 'rgba(255,255,255,0.18)' : '#2563eb'
+              ? dark ? 'rgba(255,255,255,0.18)' : '#036ef2'
               : 'transparent',
             color: view === v
               ? 'white'
@@ -142,7 +142,7 @@ function DarkModal({ idea, onClose, hasVoted, toggleVote, localComments, addComm
   addComment: (ideaId: number, text: string) => void;
 }) {
   const [commentText, setCommentText] = useState('');
-  const color   = CAT_COLOR[idea.cat] || '#2563eb';
+  const color   = CAT_COLOR[idea.cat] || '#036ef2';
   const content = IDEA_CONTENT[idea.id];
   const voted   = hasVoted(idea.id);
 
@@ -328,19 +328,19 @@ function StatsSection({ onStatusFilter, light }: { onStatusFilter?: (s: string) 
       {/* ── Resumo header ── */}
       <div style={{ padding: '56px 40px 0', textAlign: 'center', position: 'relative' }}>
         {!light && (
-          <div style={{ position: 'absolute', top: 40, left: '50%', transform: 'translateX(-50%)', width: 300, height: 80, background: 'radial-gradient(ellipse, rgba(37,99,235,0.18) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: 40, left: '50%', transform: 'translateX(-50%)', width: 300, height: 80, background: 'radial-gradient(ellipse, rgba(3,110,242,0.18) 0%, transparent 70%)', pointerEvents: 'none' }} />
         )}
 
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 14, marginBottom: 10 }}>
-          <div style={{ height: 1, width: 48, background: 'linear-gradient(to right, transparent, rgba(37,99,235,0.6))' }} />
-          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#2563eb' }}>Resumo das ideias</span>
-          <div style={{ height: 1, width: 48, background: 'linear-gradient(to left, transparent, rgba(37,99,235,0.6))' }} />
+          <div style={{ height: 1, width: 48, background: 'linear-gradient(to right, transparent, rgba(3,110,242,0.6))' }} />
+          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.22em', textTransform: 'uppercase', color: '#036ef2' }}>Resumo das ideias</span>
+          <div style={{ height: 1, width: 48, background: 'linear-gradient(to left, transparent, rgba(3,110,242,0.6))' }} />
         </div>
 
         {/* Key numbers */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: 0, marginTop: 24, marginBottom: 56, flexWrap: 'wrap' }}>
           {[
-            { n: '271', label: 'ideias submetidas', color: '#2563eb' },
+            { n: '271', label: 'ideias submetidas', color: '#036ef2' },
             { n: '89',  label: 'em análise',        color: '#9437FF' },
             { n: '28',  label: 'em implementação',  color: '#4294F8' },
             { n: '12',  label: 'concluídas',        color: '#FF0066' },
@@ -435,7 +435,7 @@ function StatsSection({ onStatusFilter, light }: { onStatusFilter?: (s: string) 
                 <div style={{ color: textMuted, fontSize: 13, fontWeight: 600 }}>{user.fullName}</div>
                 <div style={{ color: labelColor, fontSize: 11, marginTop: 1 }}>#{i + 1} contributor</div>
               </div>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 800, color: '#2563eb' }}>{user.count}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 800, color: '#036ef2' }}>{user.count}</span>
             </div>
           ))}
         </div>
@@ -594,7 +594,7 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
         ))}
 
         {/* Ambient glows */}
-        <div style={{ position: 'absolute', left: '8%', top: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', left: '8%', top: '20%', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(3,110,242,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', right: '6%', bottom: '15%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(148,55,255,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', left: '55%', top: '45%', width: 350, height: 350, borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,0,102,0.03) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
@@ -623,11 +623,11 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
               onClick={() => navigate('/criar')}
               style={{
                 width: '100%', padding: '9px 0',
-                background: 'linear-gradient(135deg, #2563eb, #9437FF)',
+                background: 'linear-gradient(135deg, #036ef2, #9437FF)',
                 border: 'none', borderRadius: 10,
                 color: 'white', fontSize: 13, fontWeight: 700,
                 cursor: 'pointer', fontFamily: 'var(--font-outfit)',
-                boxShadow: '0 4px 16px rgba(37,99,235,0.45)',
+                boxShadow: '0 4px 16px rgba(3,110,242,0.45)',
                 transition: 'opacity 0.18s',
               }}
               onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
@@ -667,7 +667,7 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
               <span style={{ color: filterCat === null ? 'white' : 'rgba(255,255,255,0.55)', fontSize: 13, fontWeight: filterCat === null ? 700 : 400 }}>Todas</span>
             </div>
             {categories.map(cat => {
-              const catColor = CAT_COLOR[cat] || '#2563eb';
+              const catColor = CAT_COLOR[cat] || '#036ef2';
               const active   = filterCat === cat;
               return (
                 <div key={cat} onClick={() => setFilterCat(f => f === cat ? null : cat)} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: filterCat === null || active ? 1 : 0.32, transition: 'opacity 0.18s' }}>
@@ -687,7 +687,7 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
               const active = filterStatus === s;
               return (
                 <div key={s} onClick={() => setFilterStatus(s)} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: filterStatus === 'Todos' || active ? 1 : 0.35, transition: 'opacity 0.18s' }}>
-                  <div style={{ width: 11, height: 11, borderRadius: 3, background: active ? '#2563eb' : 'rgba(255,255,255,0.2)', flexShrink: 0, boxShadow: active ? '0 0 8px rgba(37,99,235,0.7)' : 'none', transition: 'all 0.18s' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: 3, background: active ? '#036ef2' : 'rgba(255,255,255,0.2)', flexShrink: 0, boxShadow: active ? '0 0 8px rgba(3,110,242,0.7)' : 'none', transition: 'all 0.18s' }} />
                   <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.55)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{s}</span>
                 </div>
               );
@@ -703,7 +703,7 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
               const active = sortBy === val;
               return (
                 <div key={val} onClick={() => setSortBy(val)} style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8 }}>
-                  <div style={{ width: 11, height: 11, borderRadius: '50%', border: `2px solid ${active ? '#2563eb' : 'rgba(255,255,255,0.22)'}`, background: active ? '#2563eb' : 'transparent', flexShrink: 0, transition: 'all 0.18s' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: '50%', border: `2px solid ${active ? '#036ef2' : 'rgba(255,255,255,0.22)'}`, background: active ? '#036ef2' : 'transparent', flexShrink: 0, transition: 'all 0.18s' }} />
                   <span style={{ color: active ? 'white' : 'rgba(255,255,255,0.5)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{label}</span>
                 </div>
               );
@@ -716,7 +716,7 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
 
         {/* ── Bubbles ── */}
         {bubblesRef.current.map(b => {
-          const color      = CAT_COLOR[b.idea.cat] || '#2563eb';
+          const color      = CAT_COLOR[b.idea.cat] || '#036ef2';
           const q = search.trim().toLowerCase();
           const isFiltered =
             (filterCat !== null && b.idea.cat !== filterCat) ||
@@ -1010,7 +1010,7 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
               <span style={{ color: activeCategory === 'Todas' ? 'var(--text)' : 'var(--text-muted)', fontSize: 13, fontWeight: activeCategory === 'Todas' ? 700 : 400 }}>Todas</span>
             </div>
             {categories.map(cat => {
-              const catColor = CAT_COLOR[cat] || '#2563eb';
+              const catColor = CAT_COLOR[cat] || '#036ef2';
               const active   = activeCategory === cat;
               return (
                 <div
@@ -1038,7 +1038,7 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
                   onClick={() => setActiveStatus(s)}
                   style={{ display: 'flex', alignItems: 'center', gap: 9, cursor: 'pointer', marginBottom: 8, opacity: activeStatus === 'Todos' || active ? 1 : 0.35, transition: 'opacity 0.18s' }}
                 >
-                  <div style={{ width: 11, height: 11, borderRadius: 3, background: active ? 'var(--blue)' : 'var(--border-light)', flexShrink: 0, boxShadow: active ? '0 0 8px rgba(37,99,235,0.5)' : 'none', transition: 'all 0.18s' }} />
+                  <div style={{ width: 11, height: 11, borderRadius: 3, background: active ? 'var(--blue)' : 'var(--border-light)', flexShrink: 0, boxShadow: active ? '0 0 8px rgba(3,110,242,0.5)' : 'none', transition: 'all 0.18s' }} />
                   <span style={{ color: active ? 'var(--text)' : 'var(--text-muted)', fontSize: 12, fontWeight: active ? 700 : 400, transition: 'color 0.18s' }}>{s}</span>
                 </div>
               );

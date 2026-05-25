@@ -208,7 +208,7 @@ export default function HomePage() {
 
             <div className="text-center mt-12 reveal">
               <button
-                className="flex items-center gap-2 px-6 py-3 rounded-full text-white text-[14px] font-bold cursor-pointer transition-all hover:bg-[#1d4ed8] hover:-translate-y-0.5 mx-auto"
+                className="flex items-center gap-2 px-6 py-3 rounded-full text-white text-[14px] font-bold cursor-pointer transition-all hover:bg-[#036ef2] hover:-translate-y-0.5 mx-auto"
                 style={{ background: 'var(--blue)', boxShadow: '0 6px 24px var(--blue-glow)', fontFamily: 'var(--font-outfit)' }}
                 onClick={() => navigate('/criar')}>
                 Experimentar agora →
@@ -225,7 +225,7 @@ export default function HomePage() {
             <h2 className="text-[40px] font-[900] tracking-[-1.5px] leading-[1.1] mb-3.5 text-white">
               A próxima grande ideia<br />pode ser{' '}
               <em className="not-italic" style={{
-                background: 'linear-gradient(90deg, #3b82f6, #06b6d4)',
+                background: 'linear-gradient(90deg, #4294F8, #06b6d4)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}>a tua.</em>
             </h2>
@@ -233,8 +233,8 @@ export default function HomePage() {
               Não precisas de ter tudo pensado. A IA estrutura, refina e apresenta a tua ideia de forma clara.
             </p>
             <button
-              className="flex items-center gap-2.5 px-[30px] py-3.5 rounded-full border-none text-white text-[15px] font-bold cursor-pointer transition-all hover:bg-[#1d4ed8] hover:-translate-y-0.5 mx-auto"
-              style={{ background: '#2563eb', boxShadow: '0 6px 24px rgba(37,99,235,0.5)', fontFamily: 'var(--font-outfit)' }}
+              className="flex items-center gap-2.5 px-[30px] py-3.5 rounded-full border-none text-white text-[15px] font-bold cursor-pointer transition-all hover:bg-[#036ef2] hover:-translate-y-0.5 mx-auto"
+              style={{ background: '#036ef2', boxShadow: '0 6px 24px rgba(3,110,242,0.5)', fontFamily: 'var(--font-outfit)' }}
               onClick={() => navigate('/criar')}>
               Começar agora →
             </button>
