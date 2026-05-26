@@ -1199,7 +1199,7 @@ export default function IdeaHub() {
   }, []);
 
   useEffect(() => {
-    if (theme === 'light') setView('lista');
+    setView(theme === 'light' ? 'lista' : 'nebula');
   }, [theme]);
 
   return view === 'nebula'
