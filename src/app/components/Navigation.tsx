@@ -28,7 +28,7 @@ export default function Navigation() {
   const inactiveColor = 'rgba(255,255,255,0.70)';
 
   const navBg = theme === 'light'
-    ? (scrolled ? 'rgba(9,14,42,0.96)' : 'rgba(9,14,42,0.88)')
+    ? 'radial-gradient(ellipse at 70% 30%, #0f2258 0%, #090e2a 45%, #050816 100%)'
     : (scrolled ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)');
 
   const navBorder = theme === 'light'
