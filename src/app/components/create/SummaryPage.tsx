@@ -35,7 +35,7 @@ export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: Sum
 
   return (
     <div className="min-h-screen flex flex-col animate-[vIn_0.35s_ease_both]">
-      <StepBar currentStep={3} onBack={onBack} backLabel="Referências" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
+      <StepBar currentStep={3} onBack={onBack} backLabel="Referências" />
 
       <div className="flex-1 grid grid-cols-[1fr_340px] overflow-hidden" style={{ height: 'calc(100vh - 158px)' }} onSubmit={handleSubmit(onSubmit)}>
         {/* Main Content */}

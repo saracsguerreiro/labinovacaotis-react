@@ -87,7 +87,7 @@ export default function BrainstormPage({ onBack, onNextPage, isAnonymous, setIsA
   return (
     <div className="flex h-screen animate-[vIn_0.35s_ease_both]">
       <div className="flex-1 flex flex-col border-r-[1.5px] overflow-hidden" style={{ borderColor: 'var(--border-light)', height: 'calc(100vh - 86px)' }}>
-        <StepBar currentStep={1} onBack={onBack} backLabel="Categoria" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
+        <StepBar currentStep={1} onBack={onBack} backLabel="Categoria" />
 
         <div
           className="px-6 py-2 border-b flex items-center justify-between text-[12px]"

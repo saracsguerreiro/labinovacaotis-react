@@ -22,8 +22,6 @@ export default function CreateView() {
         <CategoryPage
           onSelectCategory={handleSelectCategory}
           onNextPage={() => setCurrentPage('brainstorm')}
-          isAnonymous={isAnonymous}
-          setIsAnonymous={setIsAnonymous}
         />
       )}
       {currentPage === 'brainstorm' && (

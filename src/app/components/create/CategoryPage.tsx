@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StepBar from './StepBar';
 import { useTheme } from '../../context/ThemeContext';
 
 interface CategoryPageProps {
   onSelectCategory: (category: string) => void;
   onNextPage: () => void;
-  isAnonymous: boolean;
-  setIsAnonymous: (value: boolean) => void;
 }
 
 const categories = [
@@ -112,7 +109,9 @@ const categories = [
   },
 ];
 
-export default function CategoryPage({ onSelectCategory, onNextPage, isAnonymous, setIsAnonymous }: CategoryPageProps) {
+const stepLabels = ['Categoria', 'Brainstorming', 'Referências', 'Ideia'];
+
+export default function CategoryPage({ onSelectCategory, onNextPage }: CategoryPageProps) {
   const navigate = useNavigate();
   const [selected, setSelected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -126,9 +125,82 @@ export default function CategoryPage({ onSelectCategory, onNextPage, isAnonymous
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg)', animation: 'vIn 0.4s cubic-bezier(0.16,1,0.3,1) both' }}>
-      <StepBar currentStep={0} onBack={() => navigate('/')} backLabel="Início" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
 
-      <div className="flex-1 flex flex-col items-center justify-center px-10 gap-9 max-w-[940px] mx-auto w-full py-10">
+      {/* Back button — top left */}
+      <div className="px-10 pt-5 pb-0">
+        <div
+          className="inline-flex items-center gap-2 text-[13px] font-medium cursor-pointer transition-all duration-150 hover:opacity-70 select-none"
+          style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-outfit)' }}
+          onClick={() => navigate('/')}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Início
+        </div>
+      </div>
+
+      <div className="flex-1 flex flex-col items-center justify-center px-10 gap-7 max-w-[940px] mx-auto w-full py-8">
+
+        {/* Step indicator — above title */}
+        <div className="flex items-center">
+          {stepLabels.map((label, index) => {
+            const isActive = index === 0;
+            const isUpcoming = index > 0;
+            return (
+              <div key={index} className="flex items-center">
+                <div className="flex flex-col items-center" style={{ gap: '4px' }}>
+                  <div
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      fontFamily: 'var(--font-mono)',
+                      background: isActive ? '#036ef2' : (isLight ? '#f1f5f9' : 'var(--surface2)'),
+                      border: isActive ? '2px solid #036ef2' : `2px solid ${isLight ? '#e2e8f0' : 'var(--border2)'}`,
+                      color: isActive ? '#fff' : 'var(--text-sub)',
+                      boxShadow: isActive ? '0 0 0 4px rgba(3,110,242,0.14), 0 0 14px rgba(3,110,242,0.3)' : 'none',
+                      transition: 'all 0.3s ease',
+                    }}
+                  >
+                    {index + 1}
+                  </div>
+                  <span
+                    style={{
+                      fontSize: '9px',
+                      fontWeight: isActive ? 700 : 400,
+                      fontFamily: 'var(--font-outfit)',
+                      whiteSpace: 'nowrap',
+                      letterSpacing: '0.02em',
+                      color: isActive ? '#036ef2' : 'var(--text-sub)',
+                      opacity: isUpcoming ? 0.45 : 1,
+                    }}
+                  >
+                    {label}
+                  </span>
+                </div>
+                {index < stepLabels.length - 1 && (
+                  <div
+                    style={{
+                      width: '32px',
+                      height: '2px',
+                      margin: '0 8px',
+                      marginBottom: '14px',
+                      borderRadius: '9999px',
+                      background: isLight ? '#e2e8f0' : 'var(--border2)',
+                    }}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
         {/* Header */}
         <div className="text-center">
           <h1

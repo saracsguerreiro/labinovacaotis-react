@@ -51,7 +51,7 @@ export default function ReferencesPage({ onBack, onNextPage, isAnonymous, setIsA
 
   return (
     <div className="min-h-screen flex flex-col animate-[vIn_0.35s_ease_both]">
-      <StepBar currentStep={2} onBack={onBack} backLabel="Brainstorming" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
+      <StepBar currentStep={2} onBack={onBack} backLabel="Brainstorming" />
 
       <div className="flex-1 grid grid-cols-2 overflow-hidden" style={{ height: 'calc(100vh - 158px)' }}>
         {/* Left Panel */}
