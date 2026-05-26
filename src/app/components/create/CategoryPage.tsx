@@ -1,13 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import StepBar from './StepBar';
 import { useTheme } from '../../context/ThemeContext';
 
 interface CategoryPageProps {
   onSelectCategory: (category: string) => void;
   onNextPage: () => void;
-  isAnonymous: boolean;
-  setIsAnonymous: (value: boolean) => void;
 }
 
 const categories = [
@@ -112,8 +108,7 @@ const categories = [
   },
 ];
 
-export default function CategoryPage({ onSelectCategory, onNextPage, isAnonymous, setIsAnonymous }: CategoryPageProps) {
-  const navigate = useNavigate();
+export default function CategoryPage({ onSelectCategory, onNextPage }: CategoryPageProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const { theme } = useTheme();
@@ -125,8 +120,7 @@ export default function CategoryPage({ onSelectCategory, onNextPage, isAnonymous
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg)', animation: 'vIn 0.4s cubic-bezier(0.16,1,0.3,1) both' }}>
-      <StepBar currentStep={0} onBack={() => navigate('/')} backLabel="Início" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
+    <div className="flex flex-col" style={{ height: '100%', background: 'var(--bg)', animation: 'vIn 0.4s cubic-bezier(0.16,1,0.3,1) both', overflowY: 'auto' }}>
 
       <div className="flex-1 flex flex-col items-center justify-center px-10 gap-9 max-w-[940px] mx-auto w-full py-10">
         {/* Header */}

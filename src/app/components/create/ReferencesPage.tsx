@@ -1,14 +1,10 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import StepBar from './StepBar';
 
 type LinkForm = { url: string };
 
 interface ReferencesPageProps {
-  onBack: () => void;
   onNextPage: () => void;
-  isAnonymous: boolean;
-  setIsAnonymous: (value: boolean) => void;
 }
 
 const aiCases = [
@@ -32,7 +28,7 @@ const aiCases = [
   },
 ];
 
-export default function ReferencesPage({ onBack, onNextPage, isAnonymous, setIsAnonymous }: ReferencesPageProps) {
+export default function ReferencesPage({ onNextPage }: ReferencesPageProps) {
   const [savedCases, setSavedCases] = useState([1]);
   const [files, setFiles] = useState(['benchmark_aprovacoes_2026.pdf', 'notion.so/exemplos-processo-aprovacao']);
 
@@ -50,10 +46,8 @@ export default function ReferencesPage({ onBack, onNextPage, isAnonymous, setIsA
   };
 
   return (
-    <div className="min-h-screen flex flex-col animate-[vIn_0.35s_ease_both]">
-      <StepBar currentStep={2} onBack={onBack} backLabel="Brainstorming" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
-
-      <div className="flex-1 grid grid-cols-2 overflow-hidden" style={{ height: 'calc(100vh - 118px)' }}>
+    <div className="flex flex-col animate-[vIn_0.35s_ease_both]" style={{ height: '100%' }}>
+      <div className="flex-1 grid grid-cols-2 overflow-hidden" style={{ height: '100%' }}>
         {/* Left Panel */}
         <div className="px-6 py-6 overflow-y-auto border-r-[1.5px]" style={{ borderColor: 'var(--border-light)' }}>
           <div className="flex items-center mb-3.5">

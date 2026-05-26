@@ -1,12 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import StepBar from './StepBar';
 
 interface BrainstormPageProps {
   selectedCategory: string;
-  onBack: () => void;
   onNextPage: () => void;
-  isAnonymous: boolean;
-  setIsAnonymous: (value: boolean) => void;
 }
 
 type Message = {
@@ -15,7 +11,7 @@ type Message = {
   chips?: string[];
 };
 
-export default function BrainstormPage({ onBack, onNextPage, isAnonymous, setIsAnonymous }: BrainstormPageProps) {
+export default function BrainstormPage({ onNextPage }: BrainstormPageProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       type: 'ai',
@@ -85,9 +81,8 @@ export default function BrainstormPage({ onBack, onNextPage, isAnonymous, setIsA
   };
 
   return (
-    <div className="flex h-screen animate-[vIn_0.35s_ease_both]">
-      <div className="flex-1 flex flex-col border-r-[1.5px] overflow-hidden" style={{ borderColor: 'var(--border-light)', height: 'calc(100vh - 62px)' }}>
-        <StepBar currentStep={1} onBack={onBack} backLabel="Categoria" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
+    <div className="flex animate-[vIn_0.35s_ease_both]" style={{ height: '100%' }}>
+      <div className="flex-1 flex flex-col border-r-[1.5px] overflow-hidden" style={{ borderColor: 'var(--border-light)', height: '100%' }}>
 
         <div
           className="px-6 py-2 border-b flex items-center justify-between text-[12px]"
@@ -218,7 +213,7 @@ export default function BrainstormPage({ onBack, onNextPage, isAnonymous, setIsA
       </div>
 
       {/* Sidebar */}
-      <div className="w-72 flex flex-col overflow-y-auto bg-[var(--bg2)]" style={{ height: 'calc(100vh - 62px)', borderLeft: '1px solid var(--border-light)' }}>
+      <div className="w-72 flex flex-col overflow-y-auto bg-[var(--bg2)]" style={{ height: '100%', borderLeft: '1px solid var(--border-light)' }}>
         <div className="p-[18px] border-b" style={{ borderColor: 'var(--border-light)' }}>
           <div className="text-[10px] font-medium uppercase tracking-[2px] mb-3" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-sub)' }}>
             Progresso
