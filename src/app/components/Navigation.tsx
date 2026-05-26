@@ -21,25 +21,35 @@ export default function Navigation() {
   const [activeLang, setActiveLang] = useState('PT');
   const { theme, toggle: toggleTheme } = useTheme();
 
-  // dark mode global (ThemeContext) OU página de fundo escuro → letras brancas
-  const isNavDark = theme === 'dark' || isDark;
+  // light mode → nav escuro; dark mode ou página escura → nav transparente branco
+  const isNavDark = true; // letras sempre brancas
 
-  const activeColor   = isNavDark ? '#ffffff'                : '#0d1333';
-  const inactiveColor = isNavDark ? 'rgba(255,255,255,0.70)' : 'rgba(13,19,51,0.50)';
+  const activeColor   = '#ffffff';
+  const inactiveColor = 'rgba(255,255,255,0.70)';
+
+  const navBg = theme === 'light'
+    ? (scrolled ? 'rgba(13,19,51,0.92)' : 'rgba(13,19,51,0.80)')
+    : (scrolled ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)');
+
+  const navBorder = theme === 'light'
+    ? '1px solid rgba(255,255,255,0.12)'
+    : '1px solid rgba(255,255,255,0.28)';
+
+  const navShadow = theme === 'light'
+    ? (scrolled ? '0 8px 32px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.08)' : '0 4px 20px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.06)')
+    : (scrolled ? '0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.3)' : '0 4px 20px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2)');
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[200] flex justify-center pt-4 px-6 transition-all duration-300">
       <div
         className="w-full max-w-7xl h-[72px] flex items-center justify-between px-10 transition-all duration-300"
         style={{
-          background: scrolled ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)',
+          background: navBg,
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(255,255,255,0.28)',
+          border: navBorder,
           borderRadius: '50px',
-          boxShadow: scrolled
-            ? '0 8px 32px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.3)'
-            : '0 4px 20px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.2)',
+          boxShadow: navShadow,
         }}
       >
         {/* Logo */}
