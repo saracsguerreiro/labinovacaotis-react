@@ -13,6 +13,7 @@ import { useIdeaModal } from '../hooks/useIdeaModal';
 import { useComments } from '../hooks/useComments';
 import type { Idea } from '../hooks/useIdeaFilters';
 import type { Comment } from '../hooks/useComments';
+import { useTheme } from '../context/ThemeContext';
 
 // ─── View type ────────────────────────────────────────────────────────────────
 type HubView = 'nebula' | 'lista';
@@ -1231,7 +1232,8 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
 // MAIN — IdeaHub with Nebula / Lista toggle
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function IdeaHub() {
-  const [view, setView] = useState<HubView>('nebula');
+  const { theme } = useTheme();
+  const [view, setView] = useState<HubView>(theme === 'light' ? 'lista' : 'nebula');
 
   // Notify Navigation of the current view so it can theme itself
   useEffect(() => {
@@ -1242,6 +1244,10 @@ export default function IdeaHub() {
   useEffect(() => {
     return () => window.dispatchEvent(new CustomEvent('hub-view-change', { detail: 'lista' }));
   }, []);
+
+  useEffect(() => {
+    if (theme === 'light') setView('lista');
+  }, [theme]);
 
   return view === 'nebula'
     ? <NebulaView   onSwitch={() => setView('lista')} />

@@ -4,9 +4,10 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from 'recharts';
+import { useTheme } from '../context/ThemeContext';
 
 /* ─── Palette — medium indigo (matches reference) ──────────────────────── */
-const P = {
+const PD = {
   // backgrounds — medium indigo, not near-black
   bgPage:  'radial-gradient(ellipse at 70% 30%, #0f2258 0%, #090e2a 45%, #050816 100%)',
   bgCard:  'rgba(255,255,255,0.10)',
@@ -31,6 +32,27 @@ const P = {
   waveArea0:  'rgba(148,55,255,0.02)',
 };
 
+const PL = {
+  bgPage:  'var(--bg)',
+  bgCard:  'var(--surface)',
+  bgCardH: 'var(--surface2)',
+  bgWin:   'rgba(255,255,255,0.97)',
+  border:  'var(--border-light)',
+  borderH: 'rgba(30,50,140,0.22)',
+  text:    'var(--text)',
+  muted:   'var(--text-muted)',
+  sub:     'var(--text-sub)',
+  blue:    '#4294F8',
+  indigo:  '#3126b4',
+  violet:  '#9437ff',
+  pink:    '#FF0066',
+  cyan:    '#036ef2',
+  green:   '#15803d',
+  waveLine:   '#0d1333',
+  waveArea:   'rgba(148,55,255,0.20)',
+  waveArea0:  'rgba(148,55,255,0.0)',
+};
+
 /* ─── Data ──────────────────────────────────────────────────────────────── */
 const monthlyData = [
   { month: 'Jan', ideias: 12 }, { month: 'Fev', ideias: 18 },
@@ -42,11 +64,11 @@ const monthlyData = [
 ];
 
 const categoryData = [
-  { name: 'Melhoria Processo', value: 118, color: P.indigo },
-  { name: 'Tecnologia',        value: 85,  color: P.blue   },
-  { name: 'Cultura & Pessoas', value: 66,  color: P.violet },
-  { name: 'Novo Produto',      value: 49,  color: P.pink   },
-  { name: 'Exp. Cliente',      value: 29,  color: P.cyan   },
+  { name: 'Melhoria Processo', value: 118, color: PD.indigo },
+  { name: 'Tecnologia',        value: 85,  color: PD.blue   },
+  { name: 'Cultura & Pessoas', value: 66,  color: PD.violet },
+  { name: 'Novo Produto',      value: 49,  color: PD.pink   },
+  { name: 'Exp. Cliente',      value: 29,  color: PD.cyan   },
 ];
 
 const deptData = [
@@ -58,11 +80,11 @@ const deptData = [
 ];
 
 const statusData = [
-  { name: 'Submetidas',    value: 142, color: P.blue   },
-  { name: 'Em análise',    value: 89,  color: P.indigo },
-  { name: 'Seleccionadas', value: 76,  color: P.violet },
-  { name: 'Implementação', value: 28,  color: P.pink   },
-  { name: 'Concluídas',    value: 12,  color: P.green  },
+  { name: 'Submetidas',    value: 142, color: PD.blue   },
+  { name: 'Em análise',    value: 89,  color: PD.indigo },
+  { name: 'Seleccionadas', value: 76,  color: PD.violet },
+  { name: 'Implementação', value: 28,  color: PD.pink   },
+  { name: 'Concluídas',    value: 12,  color: PD.green  },
 ];
 
 const trendData = [
@@ -85,10 +107,10 @@ type TabKey = typeof TABS[number]['key'];
 /* ─── Tooltip ───────────────────────────────────────────────────────────── */
 const ttStyle = {
   background: 'rgba(30,27,75,0.95)',
-  border: `1px solid ${P.borderH}`,
+  border: `1px solid ${PD.borderH}`,
   borderRadius: 12,
   fontSize: 12,
-  color: P.text,
+  color: PD.text,
   fontFamily: "'JetBrains Mono', monospace",
   boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
   padding: '8px 14px',
@@ -124,7 +146,7 @@ function ProgressRing({ progress, color }: { progress: number; color: string }) 
 }
 
 /* ─── Chart panel — fixed 280px height so Recharts always renders ───────── */
-function ChartPanel({ tab }: { tab: TabKey }) {
+function ChartPanel({ tab, P }: { tab: TabKey; P: typeof PD }) {
   const MAX_CAT = Math.max(...categoryData.map(d => d.value));
   const H = 280;
 
@@ -281,6 +303,8 @@ function ChartPanel({ tab }: { tab: TabKey }) {
 const AUTO_MS = 6000;
 
 export default function ImpactDashboard2() {
+  const { theme } = useTheme();
+  const P = theme === 'light' ? PL : PD;
   const [activeTab, setActiveTab] = useState<TabKey>('volume');
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const [progress, setProgress]    = useState(0);
@@ -416,7 +440,7 @@ export default function ImpactDashboard2() {
 
           {/* chart */}
           <div key={activeTab} style={{ padding: '20px 24px', animation: 'fadeSlide 0.4s ease forwards' }}>
-            <ChartPanel tab={activeTab} />
+            <ChartPanel tab={activeTab} P={P} />
           </div>
 
           {/* dot nav */}

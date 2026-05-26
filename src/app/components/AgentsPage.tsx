@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 /* ── Raridade ── */
 const RARITY = {
@@ -137,8 +138,8 @@ const agents = [
 type Agent = typeof agents[0];
 
 /* ── Barra de stat animada ── */
-function StatBar({ label, value, color, delay }: {
-  label: string; value: number; color: string; delay: number;
+function StatBar({ label, value, color, delay, isLight }: {
+  label: string; value: number; color: string; delay: number; isLight?: boolean;
 }) {
   return (
     <div style={{ marginBottom: 7 }}>
@@ -146,13 +147,13 @@ function StatBar({ label, value, color, delay }: {
         display: 'flex', justifyContent: 'space-between',
         fontSize: 9, marginBottom: 3,
         fontFamily: 'var(--font-mono)',
-        color: 'rgba(255,255,255,0.45)',
+        color: isLight ? 'var(--text-muted)' : 'rgba(255,255,255,0.45)',
       }}>
         <span>{label}</span>
-        <span style={{ color: 'rgba(255,255,255,0.8)', fontWeight: 700 }}>{value}</span>
+        <span style={{ color: isLight ? 'var(--text)' : 'rgba(255,255,255,0.8)', fontWeight: 700 }}>{value}</span>
       </div>
       <div style={{
-        height: 4, background: 'rgba(255,255,255,0.08)',
+        height: 4, background: isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.08)',
         borderRadius: 2, overflow: 'hidden',
       }}>
         <motion.div
@@ -171,7 +172,7 @@ function StatBar({ label, value, color, delay }: {
 }
 
 /* ── Card holográfico ── */
-function HoloCard({ agent, index }: { agent: Agent; index: number }) {
+function HoloCard({ agent, index, isLight }: { agent: Agent; index: number; isLight?: boolean }) {
   const navigate = useNavigate();
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [hovered, setHovered] = useState(false);
@@ -220,7 +221,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
           borderRadius: 20,
           boxShadow: hovered
             ? `0 24px 64px ${r.glow}, 0 0 0 1.5px ${r.color}70`
-            : `0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.07)`,
+            : isLight ? `0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.08)` : `0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.07)`,
           transition: 'box-shadow 0.3s',
         }}
       >
@@ -231,7 +232,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
           borderRadius: 20, overflow: 'hidden',
-          background: `linear-gradient(165deg, #0d1640 0%, #080f2e 55%, ${agent.color}14 100%)`,
+          background: isLight ? `linear-gradient(165deg, #f8faff 0%, #f0f4ff 55%, ${agent.color}08 100%)` : `linear-gradient(165deg, #0d1640 0%, #080f2e 55%, ${agent.color}14 100%)`,
           border: `1.5px solid ${agent.color}28`,
           display: 'flex', flexDirection: 'column',
         }}>
@@ -312,7 +313,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
           {/* Nome + título */}
           <div style={{ textAlign: 'center', padding: '8px 16px 10px', flexShrink: 0 }}>
             <div style={{
-              fontSize: 16, fontWeight: 900, color: '#fff',
+              fontSize: 16, fontWeight: 900, color: isLight ? 'var(--text)' : '#fff',
               fontFamily: 'var(--font-outfit)', letterSpacing: -0.3,
               marginBottom: 5,
             }}>
@@ -334,7 +335,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
                 {agent.agentLabel}
               </span>
               <span style={{
-                fontSize: 9, color: 'rgba(255,255,255,0.5)',
+                fontSize: 9, color: isLight ? 'var(--text-muted)' : 'rgba(255,255,255,0.5)',
                 fontFamily: 'var(--font-mono)', marginTop: 1,
               }}>
                 {agent.specialty}
@@ -353,7 +354,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
           <div style={{ padding: '0 16px', flex: 1 }}>
             {agent.stats.map((s, i) => (
               <StatBar key={s.label} label={s.label} value={s.value}
-                color={agent.color} delay={0.25 + i * 0.07} />
+                color={agent.color} delay={0.25 + i * 0.07} isLight={isLight} />
             ))}
           </div>
 
@@ -373,7 +374,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
 
           <div style={{
             textAlign: 'center', fontSize: 9,
-            color: 'rgba(255,255,255,0.18)',
+            color: isLight ? 'var(--text-sub)' : 'rgba(255,255,255,0.18)',
             fontFamily: 'var(--font-mono)',
             paddingBottom: 10, flexShrink: 0,
           }}>
@@ -388,7 +389,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
           WebkitBackfaceVisibility: 'hidden',
           transform: 'rotateY(180deg)',
           borderRadius: 20, overflow: 'hidden',
-          background: `linear-gradient(160deg, #0d1640 0%, ${agent.color}25 100%)`,
+          background: isLight ? `linear-gradient(160deg, #f8faff 0%, ${agent.color}12 100%)` : `linear-gradient(160deg, #0d1640 0%, ${agent.color}25 100%)`,
           border: `1.5px solid ${agent.color}45`,
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
@@ -414,7 +415,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
 
           <div style={{ textAlign: 'center', marginBottom: 14 }}>
             <div style={{
-              fontSize: 20, fontWeight: 900, color: '#fff',
+              fontSize: 20, fontWeight: 900, color: isLight ? 'var(--text)' : '#fff',
               fontFamily: 'var(--font-outfit)', marginBottom: 6,
             }}>
               {agent.name}
@@ -433,7 +434,7 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
                 {agent.agentLabel}
               </span>
               <span style={{
-                fontSize: 9, color: 'rgba(255,255,255,0.45)',
+                fontSize: 9, color: isLight ? 'var(--text-muted)' : 'rgba(255,255,255,0.45)',
                 fontFamily: 'var(--font-mono)', marginTop: 1,
               }}>
                 {agent.specialty}
@@ -443,10 +444,10 @@ function HoloCard({ agent, index }: { agent: Agent; index: number }) {
 
           <div style={{
             width: '100%',
-            background: 'rgba(255,255,255,0.05)',
+            background: isLight ? 'var(--surface2)' : 'rgba(255,255,255,0.05)',
             border: `1px solid ${agent.color}25`,
             borderRadius: 10, padding: '11px 14px',
-            fontSize: 12, color: 'rgba(255,255,255,0.65)',
+            fontSize: 12, color: isLight ? 'var(--text-muted)' : 'rgba(255,255,255,0.65)',
             textAlign: 'center', lineHeight: 1.65,
             marginBottom: 14,
           }}>
@@ -515,6 +516,8 @@ const categoryFilters = [
 ];
 
 export default function AgentsPage() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [filter, setFilter] = useState<string | null>(null);
 
   const displayed = filter
@@ -524,7 +527,7 @@ export default function AgentsPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'radial-gradient(ellipse at 70% 30%, #0f2258 0%, #090e2a 45%, #050816 100%)',
+      background: isLight ? 'var(--bg)' : 'radial-gradient(ellipse at 70% 30%, #0f2258 0%, #090e2a 45%, #050816 100%)',
       paddingTop: '62px',
     }}>
 
@@ -532,14 +535,14 @@ export default function AgentsPage() {
       <div style={{ textAlign: 'center', padding: '36px 40px 28px' }}>
         <h1 style={{
           fontSize: 32, fontWeight: 900, letterSpacing: -1,
-          color: '#fff', marginBottom: 10,
+          color: isLight ? 'var(--text)' : '#fff', marginBottom: 10,
           fontFamily: 'var(--font-outfit)',
-          textShadow: '0 0 48px rgba(66,148,248,0.35)',
+          textShadow: isLight ? 'none' : '0 0 48px rgba(66,148,248,0.35)',
         }}>
           Agentes IA do Laboratório de Inovação TIS
         </h1>
         <p style={{
-          fontSize: 14, color: 'rgba(200,220,255,0.4)',
+          fontSize: 14, color: isLight ? 'var(--text-muted)' : 'rgba(200,220,255,0.4)',
           maxWidth: 420, margin: '0 auto 28px',
           lineHeight: 1.6, fontFamily: 'var(--font-mono)',
         }}>
@@ -554,13 +557,15 @@ export default function AgentsPage() {
               onClick={() => setFilter(f.key)}
               style={{
                 padding: '7px 20px', borderRadius: 22,
-                border: `1.5px solid ${filter === f.key
-                  ? 'rgba(255,255,255,0.45)'
-                  : 'rgba(255,255,255,0.1)'}`,
-                background: filter === f.key
-                  ? 'rgba(255,255,255,0.12)'
-                  : 'transparent',
-                color: filter === f.key ? '#fff' : 'rgba(255,255,255,0.38)',
+                border: isLight
+                  ? `1.5px solid ${filter === f.key ? 'var(--border2)' : 'var(--border-light)'}`
+                  : `1.5px solid ${filter === f.key ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.1)'}`,
+                background: isLight
+                  ? (filter === f.key ? 'var(--surface2)' : 'transparent')
+                  : (filter === f.key ? 'rgba(255,255,255,0.12)' : 'transparent'),
+                color: isLight
+                  ? (filter === f.key ? 'var(--text)' : 'var(--text-muted)')
+                  : (filter === f.key ? '#fff' : 'rgba(255,255,255,0.38)'),
                 fontSize: 12, fontWeight: 600,
                 cursor: 'pointer', transition: 'all 0.18s',
                 fontFamily: 'var(--font-outfit)',
@@ -591,7 +596,7 @@ export default function AgentsPage() {
         <AnimatePresence mode="popLayout">
           {displayed.map((agent, i) => (
             <motion.div key={agent.name} layout exit={{ opacity: 0, scale: 0.9 }}>
-              <HoloCard agent={agent} index={i} />
+              <HoloCard agent={agent} index={i} isLight={isLight} />
             </motion.div>
           ))}
         </AnimatePresence>
