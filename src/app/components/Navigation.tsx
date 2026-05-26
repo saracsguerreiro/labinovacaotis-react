@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useScrolled } from '../hooks/useScrolled';
 import { useNavTheme } from '../hooks/useNavTheme';
+import { useTheme } from '../context/ThemeContext';
 import logoAiLabWhite from './logo-tis-ai-lab-light.png';
 import logoAiLabBlack from './logo-tis-ai-lab-dark.png';
 
@@ -18,6 +19,7 @@ export default function Navigation() {
   const scrolled = useScrolled();
   const isDark = useNavTheme(pathname);
   const [activeLang, setActiveLang] = useState('PT');
+  const { theme, toggle: toggleTheme } = useTheme();
 
   const activeColor   = isDark ? '#ffffff'                : '#0d1333';
   const inactiveColor = isDark ? 'rgba(255,255,255,0.70)' : 'rgba(13,19,51,0.50)';
@@ -79,7 +81,7 @@ export default function Navigation() {
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-4 flex-shrink-0">
           {/* Criar Ideia CTA */}
           <div style={{ position: 'relative', display: 'inline-flex' }}>
             <span
@@ -115,26 +117,60 @@ export default function Navigation() {
             </button>
           </div>
 
-          {/* Language switcher */}
-          <div
-            className="flex items-center gap-0 rounded-lg p-1"
-            style={{ background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)' }}
-          >
-            {['PT', 'EN'].map((lang) => (
-              <button
-                key={lang}
-                className="px-2 py-0.5 rounded text-[11px] font-bold transition-all border-none cursor-pointer"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  background: activeLang === lang ? '#036ef2' : 'transparent',
-                  color: activeLang === lang ? 'white' : isDark ? 'rgba(255,255,255,0.5)' : 'rgba(13,19,51,0.4)',
-                }}
-                onClick={() => setActiveLang(lang)}
-              >
-                {lang}
-              </button>
+          {/* Language switcher — plain PT | EN */}
+          <div className="flex items-center gap-1" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700 }}>
+            {(['PT', 'EN'] as const).map((lang, i) => (
+              <>
+                {i === 1 && (
+                  <span key="sep" style={{ color: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(13,19,51,0.25)' }}>|</span>
+                )}
+                <button
+                  key={lang}
+                  className="px-1 border-none cursor-pointer bg-transparent transition-all duration-150"
+                  style={{
+                    color: activeLang === lang
+                      ? (isDark ? '#ffffff' : '#0d1333')
+                      : (isDark ? 'rgba(255,255,255,0.4)' : 'rgba(13,19,51,0.35)'),
+                    fontWeight: activeLang === lang ? 700 : 400,
+                  }}
+                  onClick={() => setActiveLang(lang)}
+                >
+                  {lang}
+                </button>
+              </>
             ))}
           </div>
+
+          {/* Dark / Light mode toggle */}
+          <button
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+            className="flex items-center justify-center w-8 h-8 rounded-full border-none cursor-pointer transition-all duration-200 hover:scale-110"
+            style={{
+              background: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(13,19,51,0.07)',
+              color: isDark ? 'rgba(255,255,255,0.85)' : 'rgba(13,19,51,0.7)',
+            }}
+          >
+            {theme === 'dark' ? (
+              /* Sun icon */
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4"/>
+                <line x1="12" y1="2" x2="12" y2="4"/>
+                <line x1="12" y1="20" x2="12" y2="22"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="2" y1="12" x2="4" y2="12"/>
+                <line x1="20" y1="12" x2="22" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            ) : (
+              /* Moon icon */
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            )}
+          </button>
 
           {/* Avatar */}
           <div

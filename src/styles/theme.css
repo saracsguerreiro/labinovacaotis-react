@@ -106,6 +106,22 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+
+  /* IdeaLab custom vars — dark mode */
+  --bg: #0d1333;
+  --bg2: #0a0f28;
+  --bg3: #080c1e;
+  --surface: #111830;
+  --surface2: #151d3d;
+  --surface3: #1a234a;
+  --border-light: rgba(100, 160, 255, 0.10);
+  --border2: rgba(100, 160, 255, 0.18);
+  --border3: rgba(100, 160, 255, 0.35);
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.65);
+  --text-sub: rgba(255, 255, 255, 0.35);
+  --blue-light: rgba(3, 110, 242, 0.15);
+  --blue-glow: rgba(3, 110, 242, 0.25);
 }
 
 @theme inline {
