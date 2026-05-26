@@ -613,29 +613,6 @@ function NebulaView({ onSwitch }: { onSwitch: () => void }) {
           zIndex: 10,
           overflowY: 'auto',
         }}>
-          {/* View toggle — top of right panel, consistent with Lista */}
-          <div style={{ padding: '0 14px 14px' }}>
-            <ViewToggle view="nebula" onChange={v => v === 'lista' && onSwitch()} dark />
-          </div>
-
-          {/* Nova Ideia */}
-          <div style={{ padding: '0 14px 14px' }}>
-            <button
-              onClick={() => navigate('/criar')}
-              style={{
-                width: '100%', padding: '9px 0',
-                background: 'linear-gradient(135deg, #036ef2, #9437FF)',
-                border: 'none', borderRadius: 10,
-                color: 'white', fontSize: 13, fontWeight: 700,
-                cursor: 'pointer', fontFamily: 'var(--font-outfit)',
-                boxShadow: '0 4px 16px rgba(3,110,242,0.45)',
-                transition: 'opacity 0.18s',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-            >+ Nova Ideia</button>
-          </div>
-
           <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '0 16px 0' }} />
 
           {/* Search */}
@@ -854,7 +831,7 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
               return (
                 <div
                   key={idea.id}
-                  style={{ display: 'flex', alignItems: 'flex-start', gap: 16, padding: '20px 28px', borderBottom: '1px solid var(--border-light)', cursor: 'pointer', transition: 'background 0.15s' }}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: 16, padding: `${i === 0 ? '36px' : '20px'} 28px 20px`, borderBottom: '1px solid var(--border-light)', cursor: 'pointer', transition: 'background 0.15s' }}
                   onMouseEnter={e => (e.currentTarget.style.background = 'var(--surface2)')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                   onClick={() => openIdea(idea)}
@@ -948,33 +925,9 @@ function ListaView({ onSwitch }: { onSwitch: () => void }) {
           borderLeft: '1px solid var(--border-light)',
           background: 'var(--bg)',
           position: 'sticky', top: 88, alignSelf: 'flex-start',
-          height: 'calc(100vh - 88px)', overflowY: 'auto',
           display: 'flex', flexDirection: 'column',
           padding: '16px 0',
         }}>
-
-          {/* View toggle */}
-          <div style={{ padding: '0 14px 14px' }}>
-            <ViewToggle view="lista" onChange={v => v === 'nebula' && onSwitch()} dark={false} />
-          </div>
-
-          {/* Nova Ideia */}
-          <div style={{ padding: '0 14px 14px' }}>
-            <button
-              onClick={() => navigate('/criar')}
-              style={{
-                width: '100%', padding: '9px 0',
-                background: 'var(--blue)',
-                border: 'none', borderRadius: 10,
-                color: 'white', fontSize: 13, fontWeight: 700,
-                cursor: 'pointer', fontFamily: 'var(--font-outfit)',
-                boxShadow: '0 3px 10px var(--blue-glow)',
-                transition: 'opacity 0.18s',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-            >+ Nova Ideia</button>
-          </div>
 
           <div style={{ height: 1, background: 'var(--border-light)', margin: '0 16px 14px' }} />
 
@@ -1251,5 +1204,5 @@ export default function IdeaHub() {
 
   return view === 'nebula'
     ? <NebulaView   onSwitch={() => setView('lista')} />
-    : <ListaView    onSwitch={() => setView('nebula')} />;
+    : <ListaView    onSwitch={() => {}} />;
 }
