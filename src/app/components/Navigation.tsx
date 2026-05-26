@@ -28,7 +28,7 @@ export default function Navigation() {
   const inactiveColor = 'rgba(255,255,255,0.70)';
 
   const navBg = theme === 'light'
-    ? (scrolled ? 'rgba(13,19,51,0.92)' : 'rgba(13,19,51,0.80)')
+    ? (scrolled ? 'rgba(9,14,42,0.96)' : 'rgba(9,14,42,0.88)')
     : (scrolled ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.12)');
 
   const navBorder = theme === 'light'
