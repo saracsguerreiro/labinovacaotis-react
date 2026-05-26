@@ -21,8 +21,11 @@ export default function Navigation() {
   const [activeLang, setActiveLang] = useState('PT');
   const { theme, toggle: toggleTheme } = useTheme();
 
-  const activeColor   = isDark ? '#ffffff'                : '#0d1333';
-  const inactiveColor = isDark ? 'rgba(255,255,255,0.70)' : 'rgba(13,19,51,0.50)';
+  // dark mode global (ThemeContext) OU página de fundo escuro → letras brancas
+  const isNavDark = theme === 'dark' || isDark;
+
+  const activeColor   = isNavDark ? '#ffffff'                : '#0d1333';
+  const inactiveColor = isNavDark ? 'rgba(255,255,255,0.70)' : 'rgba(13,19,51,0.50)';
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[200] flex justify-center pt-4 px-6 transition-all duration-300">
@@ -42,7 +45,7 @@ export default function Navigation() {
         {/* Logo */}
         <div className="cursor-pointer select-none flex-shrink-0" onClick={() => navigate('/')}>
           <img
-            src={isDark ? logoAiLabWhite : logoAiLabBlack}
+            src={isNavDark ? logoAiLabWhite : logoAiLabBlack}
             alt="TIS AI Lab"
             className="h-10"
             style={{ objectFit: 'contain', transition: 'opacity 0.3s ease' }}
@@ -60,7 +63,7 @@ export default function Navigation() {
                 style={{
                   color: isActive ? activeColor : inactiveColor,
                   background: isActive
-                    ? isDark ? 'rgba(255,255,255,0.15)' : 'rgba(13,19,51,0.08)'
+                    ? isNavDark ? 'rgba(255,255,255,0.15)' : 'rgba(13,19,51,0.08)'
                     : 'transparent',
                   fontFamily: 'var(--font-outfit)',
                   fontWeight: isActive ? 700 : 400,
@@ -118,20 +121,21 @@ export default function Navigation() {
           </div>
 
           {/* Language switcher — plain PT | EN */}
-          <div className="flex items-center gap-1" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700 }}>
+          <div className="flex items-center gap-0.5" style={{ fontFamily: 'var(--font-mono)', fontSize: '9px', letterSpacing: '0.04em' }}>
             {(['PT', 'EN'] as const).map((lang, i) => (
               <>
                 {i === 1 && (
-                  <span key="sep" style={{ color: isDark ? 'rgba(255,255,255,0.25)' : 'rgba(13,19,51,0.25)' }}>|</span>
+                  <span key="sep" style={{ color: isNavDark ? 'rgba(255,255,255,0.25)' : 'rgba(13,19,51,0.25)', padding: '0 2px' }}>|</span>
                 )}
                 <button
                   key={lang}
                   className="px-1 border-none cursor-pointer bg-transparent transition-all duration-150"
                   style={{
                     color: activeLang === lang
-                      ? (isDark ? '#ffffff' : '#0d1333')
-                      : (isDark ? 'rgba(255,255,255,0.4)' : 'rgba(13,19,51,0.35)'),
+                      ? '#036ef2'
+                      : (isNavDark ? 'rgba(255,255,255,0.40)' : 'rgba(13,19,51,0.35)'),
                     fontWeight: activeLang === lang ? 700 : 400,
+                    fontSize: '9px',
                   }}
                   onClick={() => setActiveLang(lang)}
                 >
@@ -147,8 +151,8 @@ export default function Navigation() {
             title={theme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
             className="flex items-center justify-center w-8 h-8 rounded-full border-none cursor-pointer transition-all duration-200 hover:scale-110"
             style={{
-              background: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(13,19,51,0.07)',
-              color: isDark ? 'rgba(255,255,255,0.85)' : 'rgba(13,19,51,0.7)',
+              background: isNavDark ? 'rgba(255,255,255,0.10)' : 'rgba(13,19,51,0.07)',
+              color: isNavDark ? 'rgba(255,255,255,0.85)' : 'rgba(13,19,51,0.7)',
             }}
           >
             {theme === 'dark' ? (
