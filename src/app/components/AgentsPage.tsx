@@ -221,7 +221,7 @@ function HoloCard({ agent, index, isLight }: { agent: Agent; index: number; isLi
           borderRadius: 20,
           boxShadow: hovered
             ? `0 24px 64px ${r.glow}, 0 0 0 1.5px ${r.color}70`
-            : isLight ? `0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.08)` : `0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.07)`,
+            : isLight ? `0 8px 40px rgba(0,0,0,0.10), 0 0 0 1px rgba(255,255,255,0.80)` : `0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.07)`,
           transition: 'box-shadow 0.3s',
         }}
       >
@@ -232,8 +232,10 @@ function HoloCard({ agent, index, isLight }: { agent: Agent; index: number; isLi
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
           borderRadius: 20, overflow: 'hidden',
-          background: isLight ? `linear-gradient(165deg, #f8faff 0%, #f0f4ff 55%, ${agent.color}08 100%)` : `linear-gradient(165deg, #0d1640 0%, #080f2e 55%, ${agent.color}14 100%)`,
-          border: `1.5px solid ${agent.color}28`,
+          background: isLight ? 'rgba(255,255,255,0.55)' : `linear-gradient(165deg, #0d1640 0%, #080f2e 55%, ${agent.color}14 100%)`,
+          backdropFilter: isLight ? 'blur(16px)' : 'none',
+          WebkitBackdropFilter: isLight ? 'blur(16px)' : 'none',
+          border: isLight ? '1.5px solid rgba(255,255,255,0.80)' : `1.5px solid ${agent.color}28`,
           display: 'flex', flexDirection: 'column',
         }}>
 
@@ -389,8 +391,10 @@ function HoloCard({ agent, index, isLight }: { agent: Agent; index: number; isLi
           WebkitBackfaceVisibility: 'hidden',
           transform: 'rotateY(180deg)',
           borderRadius: 20, overflow: 'hidden',
-          background: isLight ? `linear-gradient(160deg, #f8faff 0%, ${agent.color}12 100%)` : `linear-gradient(160deg, #0d1640 0%, ${agent.color}25 100%)`,
-          border: `1.5px solid ${agent.color}45`,
+          background: isLight ? 'rgba(255,255,255,0.55)' : `linear-gradient(160deg, #0d1640 0%, ${agent.color}25 100%)`,
+          backdropFilter: isLight ? 'blur(16px)' : 'none',
+          WebkitBackdropFilter: isLight ? 'blur(16px)' : 'none',
+          border: isLight ? '1.5px solid rgba(255,255,255,0.80)' : `1.5px solid ${agent.color}45`,
           display: 'flex', flexDirection: 'column',
           alignItems: 'center', justifyContent: 'center',
           padding: '28px 24px', gap: 0,
