@@ -7,9 +7,8 @@ import logoAiLabBlack from './logo-tis-ai-lab-dark.png';
 
 const navLinks: { path: string; label: string }[] = [
   { path: '/sobre',    label: 'Sobre' },
-  { path: '/criar',    label: 'Criar Ideia' },
-  { path: '/agentes',  label: 'Agentes IA' },
   { path: '/hub',      label: 'Ideia HUB' },
+  { path: '/agentes',  label: 'Agentes IA' },
   { path: '/impacto2', label: 'Impacto' },
 ];
 
@@ -81,6 +80,41 @@ export default function Navigation() {
 
         {/* Right side */}
         <div className="flex items-center gap-3 flex-shrink-0">
+          {/* Criar Ideia CTA */}
+          <div style={{ position: 'relative', display: 'inline-flex' }}>
+            <span
+              style={{
+                position: 'absolute',
+                inset: 0,
+                borderRadius: '50px',
+                background: '#036ef2',
+                animation: 'nav-pulse 2s ease-in-out infinite',
+              }}
+            />
+            <button
+              onClick={() => navigate('/criar')}
+              style={{
+                position: 'relative',
+                background: 'linear-gradient(135deg, #036ef2, #0550c0)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '50px',
+                padding: '8px 18px',
+                fontSize: '14px',
+                fontWeight: 700,
+                fontFamily: 'var(--font-outfit)',
+                cursor: 'pointer',
+                letterSpacing: '-0.01em',
+                boxShadow: '0 4px 14px rgba(3,110,242,0.5)',
+                transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.05)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(3,110,242,0.7)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(3,110,242,0.5)'; }}
+            >
+              Criar Ideia
+            </button>
+          </div>
+
           {/* Language switcher */}
           <div
             className="flex items-center gap-0 rounded-lg p-1"
