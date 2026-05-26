@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import StepBar from './StepBar';
 
 interface SummaryPageProps {
+  onBack: () => void;
   isAnonymous: boolean;
   setIsAnonymous: (value: boolean) => void;
 }
@@ -12,7 +14,7 @@ type SummaryFormData = {
   coauthor: string;
 };
 
-export default function SummaryPage({ isAnonymous, setIsAnonymous }: SummaryPageProps) {
+export default function SummaryPage({ onBack, isAnonymous, setIsAnonymous }: SummaryPageProps) {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
@@ -32,8 +34,10 @@ export default function SummaryPage({ isAnonymous, setIsAnonymous }: SummaryPage
   };
 
   return (
-    <div className="flex flex-col animate-[vIn_0.35s_ease_both]" style={{ height: '100%' }}>
-      <div className="flex-1 grid grid-cols-[1fr_340px] overflow-hidden" style={{ height: '100%' }} onSubmit={handleSubmit(onSubmit)}>
+    <div className="min-h-screen flex flex-col animate-[vIn_0.35s_ease_both]">
+      <StepBar currentStep={3} onBack={onBack} backLabel="Referências" isAnonymous={isAnonymous} setIsAnonymous={setIsAnonymous} />
+
+      <div className="flex-1 grid grid-cols-[1fr_340px] overflow-hidden" style={{ height: 'calc(100vh - 158px)' }} onSubmit={handleSubmit(onSubmit)}>
         {/* Main Content */}
         <div className="px-8 py-7 overflow-y-auto bg-[var(--bg)]">
           <div
