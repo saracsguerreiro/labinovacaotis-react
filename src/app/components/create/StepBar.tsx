@@ -49,16 +49,16 @@ export default function StepBar({ currentStep, onBack, backLabel }: StepBarProps
                     fontWeight: 700,
                     fontFamily: 'var(--font-mono)',
                     background: isDone
-                      ? (isLight ? '#ecfdf5' : 'rgba(52,211,153,0.12)')
+                      ? (isLight ? 'rgba(0,207,207,0.08)' : 'rgba(0,207,207,0.12)')
                       : isActive
                       ? '#036ef2'
                       : (isLight ? '#f1f5f9' : 'var(--surface2)'),
                     border: isDone
-                      ? `2px solid ${isLight ? '#6ee7b7' : 'rgba(52,211,153,0.45)'}`
+                      ? `2px solid ${isLight ? '#00CFCF' : 'rgba(0,207,207,0.45)'}`
                       : isActive
                       ? '2px solid #036ef2'
                       : `2px solid ${isLight ? '#e2e8f0' : 'var(--border2)'}`,
-                    color: isDone ? '#10b981' : isActive ? '#fff' : 'var(--text-sub)',
+                    color: isDone ? '#00CFCF' : isActive ? '#fff' : 'var(--text-sub)',
                     boxShadow: isActive ? '0 0 0 4px rgba(3,110,242,0.15), 0 0 16px rgba(3,110,242,0.35)' : 'none',
                     transform: isActive ? 'scale(1.1)' : 'scale(1)',
                   }}
@@ -105,7 +105,7 @@ export default function StepBar({ currentStep, onBack, backLabel }: StepBarProps
                     style={{
                       height: '100%',
                       width: isDone ? '100%' : '0%',
-                      background: 'linear-gradient(90deg, #036ef2 0%, #34d399 100%)',
+                      background: 'linear-gradient(90deg, #036ef2 0%, #00CFCF 100%)',
                       transition: 'width 0.5s cubic-bezier(0.16,1,0.3,1)',
                       borderRadius: '9999px',
                     }}
